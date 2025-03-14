@@ -1,7 +1,7 @@
 import streamlit as st
-from ui.data_input import show_input_form
-from ui.reference_values import show_reference_values
-from ui.results_summary import show_results_summary
+# from ui.data_input import show_input_form
+# from ui.reference_values import show_reference_values
+# from ui.results_summary import show_results_summary
 from modules.data_initializer import DataInitializer
 
 data_initializer = DataInitializer(session_manager, logs_manager)
