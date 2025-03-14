@@ -18,7 +18,6 @@ class LogsManager:
         if "logs" not in st.session_state:
             st.session_state["logs"] = []
 
-        self.load_logs_from_file()
 
     def add_log(self, module, event, log_type="info"):
         """
@@ -48,5 +47,5 @@ class LogsManager:
             with open(self.log_file, "w", encoding="utf-8") as log_file:
                 json.dump(st.session_state["logs"], log_file, ensure_ascii=False, indent=4)
         except Exception as e:
-            print(f"Ошибка при сохранении логов: {e}")
+            st.sidebar.error(f"Ошибка при сохранении логов: {e}")
 
