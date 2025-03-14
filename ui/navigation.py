@@ -15,11 +15,11 @@ data_initializer = DataInitializer(session_manager, logs_manager)
 st.title("Blast Optimization App")  # Переносим заголовок в навигацию
 
 # ✅ Определяем вкладки и их обработчики
-TAB_OPTIONS = {
-    "Ввод данных": show_input_form,
-    "Эталонные значения": show_reference_values,
-    "Результаты": show_results_summary,
-}
+# TAB_OPTIONS = {
+#     "Ввод данных": show_input_form,
+#     "Эталонные значения": show_reference_values,
+#     "Результаты": show_results_summary,
+# }
 
 # ✅ Инициализация session_state
 if "selected_tab" not in st.session_state:
