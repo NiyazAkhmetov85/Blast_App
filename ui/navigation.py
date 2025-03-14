@@ -38,10 +38,14 @@ data_initializer.show_parameter_buttons()  # Добавляем кнопки в 
 # 📌 Центральная область (отображение экрана)
 TAB_OPTIONS[selected_tab]()  # Вызывает соответствующую функцию
 
-# ✅ Статусная строка
+# ✅ Статусная строка (только в нижней части боковой панели)
 def show_status_bar():
-    st.markdown("---")
-    st.info(st.session_state["status_message"])
-    st.sidebar.info(st.session_state["status_message"])
+    status_container = st.sidebar.empty()  # Контейнер внизу боковой панели
+    with status_container:
+        if "status_message" in st.session_state:
+            st.info(st.session_state["status_message"])
 
+# Вызываем функцию отображения статуса
 show_status_bar()
+
+
