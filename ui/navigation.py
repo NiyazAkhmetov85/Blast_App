@@ -3,7 +3,13 @@ import streamlit as st
 # from ui.reference_values import show_reference_values
 # from ui.results_summary import show_results_summary
 from modules.data_initializer import DataInitializer
+from utils.session_state_manager import SessionStateManager
+from utils.logs_manager import LogsManager
 
+
+# ✅ Инициализация менеджеров
+session_manager = SessionStateManager()
+logs_manager = LogsManager()
 data_initializer = DataInitializer(session_manager, logs_manager)
 
 st.title("Blast Optimization App")  # Переносим заголовок в навигацию
