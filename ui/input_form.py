@@ -20,7 +20,7 @@ class InputForm:
 
         self.parameters = st.session_state["user_parameters"]
 
-    def _render_parameters_section(self):
+    def render_parameters_section(self):
         st.subheader("Ввод параметров блока")
 
         for group_name in [
@@ -37,7 +37,7 @@ class InputForm:
                     editable=editable
                 )
 
-    def _render_group(self, group_name: str, group_parameters: list, editable: bool = True):
+    def render_group(self, group_name: str, group_parameters: list, editable: bool = True):
         """
         Отображение группы параметров с проверкой корректности self.parameters.
         """
@@ -106,7 +106,7 @@ class InputForm:
                     # Если не editable, просто показываем текущее значение
                     st.write(f"{param}: {current_value}")
     
-    def _render_grid_type_selection(self):
+    def render_grid_type_selection(self):
         """
         Выбор типа сетки (квадратная/треугольная).
         """
@@ -166,14 +166,7 @@ class InputForm:
                     if form_key in st.session_state:
                         st.session_state[form_key] = default_value  # обновляем отображаемые формы ввода
                         
-
-    # def show_all_session_state(self):
-    #     """Вывод всех параметров session_state для отладки."""
-    #     st.subheader("Содержимое session_state")
-    #     st.json(st.session_state)
-
                 
             # Статусное сообщение
             st.session_state["status_message"] = "Параметры возвращены к значениям по умолчанию."
             st.sidebar.success(st.session_state["status_message"])
-# Завершен 14.03.2025
