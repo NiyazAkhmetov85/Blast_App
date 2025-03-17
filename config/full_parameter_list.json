@@ -1,1 +1,434 @@
-
+{
+  "parameters": [
+    {
+      "name": "H",
+      "description": "Высота уступа",
+      "unit": "м",
+      "default_value": 10,
+      "min_value": 5,
+      "max_value": 50,
+      "category": "Геометрические параметры блока",
+      "type": "float"
+    },
+    {
+      "name": "S",
+      "description": "Расстояние между скважинами в ряду",
+      "unit": "м",
+      "default_value": 5,
+      "min_value": 2,
+      "max_value": 20,
+      "category": "Геометрические параметры блока",
+      "type": "float"
+    },
+    {
+      "name": "B",
+      "description": "Расстояние между рядами скважин",
+      "unit": "м",
+      "default_value": 6,
+      "min_value": 2,
+      "max_value": 20,
+      "category": "Геометрические параметры блока",
+      "type": "float"
+    },
+    {
+      "name": "SD",
+      "description": "Стандартное отклонение точности бурения скважин",
+      "unit": "м",
+      "default_value": 0.1,
+      "min_value": 0,
+      "max_value": 1,
+      "category": "Геометрические параметры блока",
+      "type": "float"
+    },
+    {
+      "name": "in_situ_block_size",
+      "description": "Размер блоков породы на месте до проведения взрывных работ",
+      "unit": "мм",
+      "default_value": 1500,
+      "min_value": 500,
+      "max_value": 5000,
+      "category": "Геометрические параметры блока",
+      "type": "float"
+    },
+    {
+      "name": "edge_distance",
+      "description": "Минимальное расстояние от края контура блока до ближайшей скважины, учитываемое при генерации сетки",
+      "unit": "м",
+      "default_value": 2,
+      "min_value": 2,
+      "max_value": 10,
+      "category": "Геометрические параметры блока",
+      "type": "float"
+    },
+    {
+      "name": "rho",
+      "description": "Плотность породы",
+      "unit": "кг/м³",
+      "default_value": 2600,
+      "min_value": 1000,
+      "max_value": 8000,
+      "category": "Физико-механические свойства породы",
+      "type": "float"
+    },
+    {
+      "name": "sigma_c",
+      "description": "Предел прочности породы на сжатие",
+      "unit": "МПа",
+      "default_value": 50,
+      "min_value": 1,
+      "max_value": 500,
+      "category": "Физико-механические свойства породы",
+      "type": "float"
+    },
+    {
+      "name": "E",
+      "description": "Модуль упругости породы",
+      "unit": "ГПа",
+      "default_value": 20,
+      "min_value": 1,
+      "max_value": 100,
+      "category": "Физико-механические свойства породы",
+      "type": "float"
+    },
+    {
+      "name": "RMD",
+      "description": "Описание скального массива",
+      "unit": "безразмерный",
+      "default_value": 50,
+      "min_value": 10,
+      "max_value": 50,
+      "category": "Физико-механические свойства породы",
+      "type": "float"
+    },
+    {
+      "name": "Q",
+      "description": "Вес заряда на одну скважину",
+      "unit": "кг",
+      "default_value": 50,
+      "min_value": 1,
+      "max_value": 500,
+      "category": "Параметры буровзрывных работ",
+      "type": "float"
+    },
+    {
+      "name": "energy_vv",
+      "description": "Энергия взрывчатого вещества",
+      "unit": "МДж/кг",
+      "default_value": 5,
+      "min_value": 3,
+      "max_value": 7,
+      "category": "Параметры буровзрывных работ",
+      "type": "float"
+    },
+    {
+      "name": "Ø_h",
+      "description": "Диаметр буровой скважины",
+      "unit": "мм",
+      "default_value": 200,
+      "min_value": 50,
+      "max_value": 500,
+      "category": "Параметры буровзрывных работ",
+      "type": "float"
+    },
+    {
+      "name": "L_b",
+      "description": "Длина заряда в нижней части скважины",
+      "unit": "м",
+      "default_value": 3,
+      "min_value": 0.5,
+      "max_value": 10,
+      "category": "Параметры буровзрывных работ",
+      "type": "float"
+    },
+    {
+      "name": "L_c",
+      "description": "Длина заряда в колонне скважины",
+      "unit": "м",
+      "default_value": 2,
+      "min_value": 0.5,
+      "max_value": 10,
+      "category": "Параметры буровзрывных работ",
+      "type": "float"
+    },
+    {
+      "name": "L_tot",
+      "description": "Общая длина заряда в скважине",
+      "unit": "м",
+      "default_value": 5,
+      "min_value": 1,
+      "max_value": 20,
+      "category": "Параметры буровзрывных работ",
+      "type": "float"
+    },
+    {
+      "name": "target_x_50",
+      "description": "Эталонное значение медианного размера фрагментов (x₅₀), используемое для сравнения с расчетным",
+      "unit": "мм",
+      "default_value": 125,
+      "min_value": 10,
+      "max_value": 500,
+      "category": "Эталонные показатели",
+      "type": "float"
+    },
+    {
+      "name": "target_x_max",
+      "description": "Эталонное значение максимального размера фрагмента (xₘₐₓ), используемое для сравнения с расчетным",
+      "unit": "мм",
+      "default_value": 1000,
+      "min_value": 500,
+      "max_value": 2000,
+      "category": "Эталонные показатели",
+      "type": "float"
+    },
+    {
+      "name": "target_b",
+      "description": "Эталонное значение параметра формы кривой распределения (b), используемое для сравнения с расчетным",
+      "unit": "безразмерный",
+      "default_value": 2.2,
+      "min_value": 0.5,
+      "max_value": 5,
+      "category": "Эталонные показатели",
+      "type": "float"
+    },
+    {
+      "name": "target_n",
+      "description": "Эталонное значение коэффициента равномерности распределения (n), используемое для сравнения с расчетным",
+      "unit": "безразмерный",
+      "default_value": 1,
+      "min_value": 0.1,
+      "max_value": 5,
+      "category": "Эталонные показатели",
+      "type": "float"
+    },
+    {
+      "name": "x_range_min",
+      "description": "Минимальное значение для диапазона X",
+      "unit": "мм",
+      "default_value": 10,
+      "min_value": 1,
+      "max_value": 10000,
+      "category": "Эталонные показатели",
+      "type": "float"
+    },
+    {
+      "name": "x_50",
+      "description": "Медианный размер фрагментов, при котором 50% материала проходит через сито данного размера",
+      "unit": "мм",
+      "default_value": 125,
+      "min_value": 10,
+      "max_value": 500,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "x_max",
+      "description": "Максимальный размер фрагмента, соответствующий наибольшему размеру частицы в распределении",
+      "unit": "мм",
+      "default_value": 1000,
+      "min_value": 100,
+      "max_value": 2000,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "b",
+      "description": "Параметр, определяющий форму кривой распределения, отражающий степень неоднородности фрагментации",
+      "unit": "безразмерный",
+      "default_value": 2.2,
+      "min_value": 0.5,
+      "max_value": 5,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "A",
+      "description": "Фактор породы, отражающий физико-механические свойства материала",
+      "unit": "безразмерный",
+      "default_value": 1,
+      "min_value": 0.1,
+      "max_value": 10,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "s_ANFO",
+      "description": "Относительная энергия взрывчатого вещества по сравнению с АНФО",
+      "unit": "%",
+      "default_value": 100,
+      "min_value": 50,
+      "max_value": 150,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "q",
+      "description": "Специфический заряд взрывчатого вещества",
+      "unit": "кг/м³",
+      "default_value": 1,
+      "min_value": 0.1,
+      "max_value": 10,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "n",
+      "description": "Коэффициент равномерности распределения, влияющий на форму кумулятивной кривой",
+      "unit": "безразмерный",
+      "default_value": 1,
+      "min_value": 0.1,
+      "max_value": 5,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "RDI",
+      "description": "Влияние плотности породы",
+      "unit": "безразмерный",
+      "default_value": 50,
+      "min_value": 10,
+      "max_value": 100,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "HF",
+      "description": "Фактор твердости породы, учитывающий прочность на сжатие и модуль Юнга",
+      "unit": "безразмерный",
+      "default_value": 1,
+      "min_value": 0.1,
+      "max_value": 5,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "block_area",
+      "description": "Площадь блока, рассчитанная на основе контура блока (м²).",
+      "unit": "м²",
+      "default_value": 0,
+      "min_value": 0,
+      "max_value": 1000000,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "block_volume",
+      "description": "Объем блока, рассчитанный как произведение площади блока на высоту уступа (м³).",
+      "unit": "м³",
+      "default_value": 0,
+      "min_value": 0,
+      "max_value": 100000000,
+      "category": "Расчетные",
+      "type": "float"
+    },
+    {
+      "name": "cmeridian",
+      "description": "Центральный меридиан для привязки координат к локальной системе",
+      "unit": "градусы",
+      "default_value": 69,
+      "min_value": -180,
+      "max_value": 180,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "false_east",
+      "description": "Ложные координаты для коррекции смещения по оси X",
+      "unit": "м",
+      "default_value": 500000,
+      "min_value": 0,
+      "max_value": 10000000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "cm_scalef",
+      "description": "Скалярный коэффициент для корректировки масштабирования в ЛСК",
+      "unit": "безразмерный",
+      "default_value": 0.9996,
+      "min_value": 0.9,
+      "max_value": 1.1,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "a_major",
+      "description": "Большая полуось эллипсоида (радиус экватора)",
+      "unit": "м",
+      "default_value": 6378137,
+      "min_value": 6000000,
+      "max_value": 7000000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "b_minor",
+      "description": "Малая полуось эллипсоида (радиус полярной оси)",
+      "unit": "м",
+      "default_value": 6356752.314,
+      "min_value": 6000000,
+      "max_value": 7000000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "shiftx",
+      "description": "Смещение начальной точки по оси X",
+      "unit": "м",
+      "default_value": -427158.6119,
+      "min_value": -10000000,
+      "max_value": 10000000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "shifty",
+      "description": "Смещение начальной точки по оси Y",
+      "unit": "м",
+      "default_value": -5923276.8046,
+      "min_value": -10000000,
+      "max_value": 10000000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "map_orgx",
+      "description": "Начальная точка карты по оси X",
+      "unit": "м",
+      "default_value": 6500,
+      "min_value": 0,
+      "max_value": 20000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "map_orgy",
+      "description": "Начальная точка карты по оси Y",
+      "unit": "м",
+      "default_value": 4500,
+      "min_value": 0,
+      "max_value": 20000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "map_size",
+      "description": "Размер карты в метрах",
+      "unit": "м",
+      "default_value": 10000,
+      "min_value": 1000,
+      "max_value": 50000,
+      "category": "ЛСК",
+      "type": "float"
+    },
+    {
+      "name": "cell_size",
+      "description": "Размер ячейки карты",
+      "unit": "м",
+      "default_value": 2,
+      "min_value": 0.1,
+      "max_value": 10,
+      "category": "ЛСК",
+      "type": "float"
+    }
+  ]
+}
