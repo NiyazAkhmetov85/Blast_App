@@ -68,7 +68,6 @@ class DataInput:
 
         self.input_form.render_parameters_section()  # Отображаем параметры
 
-        st.subheader("Выбор типа сетки")
         self.input_form._render_grid_type_selection()  # Отображаем выбор сетки
 
         st.subheader("Управление параметрами")
