@@ -1,4 +1,4 @@
-from turtle import pd
+import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 from utils.logs_manager import LogsManager
