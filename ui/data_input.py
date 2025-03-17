@@ -64,7 +64,7 @@ class DataInput:
         if block_name:
             st.info(f"Импортированный блок: **{block_name}**")
         else:
-            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
+            st.subheader.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
 
         st.subheader("Настройка параметров блока")
         self.input_form.render_parameters_section()  # Отображаем параметры
