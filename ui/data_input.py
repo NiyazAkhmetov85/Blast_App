@@ -60,6 +60,9 @@ class DataInput:
     
         # Проверяем наличие имени блока
         block_name = st.session_state.get("block_name")
+            
+        if st.button("Показать все параметры session_state"):
+        self.input_form.show_all_session_state()
     
         if not block_name or block_name == "Неизвестный блок":
             st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
@@ -72,8 +75,7 @@ class DataInput:
 
         self.input_form.render_control_buttons()  # Отображаем кнопки управления параметрами
 
-    if st.button("Показать все параметры session_state"):
-        self.input_form.show_all_session_state()
+
 
 
     def show_visualization(self):
