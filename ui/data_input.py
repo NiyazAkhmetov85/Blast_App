@@ -66,7 +66,7 @@ class DataInput:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
 
-        self.input_form._render_group()  # Отображаем параметры
+        self.input_form.render_parameters_section()  # Отображаем параметры
 
         st.subheader("Выбор типа сетки")
         self.input_form._render_grid_type_selection()  # Отображаем выбор сетки
