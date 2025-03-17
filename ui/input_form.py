@@ -167,10 +167,10 @@ class InputForm:
                         st.session_state[form_key] = default_value  # обновляем отображаемые формы ввода
                         
 
-    def show_all_session_state(self):
-        """Вывод всех параметров session_state для отладки."""
-        st.subheader("Содержимое session_state")
-        st.json(st.session_state)
+    # def show_all_session_state(self):
+    #     """Вывод всех параметров session_state для отладки."""
+    #     st.subheader("Содержимое session_state")
+    #     st.json(st.session_state)
 
                 
             # Статусное сообщение
