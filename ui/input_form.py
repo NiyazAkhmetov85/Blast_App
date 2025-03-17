@@ -18,24 +18,65 @@ class InputForm:
 
 
     def render_parameters_section(self):
-        """
-        Отображение формы для ввода параметров блока.
-        """
-        st.subheader("Ввод параметров блока")
+        params = st.session_state.get("parameters", {})
+        user_params = st.session_state.get("user_parameters", {})
     
-        if "parameters" not in st.session_state or not isinstance(st.session_state["parameters"], dict):
-            st.warning("⚠️ Параметры блока отсутствуют. Проверьте загрузку данных.")
-            return
+        # Группировка параметров по категориям, сохраняя порядок из конфигурации
+        categories_order = [
+            "Геометрические параметры блока",
+            "Физико-механические свойства породы",
+            "Параметры буровзрывных работ",
+            "Эталонные показатели",
+            "Расчетные",
+            "ЛСК"
+        ]
     
-        parameters = st.session_state["parameters"]
+        for category in categories_order:
+            with st.expander(f"{category}", expanded=False):
+                category_params = [p for p in params.values() if p["category"] == category]
+                
+                for param in category_params:
+                    param_name = param["name"]
+                    default_value = param["default_value"]
+                    min_val = param["min_value"]
+                    max_val = param["max_value"]
+                    description = param["description"]
+                    unit = param["unit"]
+                    param_type = param["type"]
     
-        # Если параметры не сгруппированы, отрисовываем их напрямую
-        if not any(isinstance(val, dict) for val in parameters.values()):
-            self._render_group("Все параметры", parameters, editable=True)
-        else:
-            # Группированный вывод (если структура поддерживает)
-            for group_name in parameters.keys():
-                self._render_group(group_name, parameters[group_name], editable=(group_name != "ЛСК"))
+                    # Получаем сохраненное значение пользователя, если оно есть, иначе - по умолчанию
+                    current_val = user_params.get(param_name, default_value)
+    
+                    # Группа ЛСК - только для чтения
+                    if category == "ЛСК":
+                        st.write(f"**{param_name} ({unit})**: {current_val}")
+                    else:
+                        # Проверка типа параметра для отображения корректного поля ввода
+                        if param_type == "float":
+                            user_input = st.number_input(
+                                f"{description}, {unit}",
+                                value=float(current_val),
+                                min_value=float(min_val),
+                                max_value=float(max_val),
+                                step=0.1
+                            )
+                        elif param_type == "int":
+                            user_input = st.number_input(
+                                f"{description}, {unit}",
+                                value=int(current_val),
+                                min_value=int(min_val),
+                                max_value=int(max_val),
+                                step=1
+                            )
+                        else:
+                            user_input = st.text_input(f"{description}, {unit}", value=str(current_val))
+    
+                        # Сохраняем пользовательское значение обратно в session_state
+                        user_params[param_name] = user_input
+    
+        # Сохраняем обновленные параметры
+        st.session_state["user_parameters"] = user_params
+
 
 
 
