@@ -15,7 +15,7 @@ data_initializer = DataInitializer(session_manager, logs_manager)
 st.title("Blast Optimization App")
 
 # ✅ Импорт навигации (после инициализации)
-from ui.navigation_ import navigation
+from ui.navigation import navigation
 
 # ✅ Запуск системы навигации
 navigation()
