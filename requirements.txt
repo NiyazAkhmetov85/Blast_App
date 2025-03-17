@@ -1,0 +1,12 @@
+streamlit
+pandas
+numpy
+matplotlib
+plotly
+scipy
+altair
+watchdog
+pyarrow
+requests
+toml
+gitpython
