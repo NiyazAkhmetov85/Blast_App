@@ -165,7 +165,19 @@ class InputForm:
                     form_key = f"{group_name}_{param_name}"
                     if form_key in st.session_state:
                         st.session_state[form_key] = default_value  # обновляем отображаемые формы ввода
-            
+                        
+    def show_all_session_state():
+        """
+        Выводит все параметры, хранящиеся в st.session_state, в удобочитаемом виде.
+        """
+        st.subheader("Содержимое session_state")
+        
+        if not st.session_state:
+            st.write("session_state пуст.")
+        else:
+            for key, value in st.session_state.items():
+                st.write(f"**{key}**: {value}")
+                
             # Статусное сообщение
             st.session_state["status_message"] = "Параметры возвращены к значениям по умолчанию."
             st.sidebar.success(st.session_state["status_message"])
