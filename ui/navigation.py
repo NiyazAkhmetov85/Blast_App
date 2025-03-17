@@ -56,7 +56,7 @@ def navigation():
     data_input = DataInput(session_manager, logs_manager)
 
     TAB_OPTIONS = {
-        "📥 Ввод данных": data_input.show_import_block,
+        "📥 Импорт данных блока": data_input.show_import_block,
         "📋 Ввод параметров": data_input.show_input_form,
         "📊 Визуализация блока": data_input.show_visualization,
         "📜 Итоговые параметры": data_input.show_summary_screen,
