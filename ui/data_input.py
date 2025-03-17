@@ -34,6 +34,13 @@ class DataInput:
                 self.data_processor.load_block_contour(uploaded_file)
                 st.session_state["show_file_uploader"] = False  # Скрываем загрузчик после загрузки
 
+                    # Отображение загруженного DataFrame
+                if "block_contour" in st.session_state and not st.session_state["block_contour"].empty:
+                    df = st.session_state["block_contour"]
+                    st.subheader("Просмотр загруженных данных")
+                    st.write(df)
+ 
+
         # Кнопка визуализации блока
         if st.button("Визуализировать импортированный блок") and "block_contour" in st.session_state:
             self.visualizer.plot_block_contour()
