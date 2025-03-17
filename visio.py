@@ -34,7 +34,7 @@ if uploaded_file is not None:
         ax.fill(df["X"], df["Y"], alpha=0.2)
         ax.set_xlabel("Координата X")
         ax.set_ylabel("Координата Y")
-        ax.set_title("График загруженного блока")
+        ax.set_title("Контур загруженного блока")
         ax.legend()
         st.pyplot(fig)
     else:
