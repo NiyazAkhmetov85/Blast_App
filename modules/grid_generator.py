@@ -22,11 +22,9 @@ class GridGenerator:
         self.grid_data = None
         self.block_polygon = None
 
+        # Удаляем вывод ошибки, проверку перенесём в generate_grid()
         if self.block_contour is not None:
             self.block_polygon = Polygon(self.block_contour[["X", "Y"]].values)
-        else:
-            self.logs_manager.add_log("grid_generator", "Отсутствует контур блока.", "error")
-            st.sidebar.error("Отсутствует контур блока. Загрузите контур блока перед генерацией сетки.")
 
     def generate_grid(self):
         """
