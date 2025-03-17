@@ -4,7 +4,10 @@ from modules.data_initializer import DataInitializer
 from utils.session_state_manager import SessionStateManager
 
 # ✅ Инициализация менеджеров
+# ✅ Создаём экземпляр DataInitializer
+logs_manager = LogsManager()
 session_manager = SessionStateManager()
+data_initializer = DataInitializer(session_manager, logs_manager)
 
 # ✅ Создаём экземпляр DataInitializer
 data_initializer = DataInitializer(session_manager)
