@@ -62,7 +62,7 @@ class DataInput:
         block_name = st.session_state.get("block_name")
     
         if not block_name or block_name == "Неизвестный блок":
-            st.subheader.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
+            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
         else:
             st.info(f"Импортированный блок: **{block_name}**")
 
