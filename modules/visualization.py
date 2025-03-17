@@ -62,6 +62,58 @@ class Visualization:
         st.sidebar.success("Комбинированная визуализация успешно отображена.")
         self.logs_manager.add_log("visualization", "Комбинированная визуализация успешно отображена.")
 
+    def plot_drill_grid(self):
+        """
+        Визуализация сетки скважин.
+        """
+        try:
+            # Проверяем, загружена ли сетка скважин
+            if "grid_data" not in st.session_state or st.session_state["grid_data"] is None:
+                st.warning("Сетка скважин не загружена.")
+                self.logs_manager.add_log(module="visualization", event="Ошибка: Сетка скважин не загружена.", log_type="ошибка")
+                return
+
+            # Проверяем, была ли обновлена сетка
+            if not st.session_state.get("grid_updated", False):
+                st.warning("⚠ Сетка скважин не обновлена. Сначала выполните генерацию сетки.")
+                return
+
+            grid_data = st.session_state["grid_data"]
+            block_name = st.session_state.get("block_name", "Безымянный блок")
+
+            # Проверяем, содержит ли DataFrame координаты X и Y
+            if grid_data.empty or "X" not in grid_data.columns or "Y" not in grid_data.columns:
+                st.warning("Ошибка: Сетка скважин пустая или имеет неверный формат.")
+                self.logs_manager.add_log(module="visualization", event="Ошибка: Сетка скважин пустая или некорректная.", log_type="ошибка")
+                return
+
+            # Проверка, если сетка пуста, но обновлена (дополнительная защита)
+            if grid_data.empty:
+                st.warning("Ошибка: Сетка скважин не содержит точек.")
+                self.logs_manager.add_log(module="visualization", event="Ошибка: Сетка скважин не содержит точек.", log_type="ошибка")
+                return
+
+            # Визуализация сетки скважин
+            plt.figure(figsize=(8, 6))
+            plt.scatter(grid_data["X"], grid_data["Y"], c='r', marker='o', label="Скважины")
+            plt.xlabel("X координата")
+            plt.ylabel("Y координата")
+            plt.title(f"Сетка скважин ({block_name})")
+            plt.legend()
+
+            # Отображение графика
+            st.pyplot(plt)
+            plt.close()  # Закрываем фигуру после отображения, чтобы избежать утечек памяти
+
+            # Логируем успешное построение графика
+            self.logs_manager.add_log(module="visualization", event=f"Сетка скважин для блока '{block_name}' успешно отображена", log_type="успех")
+
+        except Exception as e:
+            self.logs_manager.add_log(module="visualization", event=f"Ошибка при отображении сетки скважин: {str(e)}", log_type="ошибка")
+            st.error(f"Ошибка при построении сетки скважин: {e}")
+
+
+    
     def clear_visualization(self):
         keys = ["grid_updated", "grid_data", "block_contour", "grid_metrics"]
         for key in keys:
