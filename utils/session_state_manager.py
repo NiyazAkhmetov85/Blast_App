@@ -17,7 +17,7 @@ class SessionStateManager:
             "user_parameters": {},
             "last_action": None,  
             "block_contour": None,  
-            "block_name": "Неизвестный блок",  
+            "block_name": None,  
             "block_geometry": None,  
             "grid_data": None,  
             "grid_metrics": None,  
