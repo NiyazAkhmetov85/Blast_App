@@ -71,10 +71,10 @@ class DataInput:
             self.show_all_session_state()
 
         # Отображаем параметры блока
-        self.input_form._render_parameters_section()  
+        self.input_form.render_parameters_section()  
 
         # Выбор типа сетки
-        self.input_form._render_grid_type_selection()  
+        self.input_form.render_grid_type_selection()  
 
         # Кнопки управления параметрами
         self.input_form.render_control_buttons()
