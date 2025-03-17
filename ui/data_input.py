@@ -72,6 +72,10 @@ class DataInput:
 
         self.input_form.render_control_buttons()  # Отображаем кнопки управления параметрами
 
+    if st.button("Показать все параметры session_state"):
+        self.input_form.show_all_session_state()
+
+
     def show_visualization(self):
         """
         Экран для визуализации блока, сетки и метрик.
