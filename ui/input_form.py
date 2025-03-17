@@ -12,30 +12,49 @@ class InputForm:
         self.logs_manager = logs_manager
 
         # Инициализация пользовательских параметров
-        if "user_parameters" not in st.session_state:
-            st.session_state["user_parameters"] = copy.deepcopy(st.session_state.get("parameters", {}))
-            self.logs_manager.add_log("input_form", "Пользовательские параметры инициализированы значениями по умолчанию.")
-        else:
-            self.logs_manager.add_log("input_form", "Пользовательские параметры загружены из сессии.")
+        if "parameters" not in st.session_state:
+            st.session_state["parameters"] = {}
+            self.logs_manager.add_log("input_form", "⚠️ Параметры не загружены при инициализации", "warning")
 
-        self.parameters = st.session_state["user_parameters"]
+        # if "user_parameters" not in st.session_state:
+        #     st.session_state["user_parameters"] = copy.deepcopy(st.session_state.get("parameters", {}))
+        #     self.logs_manager.add_log("input_form", "Пользовательские параметры инициализированы значениями по умолчанию.")
+        # else:
+        #     self.logs_manager.add_log("input_form", "Пользовательские параметры загружены из сессии.")
+
+        # self.parameters = st.session_state["user_parameters"]
 
     def render_parameters_section(self):
+        """
+        Отображение формы для ввода параметров блока.
+        """
         st.subheader("Ввод параметров блока")
-
+    
+        # Проверяем, загружены ли параметры в session_state
+        if "parameters" not in st.session_state or not isinstance(st.session_state["parameters"], dict):
+            st.warning("⚠️ Параметры блока отсутствуют. Проверьте загрузку данных.")
+            return
+    
+        # Загружаем параметры
+        parameters = st.session_state["parameters"]
+    
+        # Группы параметров
         for group_name in [
             "Геометрические параметры блока",
             "Физико-механические свойства породы",
             "Параметры буровзрывных работ",
             "Локальная система координат (ЛСК)"
         ]:
-            if group_name in self.parameters:
+            if group_name in parameters:
                 editable = group_name != "Локальная система координат (ЛСК)"
                 self._render_group(
                     group_name=group_name,
-                    group_parameters=self.parameters[group_name],
+                    group_parameters=parameters[group_name],
                     editable=editable
                 )
+            else:
+                st.warning(f"⚠️ Группа '{group_name}' не найдена в parameters.")
+
 
     # def render_group(self, group_name: str, group_parameters: list, editable: bool = True):
     #     """
@@ -108,9 +127,9 @@ class InputForm:
 
 
     def _render_group(self, group_name, group_parameters, editable=True):
-        """
-        Отображает параметры в указанной группе.
-        """
+    """
+    Отображает параметры в указанной группе.
+    """
         with st.expander(group_name, expanded=False):
             for param_key, param in group_parameters.items():
                 param_value = st.session_state["parameters"].get(param_key, {}).get("default_value")
@@ -149,6 +168,49 @@ class InputForm:
                 # Обновляем st.session_state["parameters"]
                 if editable:
                     st.session_state["parameters"][param_key]["default_value"] = new_value
+
+    # def _render_group(self, group_name, group_parameters, editable=True):
+    #     """
+    #     Отображает параметры в указанной группе.
+    #     """
+    #     with st.expander(group_name, expanded=False):
+    #         for param_key, param in group_parameters.items():
+    #             param_value = st.session_state["parameters"].get(param_key, {}).get("default_value")
+    
+    #             if param_value is None:
+    #                 st.warning(f"⚠️ Параметр '{param_key}' не найден в parameters.")
+    #                 continue
+    
+    #             if param["type"] == "float":
+    #                 new_value = st.number_input(
+    #                     label=f"{param['description']} ({param['unit']})",
+    #                     value=float(param_value),
+    #                     min_value=float(param["min_value"]),
+    #                     max_value=float(param["max_value"]),
+    #                     step=0.1,
+    #                     disabled=not editable
+    #                 )
+    #             elif param["type"] == "int":
+    #                 new_value = st.number_input(
+    #                     label=f"{param['description']} ({param['unit']})",
+    #                     value=int(param_value),
+    #                     min_value=int(param["min_value"]),
+    #                     max_value=int(param["max_value"]),
+    #                     step=1,
+    #                     disabled=not editable
+    #                 )
+    #             elif param["type"] == "str":
+    #                 new_value = st.text_input(
+    #                     label=f"{param['description']}",
+    #                     value=str(param_value),
+    #                     disabled=not editable
+    #                 )
+    #             else:
+    #                 st.error(f"❌ Неизвестный тип параметра: {param['type']}")
+    
+    #             # Обновляем st.session_state["parameters"]
+    #             if editable:
+    #                 st.session_state["parameters"][param_key]["default_value"] = new_value
     
     
     def render_grid_type_selection(self):
