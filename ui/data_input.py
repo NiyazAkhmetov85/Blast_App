@@ -57,10 +57,14 @@ class DataInput:
         Экран для ввода параметров и выбора сетки скважин.
         """
         st.header("Ввод параметров и выбор сетки")
-
-        # Отображаем информацию о текущем блоке
-        block_name = st.session_state.get("block_name", "11122223")
-        st.info(f"Импортированный блок: **{block_name}**")
+    
+        # Проверяем наличие имени блока
+        block_name = st.session_state.get("block_name")
+    
+        if block_name:
+            st.info(f"Импортированный блок: **{block_name}**")
+        else:
+            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
 
         st.subheader("Настройка параметров блока")
         self.input_form.render_parameters_section()  # Отображаем параметры
