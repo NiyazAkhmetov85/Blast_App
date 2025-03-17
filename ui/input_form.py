@@ -75,9 +75,6 @@ class InputForm:
         # Сохраняем обновленные параметры
         st.session_state["user_parameters"] = user_params
 
-
-
-
     def _render_group(self, group_name, group_parameters, editable=True):
         """
         Отображает параметры в указанной группе.
@@ -132,47 +129,44 @@ class InputForm:
         Выбор типа сетки (квадратная/треугольная).
         """
         st.subheader("Выберите тип сетки скважин")
-
-        grid_type_default = "square"  # Значение по умолчанию
-
-        # Проверяем наличие grid_type в user_parameters
-        if "grid_type" not in st.session_state["user_parameters"]:
-            st.session_state["user_parameters"]["grid_type"] = grid_type_default = "square"
-            st.sidebar.warning("Тип сетки не был указан. Установлено значение по умолчанию: Квадратная.")
-            self.logs_manager.add_log(
-                module="data_input",
-                event="Тип сетки задан по умолчанию - Квадратная",
-                log_type="warning"
-            )
-        else:
-            grid_type_default = st.session_state["user_parameters"]["grid_type"]
-
+    
+        # Проверяем, установлен ли grid_type в session_state
+        grid_type_default = st.session_state["user_parameters"].get("grid_type", "square")
+    
         # Выбор типа сетки пользователем
-        st.session_state["user_parameters"]["grid_type"] = st.radio(
+        new_grid_type = st.radio(
             label="Тип сетки",
             options=["square", "triangular"],
             index=0 if grid_type_default == "square" else 1,
             format_func=lambda x: "Квадратная" if x == "square" else "Треугольная"
         )
+    
+        # Обновляем состояние, если значение изменилось
+        if new_grid_type != st.session_state["user_parameters"].get("grid_type"):
+            st.session_state["user_parameters"]["grid_type"] = new_grid_type
+            self.logs_manager.add_log(
+                module="input_form",
+                event=f"Тип сетки изменён пользователем: {'Квадратная' if new_grid_type == 'square' else 'Треугольная'}",
+                log_type="info"
+            )
 
     def render_control_buttons(self):
         """
-        Отображение кнопок управления параметрами с проверкой изменений.
+        Отображение кнопки управления параметрами с проверкой изменений.
         """
         st.subheader("Управление параметрами")
-        col1, col2 = st.columns(2)
-
+    
         if st.button("Утвердить параметры"):
-            # Перебираем все группы и параметры
-            for group_name, group_params in st.session_state["parameters"].items():
-                for param_name, param_details in group_params.items():
-                    # Получаем значение из формы ввода
-                    form_key = f"{group_name}_{param_name}"
-                    if form_key in st.session_state:
-                        input_value = st.session_state[form_key]
-                        # Сохраняем в user_parameters
-                        st.session_state["user_parameters"][group_name][param_name] = input_value
-            
+            # Сохранение выбора типа сетки
+            selected_grid_type = st.session_state["user_parameters"].get("grid_type", "square")
+            st.session_state["user_parameters"]["grid_type"] = selected_grid_type
+    
+            self.logs_manager.add_log(
+                module="input_form",
+                event=f"Параметры утверждены, тип сетки: {'Квадратная' if selected_grid_type == 'square' else 'Треугольная'}",
+                log_type="success"
+            )
+    
             # Статусное сообщение
-            st.session_state["status_message"] = "Параметры утверждены."
+            st.sidebar.success(f"✅ Параметры сохранены. Выбран тип сетки: {'Квадратная' if selected_grid_type == 'square' else 'Треугольная'}")
             st.sidebar.success(st.session_state["status_message"])
