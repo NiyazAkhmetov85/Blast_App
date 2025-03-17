@@ -57,28 +57,33 @@ class DataInput:
         Экран для ввода параметров и выбора сетки скважин.
         """
         st.header("Ввод параметров и выбор сетки")
-    
+
         # Проверяем наличие имени блока
-        block_name = st.session_state.get("block_name")
-    
-    
-        # Проверяем статус загруженного блока
+        block_name = st.session_state.get("block_name", "Неизвестный блок")
+
         if not block_name or block_name == "Неизвестный блок":
             st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
         else:
             st.info(f"Импортированный блок: **{block_name}**")
-    
+
+        # Добавляем кнопку для отображения всех параметров session_state
+        if st.button("Показать параметры session_state"):
+            self.show_all_session_state()
+
         # Отображаем параметры блока
-        self.input_form.render_parameters_section()
-    
+        self.input_form.render_parameters_section()  
+
         # Выбор типа сетки
-        self.input_form.render_grid_type_selection()  # <-- изменено на публичный метод
-    
+        self.input_form._render_grid_type_selection()  
+
         # Кнопки управления параметрами
         self.input_form.render_control_buttons()
 
-        # if st.button("Показать все параметры session_state"):
-        #     self.input_form.show_all_session_state()  # <-- убедитесь, что метод существует
+    def show_all_session_state(self):
+        """Вывод всех параметров session_state"""
+        st.subheader("Содержимое session_state")
+        for key, value in st.session_state.items():
+            st.write(f"**{key}**: {value}")
 
 
 
