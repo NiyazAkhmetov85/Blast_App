@@ -60,20 +60,26 @@ class DataInput:
     
         # Проверяем наличие имени блока
         block_name = st.session_state.get("block_name")
-            
-        if st.button("Показать все параметры session_state"):
-        self.input_form.show_all_session_state()
     
+        # Кнопка для просмотра всех параметров session_state
+        if st.button("Показать все параметры session_state"):
+            self.input_form.show_all_session_state()  # <-- исправлен отступ
+    
+        # Проверяем статус загруженного блока
         if not block_name or block_name == "Неизвестный блок":
             st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
         else:
             st.info(f"Импортированный блок: **{block_name}**")
+    
+        # Отображаем параметры блока
+        self.input_form.render_parameters_section()
+    
+        # Выбор типа сетки
+        self.input_form.render_grid_type_selection()  # <-- изменено на публичный метод
+    
+        # Кнопки управления параметрами
+        self.input_form.render_control_buttons()
 
-        self.input_form.render_parameters_section()  # Отображаем параметры
-
-        self.input_form._render_grid_type_selection()  # Отображаем выбор сетки
-
-        self.input_form.render_control_buttons()  # Отображаем кнопки управления параметрами
 
 
 
