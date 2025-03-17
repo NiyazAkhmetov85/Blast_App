@@ -1,6 +1,7 @@
 import streamlit as st
 from ui.data_input import DataInput
 from modules.data_initializer import DataInitializer
+from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 
 # ✅ Инициализация менеджеров
