@@ -20,7 +20,7 @@ class InputForm:
 
         self.parameters = st.session_state["user_parameters"]
 
-    def render_parameters_section(self):
+    def _render_parameters_section(self):
         st.subheader("Ввод параметров блока")
 
         for group_name in [
