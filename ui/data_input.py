@@ -70,7 +70,6 @@ class DataInput:
 
         self.input_form._render_grid_type_selection()  # Отображаем выбор сетки
 
-        st.subheader("Управление параметрами")
         self.input_form.render_control_buttons()  # Отображаем кнопки управления параметрами
 
     def show_visualization(self):
