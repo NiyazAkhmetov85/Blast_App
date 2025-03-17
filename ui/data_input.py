@@ -61,9 +61,8 @@ class DataInput:
         # Проверяем наличие имени блока
         block_name = st.session_state.get("block_name")
     
-        # Кнопка для просмотра всех параметров session_state
-        if st.button("Показать все параметры session_state"):
-            self.input_form.show_all_session_state()  # <-- исправлен отступ
+    if st.button("Показать все параметры session_state"):
+        self.input_form.show_all_session_state()  # <-- убедитесь, что метод существует
     
         # Проверяем статус загруженного блока
         if not block_name or block_name == "Неизвестный блок":
