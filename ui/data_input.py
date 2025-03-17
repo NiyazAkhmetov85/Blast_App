@@ -100,6 +100,10 @@ class DataInput:
         st.text(f"Тип сетки: {st.session_state.get('user_parameters', {}).get('grid_type', 'Не указано')}")
 
         # Кнопка запуска расчёта метрик сетки
+        if st.button("Запустить генерацию сетки скважин"):
+            self.grid_generator.generate_grid()
+        
+        # Кнопка запуска расчёта метрик сетки
         if st.button("Запустить расчет метрик"):
             self.grid_generator.calculate_grid_metrics()
 
