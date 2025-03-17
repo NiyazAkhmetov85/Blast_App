@@ -10,3 +10,4 @@ pyarrow
 requests
 toml
 gitpython
+shapely
