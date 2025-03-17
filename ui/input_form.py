@@ -176,17 +176,3 @@ class InputForm:
             # Статусное сообщение
             st.session_state["status_message"] = "Параметры утверждены."
             st.sidebar.success(st.session_state["status_message"])
-
-        if st.button("Вернуть параметры по умолчанию"):
-            # Перебираем параметры по умолчанию и перезаписываем ими user_parameters
-            for group_name, group_params in st.session_state["parameters"].items():
-                for param_name, param_details in group_params.items():
-                    default_value = param_details["default_value"]
-                    st.session_state["user_parameters"][group_name][param_name] = default_value
-                    form_key = f"{group_name}_{param_name}"
-                    if form_key in st.session_state:
-                        st.session_state[form_key] = default_value  # обновляем отображаемые формы ввода                        
-                
-            # Статусное сообщение
-            st.session_state["status_message"] = "Параметры возвращены к значениям по умолчанию."
-            st.sidebar.success(st.session_state["status_message"])
