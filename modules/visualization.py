@@ -12,29 +12,35 @@ class Visualization:
     def plot_block_contour(self):
         contour = st.session_state.get("block_contour")
         block_name = st.session_state.get("block_name", "Не задан")
-
+    
         if contour is None or contour.empty:
             st.sidebar.warning("Контур блока не загружен.")
             self.logs_manager.add_log("visualization", "Контур блока не загружен или пуст.", "warning")
             return
-
+    
+        # Визуализация контура блока
         st.subheader("Визуализация контура блока")
-
+    
         fig, ax = plt.subplots(figsize=(8, 6))
-
+    
+        # Отображаем контур блока
         ax.plot(contour["X"], contour["Y"], marker='o', linestyle='-', color='b', label="Контур блока")
-        ax.fill(contour["X"], contour["Y"], alpha=0.2, color='blue', label="Область блока")
-
+        ax.fill(contour["X"], contour["Y"], alpha=0.2)
+    
+        # Настройки графика
         ax.set_xlabel("Координата X")
         ax.set_ylabel("Координата Y")
-        ax.set_title(f"Карта блока ({block_name})")
+        ax.set_title(f"Контур блока ({block_name})")
         ax.legend()
-
+    
+        # Равный масштаб по осям для корректного отображения
         ax.set_aspect('equal', adjustable='datalim')
-
+    
+        # Отображаем график в Streamlit
         st.pyplot(fig)
         plt.close()
-
+    
+        # Логируем успешное отображение
         st.sidebar.success(f"Отображён контур блока '{block_name}'.")
         self.logs_manager.add_log("visualization", f"Отображён контур блока '{block_name}'.")
 
