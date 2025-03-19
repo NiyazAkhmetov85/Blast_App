@@ -1,6 +1,5 @@
 import streamlit as st
-from modules.reference_parameters import ReferenceParameters
-from modules.reference_calculations import ReferenceCalculations
+from modules.data_input import DataInput
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 
@@ -13,16 +12,15 @@ def show_reference_values():
     session_manager = SessionStateManager()
     logs_manager = LogsManager()
     
-    # ✅ Загружаем параметры
-    reference_params = ReferenceParameters(session_manager, logs_manager)
-    reference_calculations = ReferenceCalculations(session_manager, logs_manager)
+    # ✅ Используем DataInput для работы с параметрами
+    data_input = DataInput(session_manager, logs_manager)
 
     # ✅ Отображаем имя текущего блока
     block_name = session_manager.get_state("current_block", "Не задан")
     st.info(f"**Текущий блок:** `{block_name}`")
 
-    # ✅ Отображаем параметры
-    render_reference_parameters(reference_params)
+    # ✅ Отображаем параметры через DataInput
+    data_input.render_parameters_section(["Эталонные показатели"])
 
     # ✅ Настройка шкалы значений
     st.subheader("📏 Тип шкалы")
@@ -32,53 +30,27 @@ def show_reference_values():
     if scale_type == "Линейная":
         step_size = st.number_input("Введите шаг для линейной шкалы:", min_value=0.1, max_value=10.0, value=1.0, step=0.1)
 
-    # ✅ Кнопки действий с удобным расположением
+    # ✅ Кнопки действий с единым стилем
     col1, col2 = st.columns(2)
 
     with col1:
         if st.button("🔄 Генерировать шкалу", use_container_width=True):
-            reference_calculations.generate_scale(scale_type, step_size)
+            data_input.generate_scale(scale_type, step_size)
             logs_manager.add_log("reference_values", f"Генерирована шкала: {scale_type}, шаг: {step_size}", "успех")
             st.success(f"✅ Шкала {scale_type} успешно создана!")
 
     with col2:
         if st.button("📈 Рассчитать эталонные параметры", use_container_width=True):
-            reference_calculations.calculate_p_x()
-            reference_calculations.update_psd_table()
+            data_input.calculate_p_x()
+            data_input.update_psd_table()
             logs_manager.add_log("reference_values", "Выполнен пересчет эталонных значений", "успех")
             st.success("✅ Эталонные значения пересчитаны!")
 
     # ✅ Утверждение параметров
     if st.button("✅ Утвердить параметры", use_container_width=True):
-        reference_params.confirm_parameters()
+        data_input.confirm_parameters()
         logs_manager.add_log("reference_values", "Параметры утверждены", "успех")
         st.success("✅ Параметры утверждены!")
-
-def render_reference_parameters(reference_params):
-    """
-    Отображает эталонные параметры и позволяет их редактировать.
-    """
-    st.subheader("📝 Эталонные параметры")
-
-    # ✅ Загружаем параметры
-    ref_values = reference_params.get_reference_values()
-
-    if not ref_values:
-        st.warning("⚠ Эталонные значения не загружены.")
-        return
-
-    updated_values = {}
-    for category, params in ref_values.items():
-        with st.expander(f"📌 {category}", expanded=False):
-            for param, value in params.items():
-                updated_values[f"{category}_{param}"] = st.number_input(
-                    f"{param}", value=value, key=f"ref_{category}_{param}"
-                )
-
-    # ✅ Сохранение обновленных значений
-    if st.button("💾 Сохранить изменения", use_container_width=True):
-        reference_params.update_values(updated_values)
-        st.success("✅ Эталонные параметры обновлены!")
 
 
 
