@@ -25,7 +25,45 @@ class ReferenceCalculations:
         if "psd_table" not in st.session_state:
             st.session_state["psd_table"] = {}
 
+    def render_scale_type_selection(self):
+        """
+        Выбор типа шкалы (логарифмическая/линейная) с возможностью задания шага для линейной шкалы.
+        """
+        st.subheader("Выберите тип шкалы")
+    
+        # Проверяем, установлен ли scale_type в session_state
+        scale_type_default = st.session_state.get("scale_type", "Логарифмическая")
+    
+        # Выбор типа шкалы пользователем
+        new_scale_type = st.radio(
+            label="Тип шкалы",
+            options=["Логарифмическая", "Линейная"],
+            index=0 if scale_type_default == "Логарифмическая" else 1
+        )
+    
+        # Если выбрана линейная шкала – отображаем ввод шага
+        if new_scale_type == "Линейная":
+            step_size_default = st.session_state.get("linear_step_size", 1.0)
+            new_step_size = st.number_input(
+                label="Шаг для линейной шкалы",
+                min_value=0.1,
+                max_value=10.0,
+                value=step_size_default,
+                step=0.1
+            )
+            # Обновляем шаг в session_state
+            st.session_state["linear_step_size"] = new_step_size
+    
+        # Обновляем тип шкалы в session_state
+        if new_scale_type != st.session_state.get("scale_type"):
+            st.session_state["scale_type"] = new_scale_type
+            self.logs_manager.add_log(
+                module="reference_calculations",
+                event=f"Тип шкалы изменён пользователем: {new_scale_type}",
+                log_type="info"
+            )
 
+    
     def generate_scale(self):
         """
         Генерация шкалы x_values в зависимости от типа шкалы.
@@ -171,7 +209,6 @@ class ReferenceCalculations:
             self.logs_manager.add_log("reference_calculations", f"Ошибка при расчете P(x): {str(e)}", "ошибка")
             st.error(f"Ошибка при расчете P(x): {e}")
 
-
     def update_psd_table(self):
         """
         Обновляет таблицу PSD в session_state.
@@ -218,5 +255,3 @@ class ReferenceCalculations:
         except Exception as e:
             self.logs_manager.add_log("reference_calculations", f"Ошибка при обновлении PSD: {str(e)}", "ошибка")
             st.error(f"Ошибка при обновлении PSD: {e}")
-
-
