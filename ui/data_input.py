@@ -24,20 +24,16 @@ class DataInput:
         # 🔹 Загрузчик файла (доступен сразу, без кнопки)
         uploaded_file = st.file_uploader("Выберите файл с контуром блока", type=["str", "csv", "txt"])
     
-        # 🔹 Если файл загружен, выполняем обработку
+        # 🔹 Если файл загружен, выполняем обработку          
         if uploaded_file is not None:
             self.data_processor.load_block_contour(uploaded_file)
+            st.session_state["show_file_uploader"] = False  # Скрываем загрузчик после загрузки
 
-            
-            if uploaded_file is not None:
-                self.data_processor.load_block_contour(uploaded_file)
-                st.session_state["show_file_uploader"] = False  # Скрываем загрузчик после загрузки
-
-                    # Отображение загруженного DataFrame
-                if "block_contour" in st.session_state and not st.session_state["block_contour"].empty:
-                    df = st.session_state["block_contour"]
-                    st.subheader("Просмотр загруженных данных")
-                    st.write(df)
+                # Отображение загруженного DataFrame
+            if "block_contour" in st.session_state and not st.session_state["block_contour"].empty:
+                df = st.session_state["block_contour"]
+                st.subheader("Просмотр загруженных данных")
+                st.write(df)
  
 
         # Кнопка визуализации блока
