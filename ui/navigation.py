@@ -34,17 +34,59 @@ def reload_parameters():
     # if message not in st.session_state["status_messages"]:
     #     st.session_state["status_messages"].append(message)
 
-def show_sidebar():
-    """
-    Отображение боковой панели с кнопками и сообщениями.
-    """
-    st.sidebar.button("Перезагрузить параметры", on_click=reload_parameters)
+# def show_sidebar():
+#     """
+#     Отображение боковой панели с кнопками и сообщениями.
+#     """
+#     st.sidebar.button("Перезагрузить параметры", on_click=reload_parameters)
 
     # # Контейнер для сообщений в боковой панели
     # message_container = st.sidebar.empty()
     # with message_container:
     #     for msg in st.session_state.get("status_messages", []):
     #         st.sidebar.success(msg)
+
+
+    def show_sidebar():
+        """
+        Отображение боковой панели с кнопками и логами.
+        """
+        st.sidebar.button("🔄 Перезагрузить параметры", on_click=reload_parameters)
+    
+        # 🔹 Кнопка для отображения логов
+        if st.sidebar.button("📜 Показать логи"):
+            show_logs()
+
+
+    def show_logs():
+        """
+        Отображает логи сообщений в боковой панели.
+        """
+        logs = st.session_state.get("logs", [])
+    
+        if not logs:
+            st.sidebar.warning("⚠ Логи отсутствуют.")
+            return
+    
+        st.sidebar.subheader("📜 Логи сообщений")
+    
+        # 🔹 Отображаем последние 10 записей (можно изменить лимит)
+        for log in logs[-10:]:
+            timestamp = log.get("timestamp", "N/A")
+            module = log.get("module", "N/A")
+            event = log.get("event", "N/A")
+            log_type = log.get("log_type", "info")
+    
+            # Форматируем вывод в зависимости от типа лога
+            if log_type == "успех":
+                st.sidebar.success(f"🟢 [{timestamp}] {module}: {event}")
+            elif log_type == "ошибка":
+                st.sidebar.error(f"🔴 [{timestamp}] {module}: {event}")
+            elif log_type == "предупреждение":
+                st.sidebar.warning(f"🟡 [{timestamp}] {module}: {event}")
+            else:
+                st.sidebar.info(f"🔵 [{timestamp}] {module}: {event}")
+
 
 def navigation():
     """
