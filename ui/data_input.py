@@ -117,48 +117,6 @@ class DataInput:
         if st.button("Очистить визуализацию"):
             self.visualizer.clear_visualization()
 
-    def show_summary_screen(self):
-        """
-        Экран итогового обзора перед переходом к следующим разделам.
-        """
-        st.title("Итоговый обзор блока")
-
-        # Отображение имени импортированного блока
-        block_name = st.session_state.get("block_name", "Не импортирован")
-        st.subheader(f"Импортированный блок: {block_name}")
-
-        # Отображение утвержденных параметров блока
-        if "user_parameters" in st.session_state:
-            st.subheader("Утвержденные параметры блока")
-            for group, params in st.session_state["user_parameters"].items():
-                st.write(f"**{group}:**")
-                for param, value in params.items():
-                    st.write(f"- {param}: `{value}`")
-
-        # Отображение рассчитанных метрик сетки
-        if "grid_data" in st.session_state and not st.session_state["grid_data"].empty:
-            st.subheader("Рассчитанные метрики сетки")
-            grid_data = st.session_state["grid_data"]
-            st.write(f"- **Количество скважин:** {len(grid_data)}")
-
-            # Если в session_state есть расчетные метрики, отображаем их
-            if "block_geometry" in st.session_state:
-                st.write("**Геометрия блока:**")
-                for key, value in st.session_state["block_geometry"].items():
-                    st.write(f"- {key}: `{value}`")
-
-        # Визуализация блока и сетки
-        if "block_contour" in st.session_state and "grid_data" in st.session_state:
-            st.subheader("Визуализация блока и сетки")
-            self.visualizer.display_combined_visualization()
-
-        # Кнопка для перехода к следующим разделам
-        st.markdown("---")
-        if st.button("Перейти к следующим разделам"):
-            st.session_state["current_screen"] = "results_summary"
-            logs_manager.add_log("summary_screen", "Пользователь завершил проверку и перешел к расчетам.", "информация")
-            st.experimental_rerun()
-
 # Пример использования
 if __name__ == "__main__":
     session_manager = SessionStateManager()
