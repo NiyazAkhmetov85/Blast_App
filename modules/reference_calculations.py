@@ -33,115 +33,114 @@ class ReferenceCalculations:
         try:
             # Очистка предыдущих значений шкалы
             st.session_state.pop("x_values", None)
-
-            ref_vals = st.session_state.get("conf_ref_vals", {})
-            if not isinstance(ref_vals, dict):
-                st.error("Ошибка: conf_ref_vals имеет неверный формат.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: conf_ref_vals имеет неверный формат.", log_type="ошибка")
+    
+            # Проверка наличия параметров
+            params = st.session_state.get("parameters", {})
+            if not params:
+                st.error("Ошибка: параметры не загружены.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
                 return
-
-            min_x = ref_vals.get("x_range_min")
-            max_x = ref_vals.get("target_x_max")
-            self.scale_type = st.session_state.get("scale_type", "Линейная")  # По умолчанию линейная шкала
-            step_size = st.session_state.get("linear_step_size", None)
-
+    
+            # Получение значений min_x и max_x
+            min_x = params.get("x_range_min", {}).get("default_value")
+            max_x = params.get("target_x_max", {}).get("default_value")
+            step_size = st.session_state.get("linear_step_size", 1.0)  # Значение по умолчанию
+            scale_type = st.session_state.get("scale_type", "Линейная")  # Значение по умолчанию
+    
+            # Проверка корректности значений
             if min_x is None or max_x is None:
-                st.error("Ошибка: отсутствуют значения min_x или max_x.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: отсутствуют значения x_range_min или target_x_max.", log_type="ошибка")
+                st.error("Ошибка: отсутствуют значения x_range_min или target_x_max.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют x_range_min или target_x_max.", "ошибка")
                 return
-
+    
             if min_x >= max_x:
                 st.error("Ошибка: x_range_min должно быть меньше target_x_max.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: x_range_min >= target_x_max.", log_type="ошибка")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: x_range_min >= target_x_max.", "ошибка")
                 return
-
-            # Проверка шага линейной шкалы
-            if self.scale_type == "Линейная":
-                if step_size is None or not isinstance(step_size, (int, float)) or step_size <= 0:
-                    st.warning("⚠ Шаг линейной шкалы не задан или некорректен. Используется значение по умолчанию: 1.")
-                    step_size = 1  # Устанавливаем значение по умолчанию
-                    self.logs_manager.add_log(module="reference_calculations", event="Шаг линейной шкалы не был задан или некорректен. Установлено значение по умолчанию: 1.", log_type="предупреждение")
-
-            # Генерация шкалы в зависимости от типа
-            if self.scale_type == "Логарифмическая":
+    
+            if scale_type == "Линейная" and (not isinstance(step_size, (int, float)) or step_size <= 0):
+                st.warning("⚠ Некорректный шаг линейной шкалы. Используется значение по умолчанию: 1.0")
+                step_size = 1.0
+                self.logs_manager.add_log("reference_calculations", "Шаг линейной шкалы был некорректен, установлено значение 1.0.", "предупреждение")
+    
+            # Генерация шкалы
+            if scale_type == "Логарифмическая":
                 x_values = np.logspace(np.log10(min_x), np.log10(max_x), num=50)
-                self.logs_manager.add_log(module="reference_calculations", event=f"Сгенерирована логарифмическая шкала (min_x={min_x}, max_x={max_x}).", log_type="успех")
-
-            elif self.scale_type == "Линейная":
+                self.logs_manager.add_log("reference_calculations", f"Сгенерирована логарифмическая шкала (min_x={min_x}, max_x={max_x}).", "успех")
+    
+            elif scale_type == "Линейная":
                 x_values = np.arange(min_x, max_x + step_size, step_size)
-                self.logs_manager.add_log(module="reference_calculations", event=f"Сгенерирована линейная шкала (min_x={min_x}, max_x={max_x}, step_size={step_size}).", log_type="успех")
-
+                self.logs_manager.add_log("reference_calculations", f"Сгенерирована линейная шкала (min_x={min_x}, max_x={max_x}, step_size={step_size}).", "успех")
+    
             else:
                 st.error("Ошибка: неизвестный тип шкалы.")
-                self.logs_manager.add_log(module="reference_calculations", event=f"Ошибка: неизвестный тип шкалы {self.scale_type}.", log_type="ошибка")
+                self.logs_manager.add_log("reference_calculations", f"Ошибка: неизвестный тип шкалы {scale_type}.", "ошибка")
                 return
-
-            # Проверка, была ли шкала успешно сгенерирована
+    
+            # Проверка, что шкала успешно создана
             if len(x_values) == 0:
                 st.error("Ошибка: шкала x_values пустая.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: шкала x_values пустая.", log_type="ошибка")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: шкала x_values пустая.", "ошибка")
                 return
-
+    
             # Сохранение шкалы в session_state
             st.session_state["x_values"] = x_values
-
-            # Логирование успешного выполнения и информации о шкале
-            st.success(f"Шкала {self.scale_type} успешно сгенерирована!")
-            self.logs_manager.add_log(module="reference_calculations", event=f"Шкала x_values успешно сгенерирована. Тип: {self.scale_type}, Шаг: {step_size if self.scale_type == 'Линейная' else 'N/A'}.", log_type="успех")
-
+    
+            # Логирование успешного выполнения
+            st.success(f"Шкала {scale_type} успешно сгенерирована!")
+            self.logs_manager.add_log("reference_calculations", f"Шкала успешно создана. Тип: {scale_type}, Шаг: {step_size if scale_type == 'Линейная' else 'N/A'}.", "успех")
+    
         except Exception as e:
-            self.logs_manager.add_log(module="reference_calculations", event=f"Ошибка при генерации шкалы: {str(e)}", log_type="ошибка")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка при генерации шкалы: {str(e)}", "ошибка")
             st.error(f"Ошибка при генерации шкалы: {e}")
+
 
     def calculate_p_x(self):
         """
-        Расчет эталонных значений P(x).
+        Расчет эталонных значений P(x) на основе загруженных параметров.
         """
         try:
             # Очистка предыдущих данных P(x)
             st.session_state.pop("P_x_data", None)
-
-            if "x_values" not in st.session_state:
-                st.error("Ошибка: x_values не сгенерированы. Сначала выполните generate_scale().")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: x_values не сгенерированы перед расчетом P(x).", log_type="ошибка")
+    
+            # Проверка наличия шкалы x_values
+            x_values = st.session_state.get("x_values")
+            if not x_values or len(x_values) == 0:
+                st.error("Ошибка: шкала x_values отсутствует. Сначала выполните generate_scale().")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: x_values отсутствуют перед расчетом P(x).", "ошибка")
                 return
-
-            x_values = st.session_state["x_values"]
-            if len(x_values) == 0:
-                st.error("Ошибка: x_values пуст, расчёт P(x) невозможен.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: x_values пуст.", log_type="ошибка")
+    
+            # Проверка наличия параметров в session_state
+            params = st.session_state.get("parameters", {})
+            if not params:
+                st.error("Ошибка: параметры не загружены.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
                 return
-
-            ref_vals = st.session_state.get("conf_ref_vals", {})
-
-            if not isinstance(ref_vals, dict):
-                st.error("Ошибка: conf_ref_vals имеет неверный формат.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: conf_ref_vals имеет неверный формат.", log_type="ошибка")
-                return
-
-            x_max = ref_vals.get("target_x_max")
-            x_50 = ref_vals.get("target_x_50")
-            b = ref_vals.get("target_b")
-
-            # Проверяем, заданы ли все необходимые параметры
+    
+            # Получаем необходимые параметры
+            x_max = params.get("target_x_max", {}).get("default_value")
+            x_50 = params.get("target_x_50", {}).get("default_value")
+            b = params.get("target_b", {}).get("default_value")
+    
+            # Проверка, что параметры не пустые
             if None in (x_max, x_50, b):
-                st.error("Ошибка: отсутствуют эталонные параметры для расчета P(x).")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: отсутствуют x_max, x_50 или b перед расчетом P(x).", log_type="ошибка")
+                st.error("Ошибка: отсутствуют обязательные параметры target_x_max, target_x_50 или target_b.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют x_max, x_50 или b перед расчетом P(x).", "ошибка")
                 return
-
+    
             # Проверяем, что параметры являются числами
             if not all(isinstance(val, (int, float)) for val in [x_max, x_50, b]):
-                st.error("Ошибка: x_max, x_50 и b должны быть числами.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: x_max, x_50 и b должны быть числами.", log_type="ошибка")
+                st.error("Ошибка: target_x_max, target_x_50 и target_b должны быть числами.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: target_x_max, target_x_50 и target_b должны быть числами.", "ошибка")
                 return
-
-            # Проверяем, что x_50 < x_max (иначе log(x_max / x_50) = 0, деление на 0)
+    
+            # Проверяем, что x_50 < x_max
             if x_50 >= x_max:
                 st.error("Ошибка: target_x_50 должно быть меньше target_x_max.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: target_x_50 >= target_x_max.", log_type="ошибка")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: target_x_50 >= target_x_max.", "ошибка")
                 return
-
-            # Расчет P(x) по заданной формуле
+    
+            # Расчет P(x) по формуле
             p_x_values = []
             for x in x_values:
                 if x > x_max:  # Пропускаем некорректные значения
@@ -150,26 +149,28 @@ class ReferenceCalculations:
                     p_x = 1 / (1 + (np.log(x_max / x) / np.log(x_max / x_50)) ** b)
                     p_x_values.append((x, p_x * 100))
                 except ZeroDivisionError:
-                    self.logs_manager.add_log(module="reference_calculations", event=f"Ошибка деления на 0 при расчете P(x) для x={x}.", log_type="ошибка")
-
-            # Проверка, что после фильтрации есть данные
+                    self.logs_manager.add_log("reference_calculations", f"Ошибка деления на 0 при расчете P(x) для x={x}.", "ошибка")
+    
+            # Проверяем, что после фильтрации остались значения
             if len(p_x_values) == 0:
                 st.error("Ошибка: после фильтрации не осталось допустимых значений P(x).")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: после фильтрации пустая таблица P(x).", log_type="ошибка")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: после фильтрации пустая таблица P(x).", "ошибка")
                 return
-
+    
+            # Создаем DataFrame
             df = pd.DataFrame(p_x_values, columns=["Размер фрагмента (x), мм", "Эталонные P(x), %"])
-
-            # Сохранение данных в session_state
+    
+            # Сохраняем данные в session_state
             st.session_state["P_x_data"] = df
-
-            # Логирование успешного выполнения расчета
-            self.logs_manager.add_log(module="reference_calculations", event=f"Эталонные P(x) успешно рассчитаны. Количество значений: {len(df)}", log_type="успех")
+    
+            # Логируем успешный расчет
+            self.logs_manager.add_log("reference_calculations", f"Эталонные P(x) успешно рассчитаны. Количество значений: {len(df)}", "успех")
             st.success(f"Эталонные P(x) успешно рассчитаны! Количество значений: {len(df)}")
-
+    
         except Exception as e:
-            self.logs_manager.add_log(module="reference_calculations", event=f"Ошибка при расчете P(x): {str(e)}", log_type="ошибка")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка при расчете P(x): {str(e)}", "ошибка")
             st.error(f"Ошибка при расчете P(x): {e}")
+
 
     def update_psd_table(self):
         """
@@ -178,36 +179,44 @@ class ReferenceCalculations:
         try:
             # Очистка предыдущих данных таблицы PSD
             st.session_state.pop("psd_table", None)
-
-            if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
+    
+            # Проверяем наличие данных P_x_data
+            df = st.session_state.get("P_x_data")
+    
+            if df is None or df.empty:
                 st.error("Ошибка: нет данных для обновления таблицы PSD.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: отсутствуют данные P_x_data для обновления PSD.", log_type="ошибка")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
                 return
-
-            df = st.session_state["P_x_data"]
-
-            # Проверяем, не пуст ли DataFrame
-            if df.empty:
-                st.error("Ошибка: данные в таблице PSD пусты.")
-                self.logs_manager.add_log(module="reference_calculations", event="Ошибка: Таблица PSD пустая, обновление невозможно.", log_type="ошибка")
+    
+            # Проверяем, содержатся ли необходимые колонки
+            required_columns = {"Размер фрагмента (x), мм", "Эталонные P(x), %"}
+            if not required_columns.issubset(df.columns):
+                st.error("Ошибка: данные P_x_data имеют неверный формат.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: неверный формат данных P_x_data при обновлении PSD.", "ошибка")
                 return
-
+    
+            # Сортировка данных по возрастанию размера фрагментов
+            df = df.sort_values(by="Размер фрагмента (x), мм").reset_index(drop=True)
+    
             # Обновляем session_state
             st.session_state["psd_table"] = df
-
+    
             # Вывод данных пользователю
             st.write("### Эталонная таблица PSD")
             st.dataframe(df)
-
+    
             # Логирование успешного обновления таблицы
-            self.logs_manager.add_log(module="reference_calculations", 
-                                    event=f"Таблица PSD обновлена. Количество записей: {len(df)}.", 
-                                    log_type="успех")
-
+            self.logs_manager.add_log(
+                "reference_calculations",
+                f"Таблица PSD обновлена. Количество записей: {len(df)}.",
+                "успех"
+            )
+    
             # Вывод подтверждения пользователю
-            st.success("Таблица PSD успешно обновлена!")
-
+            st.success("✅ Таблица PSD успешно обновлена!")
+    
         except Exception as e:
-            self.logs_manager.add_log(module="reference_calculations", event=f"Ошибка при обновлении PSD: {str(e)}", log_type="ошибка")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка при обновлении PSD: {str(e)}", "ошибка")
             st.error(f"Ошибка при обновлении PSD: {e}")
+
 
