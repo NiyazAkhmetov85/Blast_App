@@ -8,8 +8,6 @@ class RefValues:
         self.logs_manager = logs_manager
         self.data_processor = DataProcessing(session_manager, logs_manager)
         self.grid_generator = GridGenerator(session_manager, logs_manager)
-        self.visualizer = Visualization(session_manager, logs_manager)
-        self.input_form = InputForm(session_manager, logs_manager)
 
     def show_reference_values():
         """
