@@ -61,5 +61,3 @@ class DataInitializer:
         st.session_state["parameters"] = {}  # Очистка перед загрузкой
         st.session_state["parameters_loaded"] = False  # Сбрасываем флаг
         self.load_default_parameters()
-        st.sidebar.success("Параметры успешно перезагружены!")
-        self.logs_manager.add_log("data_initializer", "Параметры успешно перезагружены", "успех")
