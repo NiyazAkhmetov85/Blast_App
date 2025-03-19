@@ -130,13 +130,9 @@ class DataInput:
         """
         st.title("Итоговый обзор блока")
     
-        # Проверяем наличие имени блока
-        block_name = st.session_state.get("block_name", "Неизвестный блок")
-
-        if not block_name or block_name == "Неизвестный блок":
-            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
-        else:
-            st.info(f"Импортированный блок: **{block_name}**")
+        # Отображение имени импортированного блока
+        block_name = st.session_state.get("block_name", "Не импортирован")
+        st.subheader(f"Импортированный блок: {block_name}")
     
         # Проверка наличия параметров
         if "user_parameters" in st.session_state and st.session_state["user_parameters"]:
@@ -149,7 +145,10 @@ class DataInput:
                     if isinstance(params, dict):
                         st.write(f"**{group}:**")
                         for param, value in params.items():
-                            st.write(f"- {param}: `{value}`")
+                            if isinstance(value, dict) and "value" in value and "description" in value:
+                                st.write(f"- {param}: `{value['value']}` ({value['description']})")
+                            else:
+                                st.write(f"- {param}: `{value}`")
                     else:
                         st.write(f"- {group}: `{params}`")  # Если структура плоская
             else:
@@ -157,7 +156,7 @@ class DataInput:
     
         else:
             st.warning("⚠ Нет утвержденных параметров для отображения.")
-
+    
 
 
 # Пример использования
