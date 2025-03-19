@@ -36,9 +36,24 @@ class RefValues:
             self.logs_manager.add_log("reference_values", "Эталонные параметры утверждены пользователем.", "успех")
             st.success("✅ Параметры утверждены!")
 
+        # # ✅ Генерация шкалы
+        # if st.button("🔄 Генерировать шкалу"):
+        #     self.reference_calculations.generate_scale()
+
         # ✅ Генерация шкалы
         if st.button("🔄 Генерировать шкалу"):
             self.reference_calculations.generate_scale()
+        
+            # Проверяем, была ли шкала успешно создана
+            x_values = st.session_state.get("x_values", None)
+            
+            if x_values is not None and isinstance(x_values, (list, np.ndarray)) and len(x_values) > 0:
+                df_x_values = pd.DataFrame(x_values, columns=["Размер фрагмента (x), мм"])
+                st.subheader("🔍 Сгенерированная шкала x_values")
+                st.dataframe(df_x_values)
+            else:
+                st.warning("⚠ Шкала x_values не была создана или пустая.")
+
 
         # ✅ Расчет эталонных P(x)
         if st.button("📈 Рассчитать эталонные P(x)"):
