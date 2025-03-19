@@ -15,7 +15,6 @@ class DataInput:
         self.visualizer = Visualization(session_manager, logs_manager)
         self.input_form = InputForm(session_manager, logs_manager)
 
-
     def show_import_block(self):
         """
         Экран для импорта и начальной визуализации блока.
@@ -84,9 +83,6 @@ class DataInput:
         st.subheader("Содержимое session_state")
         for key, value in st.session_state.items():
             st.write(f"**{key}**: {value}")
-
-
-
 
 
     def show_visualization(self):
