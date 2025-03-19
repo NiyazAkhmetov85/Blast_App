@@ -139,7 +139,10 @@ class ReferenceCalculations:
         """
         try:
             # Очистка предыдущих данных P(x)
-            st.session_state.pop("P_x_data", None)
+            # st.session_state.pop("P_x_data", None)
+            if "P_x_data" in st.session_state:
+                st.session_state["P_x_data"] = None
+
     
             # Проверка наличия шкалы x_values
             x_values = st.session_state.get("x_values")
@@ -233,7 +236,9 @@ class ReferenceCalculations:
                 return
     
             # Сортировка данных по возрастанию размера фрагментов
-            df = df.sort_values(by="Размер фрагмента (x), мм").reset_index(drop=True)
+            # df = df.sort_values(by="Размер фрагмента (x), мм").reset_index(drop=True)
+            st.session_state["psd_table"] = df.sort_values(by="Размер фрагмента (x), мм").reset_index(drop=True)
+
     
             # Обновляем session_state
             st.session_state["psd_table"] = df
