@@ -7,30 +7,31 @@ class ReferenceParameters:
     Класс для инициализации и управления эталонными параметрами.
     """
 
-    def __init__(self, state_tracker, logs_manager):
-        self.state_tracker = state_tracker
+    def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
+
+        self.session_manager = session_manager
         self.logs_manager = logs_manager
-        self.params = []
 
-        self._initialize_session_state()
-        self._load_reference_parameters()
-
+        # Инициализация пользовательских параметров
+        if "parameters" not in st.session_state:
+            st.session_state["parameters"] = {}
+            
         # Лог успешной загрузки параметров
-        self.logs_manager.add_log(module="ReferenceParameters", event="Эталонные параметры успешно загружены и инициализированы.", log_type="успех")
+            self.logs_manager.add_log(module="ReferenceParameters", event="Эталонные параметры успешно загружены и инициализированы.", log_type="успех")
 
-    def _initialize_session_state(self):
-        """
-        Инициализирует необходимые ключи в session_state.
-        """
-        required_keys = ["parameters", "ref_vals", "conf_ref_vals", "default_parameters"]
+    # def _initialize_session_state(self):
+    #     """
+    #     Инициализирует необходимые ключи в session_state.
+    #     """
+    #     required_keys = ["parameters", "ref_vals", "conf_ref_vals", "default_parameters"]
 
-        # Очищаем старые данные перед инициализацией
-        for key in required_keys:
-            st.session_state.pop(key, None)
-            if key not in st.session_state:
-                st.session_state[key] = {}
+    #     # Очищаем старые данные перед инициализацией
+    #     for key in required_keys:
+    #         st.session_state.pop(key, None)
+    #         if key not in st.session_state:
+    #             st.session_state[key] = {}
 
-        self.logs_manager.add_log(module="ReferenceParameters", event="Инициализация session_state завершена.", log_type="успех")
+    #     self.logs_manager.add_log(module="ReferenceParameters", event="Инициализация session_state завершена.", log_type="успех")
 
     def _load_reference_parameters(self):
         """
