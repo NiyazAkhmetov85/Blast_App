@@ -6,8 +6,8 @@ class RefValues:
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
-        self.data_processor = DataProcessing(session_manager, logs_manager)
-        self.grid_generator = GridGenerator(session_manager, logs_manager)
+        # self.data_processor = DataProcessing(session_manager, logs_manager)
+        # self.grid_generator = GridGenerator(session_manager, logs_manager)
 
     def show_reference_values(self):
         """
