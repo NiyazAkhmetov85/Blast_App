@@ -6,7 +6,7 @@ from utils.logs_manager import LogsManager
 
 from ui.data_input import DataInput
 # from ui.reference_values import ReferenceParameters
-from ui.results_summary import ReferenceCalculations
+# from ui.results_summary import ReferenceCalculations
 
 # ✅ Инициализация менеджеров
 session_manager = SessionStateManager()
