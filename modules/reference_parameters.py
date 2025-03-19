@@ -19,19 +19,7 @@ class ReferenceParameters:
         # Лог успешной загрузки параметров
             self.logs_manager.add_log(module="ReferenceParameters", event="Эталонные параметры успешно загружены и инициализированы.", log_type="успех")
 
-    # def _initialize_session_state(self):
-    #     """
-    #     Инициализирует необходимые ключи в session_state.
-    #     """
-    #     required_keys = ["parameters", "ref_vals", "conf_ref_vals", "default_parameters"]
 
-    #     # Очищаем старые данные перед инициализацией
-    #     for key in required_keys:
-    #         st.session_state.pop(key, None)
-    #         if key not in st.session_state:
-    #             st.session_state[key] = {}
-
-    #     self.logs_manager.add_log(module="ReferenceParameters", event="Инициализация session_state завершена.", log_type="успех")
     def render_refparameters_section(self):
         params = st.session_state.get("parameters", {})
         user_params = st.session_state.get("user_parameters", {})
