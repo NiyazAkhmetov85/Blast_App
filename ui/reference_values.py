@@ -18,7 +18,7 @@ class RefValues:
         session_manager = SessionStateManager()
         logs_manager = LogsManager()
         
-        # ✅ Отображаем имя текущего блока
+        # Отображаем имя текущего блока
         # Проверяем наличие имени блока
         block_name = st.session_state.get("block_name", "Неизвестный блок")
     
@@ -27,6 +27,5 @@ class RefValues:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
 
-        # ✅ Создаем объект ReferenceParameters и рендерим параметры
-        ref_params = ReferenceParameters(self.session_manager, self.logs_manager)
-        ref_params.render_refparameters_section()
+        # Отображаем эталонные показатели
+        self.reference_parameters.render_refparameters_section()
