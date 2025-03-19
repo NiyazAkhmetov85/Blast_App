@@ -32,7 +32,112 @@ class ReferenceParameters:
     #             st.session_state[key] = {}
 
     #     self.logs_manager.add_log(module="ReferenceParameters", event="Инициализация session_state завершена.", log_type="успех")
+    def render_refparameters_section(self):
+        params = st.session_state.get("parameters", {})
+        user_params = st.session_state.get("user_parameters", {})
+    
+        # Группировка параметров по категориям, сохраняя порядок из конфигурации
+        categories_order = [
+            "Эталонные показатели"
+        ]
+    
+        for category in categories_order:
+            with st.expander(f"{category}", expanded=False):
+                category_params = [p for p in params.values() if p["category"] == category]
+                
+                for param in category_params:
+                    param_name = param["name"]
+                    default_value = param["default_value"]
+                    min_val = param["min_value"]
+                    max_val = param["max_value"]
+                    description = param["description"]
+                    unit = param["unit"]
+                    param_type = param["type"]
+    
+                    # Получаем сохраненное значение пользователя, если оно есть, иначе - по умолчанию
+                    current_val = user_params.get(param_name, default_value)
+    
+                    # Группа ЛСК - только для чтения
+                    if category == "ЛСК":
+                        st.write(f"**{param_name} ({unit})**: {current_val}")
+                    else:
+                        # Проверка типа параметра для отображения корректного поля ввода
+                        if param_type == "float":
+                            user_input = st.number_input(
+                                f"{description}, {unit}",
+                                value=float(current_val),
+                                min_value=float(min_val),
+                                max_value=float(max_val),
+                                step=0.1
+                            )
+                        elif param_type == "int":
+                            user_input = st.number_input(
+                                f"{description}, {unit}",
+                                value=int(current_val),
+                                min_value=int(min_val),
+                                max_value=int(max_val),
+                                step=1
+                            )
+                        else:
+                            user_input = st.text_input(f"{description}, {unit}", value=str(current_val))
+    
+                        # Сохраняем пользовательское значение обратно в session_state
+                        user_params[param_name] = user_input
+    
+        # Сохраняем обновленные параметры
+        st.session_state["user_parameters"] = user_params
 
+    def _render_refgroup(self, group_name, group_parameters, editable=True):
+        """
+        Отображает параметры в указанной группе.
+        """
+        with st.expander(group_name, expanded=False):
+            for param_key, param in group_parameters.items():
+                if param_key not in st.session_state["parameters"]:
+                    st.warning(f"⚠️ Параметр '{param_key}' отсутствует.")
+                    continue
+    
+                param_value = st.session_state["parameters"][param_key].get("default_value", None)
+                param_type = st.session_state["parameters"][param_key].get("type", "float")
+                min_value = st.session_state["parameters"][param_key].get("min_value", None)
+                max_value = st.session_state["parameters"][param_key].get("max_value", None)
+                unit = st.session_state["parameters"][param_key].get("unit", "")
+    
+                label = f"{param['description']} ({unit})" if unit else param['description']
+    
+                if param_type == "float":
+                    new_value = st.number_input(
+                        label=label,
+                        value=float(param_value) if param_value is not None else 0.0,
+                        min_value=float(min_value) if min_value is not None else None,
+                        max_value=float(max_value) if max_value is not None else None,
+                        step=0.1,
+                        disabled=not editable
+                    )
+                elif param_type == "int":
+                    new_value = st.number_input(
+                        label=label,
+                        value=int(param_value) if param_value is not None else 0,
+                        min_value=int(min_value) if min_value is not None else None,
+                        max_value=int(max_value) if max_value is not None else None,
+                        step=1,
+                        disabled=not editable
+                    )
+                elif param_type == "str":
+                    new_value = st.text_input(
+                        label=label,
+                        value=str(param_value) if param_value is not None else "",
+                        disabled=not editable
+                    )
+                else:
+                    st.error(f"❌ Неизвестный тип параметра: {param_type}")
+    
+                # Обновляем st.session_state["parameters"]
+                if editable:
+                    st.session_state["parameters"][param_key]["default_value"] = new_value    
+
+
+    
     def _load_reference_parameters(self):
         """
         Загружает только параметры категории 'Эталонные показатели' с проверкой корректности.
@@ -136,53 +241,3 @@ class ReferenceParameters:
                 st.session_state["ref_vals"][name] = value
 
             self.logs_manager.add_log(module="ReferenceParameters", event="Эталонные параметры успешно обновлены.", log_type="успех")
-
-    def confirm_parameters(self):
-        """
-        Утверждает эталонные параметры, проверяя их корректность перед сохранением.
-        """
-        if not st.session_state.get("ref_vals"):
-            st.warning("Нет данных для утверждения эталонных параметров.")
-            self.logs_manager.add_log(module="ReferenceParameters", 
-                                    event="Попытка утверждения пустых эталонных параметров.", 
-                                    log_type="ошибка")
-            return
-
-        # Проверка x_range_min < target_x_max перед сохранением
-        x_range_min = st.session_state["ref_vals"].get("x_range_min")
-        target_x_max = st.session_state["ref_vals"].get("target_x_max")
-
-        if x_range_min is not None and target_x_max is not None:
-            if x_range_min >= target_x_max:
-                st.warning("Минимальное значение x (x_range_min) должно быть меньше максимального (target_x_max).")
-                self.logs_manager.add_log(module="ReferenceParameters", 
-                                        event=f"Ошибка: x_range_min ({x_range_min}) >= target_x_max ({target_x_max})", 
-                                        log_type="ошибка")
-
-        # Проверка значений перед утверждением
-        invalid_params = []  # Список для хранения ошибок
-
-        for param in st.session_state["ref_vals"]:
-            value = st.session_state["ref_vals"].get(param)
-            if value is None:
-                continue  # Пропускаем параметры без значений
-
-            min_value = next((p["min_value"] for p in self.params if p["name"] == param), None)
-            max_value = next((p["max_value"] for p in self.params if p["name"] == param), None)
-
-            if min_value is not None and max_value is not None and not (min_value <= value <= max_value):
-                invalid_params.append(f"{param}: {value} (допустимо: {min_value}-{max_value})")
-
-        if invalid_params:
-            st.warning("Некоторые параметры выходят за допустимые границы:\n" + "\n".join(invalid_params))
-            self.logs_manager.add_log(
-                module="ReferenceParameters",
-                event=f"Ошибка: параметры выходят за границы: {', '.join(invalid_params)}",
-                log_type="ошибка"
-            )
-            return  # Не сохраняем параметры, если есть ошибки
-
-        # Сохранение утвержденных значений
-        st.session_state["conf_ref_vals"] = st.session_state["ref_vals"].copy()
-        self.logs_manager.add_log(module="ReferenceParameters", event="Эталонные параметры утверждены.", log_type="успех")
-        st.success("Эталонные параметры сохранены!")
