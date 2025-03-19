@@ -9,7 +9,7 @@ class RefValues:
         self.data_processor = DataProcessing(session_manager, logs_manager)
         self.grid_generator = GridGenerator(session_manager, logs_manager)
 
-    def show_reference_values():
+    def show_reference_values(self):
         """
         Экран для работы с эталонными значениями БВР.
         """
