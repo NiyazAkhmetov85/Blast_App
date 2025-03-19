@@ -26,12 +26,11 @@ def reload_parameters():
 
     # Перезагрузка параметров
     data_initializer.reload_parameters()
-    logs_manager.add_log("navigation", "Параметры успешно перезагружены.")
 
-    # Добавляем сообщение о перезагрузке, если оно не было добавлено ранее
-    message = "Параметры успешно перезагружены!"
-    if message not in st.session_state["status_messages"]:
-        st.session_state["status_messages"].append(message)
+    # # Добавляем сообщение о перезагрузке, если оно не было добавлено ранее
+    # message = "Параметры успешно перезагружены!"
+    # if message not in st.session_state["status_messages"]:
+    #     st.session_state["status_messages"].append(message)
 
 def show_sidebar():
     """
@@ -39,11 +38,11 @@ def show_sidebar():
     """
     st.sidebar.button("Перезагрузить параметры", on_click=reload_parameters)
 
-    # Контейнер для сообщений в боковой панели
-    message_container = st.sidebar.empty()
-    with message_container:
-        for msg in st.session_state.get("status_messages", []):
-            st.sidebar.success(msg)
+    # # Контейнер для сообщений в боковой панели
+    # message_container = st.sidebar.empty()
+    # with message_container:
+    #     for msg in st.session_state.get("status_messages", []):
+    #         st.sidebar.success(msg)
 
 def navigation():
     """
