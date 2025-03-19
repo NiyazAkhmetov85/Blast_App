@@ -73,7 +73,7 @@ class ReferenceParameters:
                         user_params[param_name] = user_input
     
         # Сохраняем обновленные параметры
-        st.session_state["user_parameters"] = user_params
+        # st.session_state["user_parameters"] = user_params
 
     def _render_refgroup(self, group_name, group_parameters, editable=True):
         """
