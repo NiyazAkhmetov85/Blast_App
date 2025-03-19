@@ -5,7 +5,7 @@ from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 
 from ui.data_input import DataInput
-from ui.reference_values import ReferenceParameters
+# from ui.reference_values import ReferenceParameters
 from ui.results_summary import ReferenceCalculations
 
 # ✅ Инициализация менеджеров
