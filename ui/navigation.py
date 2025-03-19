@@ -55,13 +55,14 @@ def navigation():
 
     # ✅ Определение вкладок и их обработчиков
     data_input = DataInput(session_manager, logs_manager)
+    reference_values = RefValues(session_manager, logs_manager)
 
     TAB_OPTIONS = {
         "📥 Импорт данных блока": data_input.show_import_block,
         "📋 Ввод параметров": data_input.show_input_form,
         "📊 Визуализация блока": data_input.show_visualization,
         "📜 Итоговые параметры": data_input.show_summary_screen,
-        "📌 Эталонные значения": reference_values.show_reference_values,
+        "📌 Эталонные значения": reference_values.show_reference_values
         # "📈 Итоговые расчеты": show_results_summary
     }
 
