@@ -27,7 +27,6 @@ class DataInput:
         # 🔹 Если файл загружен, выполняем обработку
         if uploaded_file is not None:
             self.data_processor.load_block_contour(uploaded_file)
-            st.success(f"Файл {uploaded_file.name} успешно загружен!")
 
             
             if uploaded_file is not None:
