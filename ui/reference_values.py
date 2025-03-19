@@ -16,41 +16,46 @@ def show_reference_values():
     data_input = DataInput(session_manager, logs_manager)
 
     # ✅ Отображаем имя текущего блока
-    block_name = session_manager.get_state("current_block", "Не задан")
-    st.info(f"**Текущий блок:** `{block_name}`")
+    # Проверяем наличие имени блока
+    block_name = st.session_state.get("block_name", "Неизвестный блок")
 
-    # ✅ Отображаем параметры через DataInput
-    data_input.render_parameters_section(["Эталонные показатели"])
+    if not block_name or block_name == "Неизвестный блок":
+        st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
+    else:
+        st.info(f"Импортированный блок: **{block_name}**")
 
-    # ✅ Настройка шкалы значений
-    st.subheader("📏 Тип шкалы")
-    scale_type = st.radio("Выберите тип шкалы:", ["Логарифмическая", "Линейная"], index=0)
+    # # ✅ Отображаем параметры через DataInput
+    # data_input.render_parameters_section(["Эталонные показатели"])
 
-    step_size = None
-    if scale_type == "Линейная":
-        step_size = st.number_input("Введите шаг для линейной шкалы:", min_value=0.1, max_value=10.0, value=1.0, step=0.1)
+    # # ✅ Настройка шкалы значений
+    # st.subheader("📏 Тип шкалы")
+    # scale_type = st.radio("Выберите тип шкалы:", ["Логарифмическая", "Линейная"], index=0)
 
-    # ✅ Кнопки действий с единым стилем
-    col1, col2 = st.columns(2)
+    # step_size = None
+    # if scale_type == "Линейная":
+    #     step_size = st.number_input("Введите шаг для линейной шкалы:", min_value=0.1, max_value=10.0, value=1.0, step=0.1)
 
-    with col1:
-        if st.button("🔄 Генерировать шкалу", use_container_width=True):
-            data_input.generate_scale(scale_type, step_size)
-            logs_manager.add_log("reference_values", f"Генерирована шкала: {scale_type}, шаг: {step_size}", "успех")
-            st.success(f"✅ Шкала {scale_type} успешно создана!")
+    # # ✅ Кнопки действий с единым стилем
+    # col1, col2 = st.columns(2)
 
-    with col2:
-        if st.button("📈 Рассчитать эталонные параметры", use_container_width=True):
-            data_input.calculate_p_x()
-            data_input.update_psd_table()
-            logs_manager.add_log("reference_values", "Выполнен пересчет эталонных значений", "успех")
-            st.success("✅ Эталонные значения пересчитаны!")
+    # with col1:
+    #     if st.button("🔄 Генерировать шкалу", use_container_width=True):
+    #         data_input.generate_scale(scale_type, step_size)
+    #         logs_manager.add_log("reference_values", f"Генерирована шкала: {scale_type}, шаг: {step_size}", "успех")
+    #         st.success(f"✅ Шкала {scale_type} успешно создана!")
 
-    # ✅ Утверждение параметров
-    if st.button("✅ Утвердить параметры", use_container_width=True):
-        data_input.confirm_parameters()
-        logs_manager.add_log("reference_values", "Параметры утверждены", "успех")
-        st.success("✅ Параметры утверждены!")
+    # with col2:
+    #     if st.button("📈 Рассчитать эталонные параметры", use_container_width=True):
+    #         data_input.calculate_p_x()
+    #         data_input.update_psd_table()
+    #         logs_manager.add_log("reference_values", "Выполнен пересчет эталонных значений", "успех")
+    #         st.success("✅ Эталонные значения пересчитаны!")
+
+    # # ✅ Утверждение параметров
+    # if st.button("✅ Утвердить параметры", use_container_width=True):
+    #     data_input.confirm_parameters()
+    #     logs_manager.add_log("reference_values", "Параметры утверждены", "успех")
+    #     st.success("✅ Параметры утверждены!")
 
 
 
