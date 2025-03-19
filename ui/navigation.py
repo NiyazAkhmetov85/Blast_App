@@ -1,10 +1,12 @@
 import streamlit as st
-from ui.data_input import DataInput
-from ui.reference_values import show_reference_values
-from ui.results_summary import show_results_summary
+
 from modules.data_initializer import DataInitializer
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
+
+from ui.data_input import DataInput
+from ui.reference_values import ReferenceParameters
+from ui.results_summary import ReferenceCalculations
 
 # ✅ Инициализация менеджеров
 session_manager = SessionStateManager()
