@@ -1,10 +1,8 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
-
 from modules.reference_parameters import ReferenceParameters
 from modules.reference_calculations import ReferenceCalculations
 
@@ -14,7 +12,6 @@ class RefValues:
         self.logs_manager = logs_manager
         self.reference_parameters = ReferenceParameters(session_manager, logs_manager)
         self.reference_calculations = ReferenceCalculations(session_manager, logs_manager)
-
 
     def show_reference_values(self):
         """
@@ -32,6 +29,10 @@ class RefValues:
         # ✅ Отображаем эталонные показатели
         self.reference_parameters.render_refparameters_section()
 
+        # ✅ Устанавливаем по умолчанию "Логарифмическую" шкалу
+        if "scale_type" not in st.session_state:
+            st.session_state["scale_type"] = "Логарифмическая"
+
         # ✅ Выбор типа шкалы и шага
         self.reference_calculations.render_scale_type_selection()
 
@@ -40,24 +41,23 @@ class RefValues:
             self.logs_manager.add_log("reference_values", "Эталонные параметры утверждены пользователем.", "успех")
             st.success("✅ Параметры утверждены!")
 
-        # # ✅ Генерация шкалы
-        # if st.button("🔄 Генерировать шкалу"):
-        #     self.reference_calculations.generate_scale()
-
         # ✅ Генерация шкалы
         if st.button("🔄 Генерировать шкалу"):
             self.reference_calculations.generate_scale()
-        
-        # Проверяем, была ли шкала успешно создана
+
+        # ✅ Проверяем, была ли шкала успешно создана
         x_values = st.session_state.get("x_values", None)
-            
+
         if x_values is not None and isinstance(x_values, (list, np.ndarray)) and len(x_values) > 0:
             df_x_values = pd.DataFrame(x_values, columns=["Размер фрагмента (x), мм"])
+            
+            # 🔹 **Сортируем таблицу по убыванию** (от max к min)
+            df_x_values = df_x_values.sort_values(by="Размер фрагмента (x), мм", ascending=False).reset_index(drop=True)
+
             st.subheader("🔍 Сгенерированная шкала x_values")
             st.dataframe(df_x_values)
         else:
             st.warning("⚠ Шкала x_values не была создана или пустая.")
-
 
         # ✅ Расчет эталонных P(x)
         if st.button("📈 Рассчитать эталонные P(x)"):
