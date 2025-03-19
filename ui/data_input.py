@@ -84,7 +84,6 @@ class DataInput:
         for key, value in st.session_state.items():
             st.write(f"**{key}**: {value}")
 
-
     def show_visualization(self):
         """
         Экран для визуализации блока, сетки и метрик.
@@ -122,7 +121,6 @@ class DataInput:
         # Кнопка очистки визуализации
         if st.button("Очистить визуализацию"):
             self.visualizer.clear_visualization()
-
 
     def show_summary_screen(self):
         """
