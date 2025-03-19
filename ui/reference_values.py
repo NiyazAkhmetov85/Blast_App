@@ -1,6 +1,10 @@
+import numpy as np
+import pandas as pd
 import streamlit as st
+
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
+
 from modules.reference_parameters import ReferenceParameters
 from modules.reference_calculations import ReferenceCalculations
 
