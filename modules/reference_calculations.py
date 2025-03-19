@@ -25,17 +25,6 @@ class ReferenceCalculations:
         if "psd_table" not in st.session_state:
             st.session_state["psd_table"] = {}
 
-        # # Проверка и инициализация параметров x_range_min и target_x_max
-        # x_range_min = st.session_state["ref_vals"].get("x_range_min")
-        # target_x_max = st.session_state["ref_vals"].get("target_x_max")
-
-        # if x_range_min is None:
-        #     st.warning("⚠ Параметр 'x_range_min' не задан. Проверьте эталонные значения.")
-        #     self.logs_manager.add_log(module="ReferenceCalculations", event="Параметр 'x_range_min' отсутствует", log_type="предупреждение")
-
-        # if target_x_max is None:
-        #     st.warning("⚠ Параметр 'target_x_max' не задан. Проверьте эталонные значения.")
-        #     self.logs_manager.add_log(module="ReferenceCalculations", event="Параметр 'target_x_max' отсутствует", log_type="предупреждение")
 
     def generate_scale(self):
         """
