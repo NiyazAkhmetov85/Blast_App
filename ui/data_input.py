@@ -21,12 +21,12 @@ class DataInput:
         """
         st.header("Импорт данных блока")
 
-        # Кнопка для запуска загрузки файла
-        if st.button("Импортировать контур блока"):
-            st.session_state["show_file_uploader"] = True  
+        # # Кнопка для запуска загрузки файла
+        # if st.button("Импортировать контур блока"):
+        #     st.session_state["show_file_uploader"] = True  
 
-        # Отображаем загрузчик файла ТОЛЬКО после нажатия кнопки
-        if st.session_state.get("show_file_uploader", False):
+        # # Отображаем загрузчик файла ТОЛЬКО после нажатия кнопки
+        # if st.session_state.get("show_file_uploader", False):
             uploaded_file = st.file_uploader("Выберите файл с контуром блока", type=["str", "csv", "txt"])
             
             if uploaded_file is not None:
