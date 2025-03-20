@@ -239,11 +239,17 @@ class ReferenceCalculations:
     
             # Сортировка данных по убыванию размера фрагментов (от большего к меньшему)
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False).reset_index(drop=True)
+    
+            # Сохраняем в session_state
             st.session_state["psd_table"] = df_sorted
+    
+            # Проверка перед выводом
+            st.write("### Проверка данных перед выводом")
+            st.write(df_sorted)
     
             # Вывод данных пользователю
             st.write("### Эталонная таблица PSD")
-            st.dataframe(df_sorted)
+            st.dataframe(st.session_state["psd_table"])  # Используем данные из session_state
     
             # Логирование успешного обновления таблицы
             self.logs_manager.add_log(
@@ -258,3 +264,4 @@ class ReferenceCalculations:
         except Exception as e:
             self.logs_manager.add_log("reference_calculations", f"Ошибка при обновлении PSD: {str(e)}", "ошибка")
             st.error(f"Ошибка при обновлении PSD: {e}")
+
