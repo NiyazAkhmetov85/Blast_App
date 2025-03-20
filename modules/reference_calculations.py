@@ -237,22 +237,18 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: неверный формат данных P_x_data при обновлении PSD.", "ошибка")
                 return
     
-            # Сортировка данных по возрастанию размера фрагментов
-            # df = df.sort_values(by="Размер фрагмента (x), мм").reset_index(drop=True)
-            st.session_state["psd_table"] = df.sort_values(by="Размер фрагмента (x), мм").reset_index(drop=True)
-
-    
-            # Обновляем session_state
-            st.session_state["psd_table"] = df
+            # Сортировка данных по убыванию размера фрагментов (от большего к меньшему)
+            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False).reset_index(drop=True)
+            st.session_state["psd_table"] = df_sorted
     
             # Вывод данных пользователю
             st.write("### Эталонная таблица PSD")
-            st.dataframe(df)
+            st.dataframe(df_sorted)
     
             # Логирование успешного обновления таблицы
             self.logs_manager.add_log(
                 "reference_calculations",
-                f"Таблица PSD обновлена. Количество записей: {len(df)}.",
+                f"Таблица PSD обновлена. Количество записей: {len(df_sorted)}.",
                 "успех"
             )
     
