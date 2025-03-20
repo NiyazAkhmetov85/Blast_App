@@ -146,7 +146,9 @@ class ReferenceCalculations:
     
             # Проверка наличия шкалы x_values
             x_values = st.session_state.get("x_values")
-            if not x_values or len(x_values) == 0:
+            # if not x_values or len(x_values) == 0:
+            if x_values is None or x_values.size == 0:
+
                 st.error("Ошибка: шкала x_values отсутствует. Сначала выполните generate_scale().")
                 self.logs_manager.add_log("reference_calculations", "Ошибка: x_values отсутствуют перед расчетом P(x).", "ошибка")
                 return
