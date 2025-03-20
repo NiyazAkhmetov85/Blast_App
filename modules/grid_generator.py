@@ -136,6 +136,13 @@ class GridGenerator:
         }
     
         st.session_state["grid_metrics"] = metrics
-    
+
+        # Вывод рассчитанных метрик пользователю
+        if "metrics" in st.session_state:
+            st.write("### Рассчитанные метрики")
+            st.json(st.session_state["metrics"])  # Отображает метрики в удобном формате
+        else:
+            st.warning("Метрики ещё не рассчитаны.")
+  
         self.logs_manager.add_log("grid_generator", "✅ Метрики сетки успешно рассчитаны.")
         st.sidebar.success("✅ Метрики сетки успешно рассчитаны!")
