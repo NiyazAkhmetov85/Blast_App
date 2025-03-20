@@ -41,28 +41,28 @@ class RefValues:
         if st.button("🔄 Генерировать шкалу"):
             self.reference_calculations.generate_scale()
     
-        # ✅ Проверяем и отображаем сгенерированные x_values
-        x_values = st.session_state.get("x_values", None)
-        if x_values is not None and isinstance(x_values, (list, np.ndarray)) and len(x_values) > 0:
-            df_x_values = pd.DataFrame(sorted(x_values, reverse=True), columns=["Размер фрагмента (x), мм"])
-            st.subheader("🔍 Сгенерированная шкала x_values")
-            st.dataframe(df_x_values)
-        else:
-            st.warning("⚠ Шкала x_values не была создана или пустая.")
+            # ✅ Проверяем и отображаем сгенерированные x_values
+            x_values = st.session_state.get("x_values", None)
+            if x_values is not None and isinstance(x_values, (list, np.ndarray)) and len(x_values) > 0:
+                df_x_values = pd.DataFrame(sorted(x_values, reverse=True), columns=["Размер фрагмента (x), мм"])
+                st.subheader("🔍 Сгенерированная шкала x_values")
+                st.dataframe(df_x_values)
+            else:
+                st.warning("⚠ Шкала x_values не была создана или пустая.")
     
         # ✅ Расчет эталонных P(x) (только по кнопке)
         if st.button("📈 Рассчитать эталонные P(x)"):
             self.reference_calculations.calculate_p_x()
     
-        # ✅ Просмотр таблицы PSD и её утверждение (только если P(x) уже рассчитан)
-        if "P_x_data" in st.session_state and st.session_state["P_x_data"] is not None:
-            st.subheader("📊 Итоговые эталонные значения P(x)")
-            st.dataframe(st.session_state["P_x_data"])
-    
-            if st.button("✅ Утвердить шкалу и P(x)"):
-                self.reference_calculations.update_psd_table()
-                st.success("✅ Шкала и эталонные значения утверждены!")
-                self.logs_manager.add_log("reference_values", "Шкала и эталонные значения утверждены пользователем.", "успех")
-        else:
-            st.warning("⚠ Таблица P(x) не была рассчитана. Сначала нажмите '📈 Рассчитать эталонные P(x)'.")
+            # ✅ Просмотр таблицы PSD и её утверждение (только если P(x) уже рассчитан)
+            if "P_x_data" in st.session_state and st.session_state["P_x_data"] is not None:
+                st.subheader("📊 Итоговые эталонные значения P(x)")
+                st.dataframe(st.session_state["P_x_data"])
+        
+                if st.button("✅ Утвердить шкалу и P(x)"):
+                    self.reference_calculations.update_psd_table()
+                    st.success("✅ Шкала и эталонные значения утверждены!")
+                    self.logs_manager.add_log("reference_values", "Шкала и эталонные значения утверждены пользователем.", "успех")
+            else:
+                st.warning("⚠ Таблица P(x) не была рассчитана. Сначала нажмите '📈 Рассчитать эталонные P(x)'.")
 
