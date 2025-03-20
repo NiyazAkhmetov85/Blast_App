@@ -99,9 +99,10 @@ class GridGenerator:
             # ✅ Сохранение сетки в session_state
             st.session_state["grid_data"] = self.grid_data.copy()
     
-            # ✅ Устанавливаем флаг, что сетка сгенерирована
+            # ✅ Устанавливаем флаги, что сетка сгенерирована
             st.session_state["grid_generated"] = True
-    
+            st.session_state["grid_updated"] = True 
+
             self.logs_manager.add_log("GridGenerator", f"Сетка успешно сгенерирована. Количество скважин: {len(self.grid_data)}", "успех")
             st.sidebar.success(f"✅ Сетка успешно сгенерирована! Количество скважин: {len(self.grid_data)}")
 
