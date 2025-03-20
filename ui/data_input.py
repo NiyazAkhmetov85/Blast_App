@@ -29,38 +29,12 @@ class DataInput:
             self.data_processor.load_block_contour(uploaded_file)
             st.session_state["show_file_uploader"] = False  # Скрываем загрузчик после загрузки
 
-            #     # Отображение загруженного DataFrame
-            # if "block_contour" in st.session_state and not st.session_state["block_contour"].empty:
-            #     df = st.session_state["block_contour"]
-            #     st.subheader("Просмотр загруженных данных")
-            #     st.write(df)
-            # Пример данных для демонстрации
-            if "block_contour" not in st.session_state:
-                st.session_state["block_contour"] = pd.DataFrame({
-                    'Column 1': [1, 2, 3],
-                    'Column 2': [4, 5, 6],
-                    'Column 3': [7, 8, 9]
-                })
-            
-            # Применение пользовательского CSS для настройки ширины таблицы
-            st.markdown(
-                """
-                <style>
-                .dataframe {
-                    width: 40%; /* Установите желаемую ширину */
-                    margin: auto; /* Центрирование таблицы */
-                }
-                </style>
-                """,
-                unsafe_allow_html=True
-            )
-            
-            # Отображение загруженного DataFrame
+                # Отображение загруженного DataFrame
             if "block_contour" in st.session_state and not st.session_state["block_contour"].empty:
                 df = st.session_state["block_contour"]
                 st.subheader("Просмотр загруженных данных")
                 st.write(df)
- 
+            
 
         # Кнопка визуализации блока
         if st.button("Визуализировать импортированный блок") and "block_contour" in st.session_state:
