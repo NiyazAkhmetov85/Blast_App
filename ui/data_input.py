@@ -47,7 +47,7 @@ class DataInput:
                 """
                 <style>
                 .dataframe {
-                    width: 70%; /* Установите желаемую ширину */
+                    width: 40%; /* Установите желаемую ширину */
                     margin: auto; /* Центрирование таблицы */
                 }
                 </style>
