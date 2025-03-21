@@ -38,7 +38,7 @@ class ReferenceCalculations:
         # Выбор типа шкалы пользователем
         new_scale_type = st.radio(
             label="Тип шкалы",
-            options=["Линейная", "Логарифмическая"],
+            options=["Линейная","Логарифмическая"],
             index=0 if scale_type_default == "Логарифмическая" else 1
         )
     
