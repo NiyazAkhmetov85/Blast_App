@@ -2,6 +2,8 @@ import streamlit as st
 
 # ✅ Первая команда в Streamlit-приложении
 st.set_page_config(page_title="Blast Optimization App", layout="wide")
+st.image("image.jpg", use_column_width=True)  # Размещает изображение сверху
+
 
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
