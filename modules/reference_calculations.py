@@ -14,8 +14,8 @@ class ReferenceCalculations:
         self.ref_table = None  # Таблица эталонных значений
 
         # Проверка типа шкалы перед инициализацией
-        if "scale_type" not in st.session_state:
-            st.session_state["scale_type"] = "Логарифмическая"  # Установлено по умолчанию
+        # if "scale_type" not in st.session_state:
+        #     st.session_state["scale_type"] = "Логарифмическая"  # Установлено по умолчанию
 
 
         # Инициализация хранилищ данных
@@ -32,14 +32,14 @@ class ReferenceCalculations:
         st.subheader("Выберите тип шкалы")
     
         # Проверяем, установлен ли scale_type в session_state
-        # scale_type_default = st.session_state.get("scale_type", "Логарифмическая")
+        scale_type_default = st.session_state.get("scale_type", "Логарифмическая")
        
     
         # Выбор типа шкалы пользователем
         new_scale_type = st.radio(
             label="Тип шкалы",
             options=["Линейная","Логарифмическая"],
-            index=0 if scale_type_default == "Логарифмическая" else 1
+            index=0 if scale_type == "Логарифмическая" else 1
         )
     
         # Если выбрана линейная шкала – отображаем ввод шага
