@@ -88,33 +88,23 @@ class DataInput:
 
         st.info(f"Тип сетки: {st.session_state.get('user_parameters', {}).get('grid_type', 'Не указано')}")
 
-        # Кнопка запуска генерации сетки скважин
-        if st.button("Запустить генерацию сетки скважин"):
-            self.grid_generator.generate_grid()
-        
-        # Кнопка запуска расчёта метрик сетки
-        if st.button("Запустить расчет метрик"):
-            self.grid_generator.calculate_grid_metrics()
-        # if st.button("Запустить расчет"):
-        #     # Генерация сетки скважин
+        # # Кнопка запуска генерации сетки скважин
+        # if st.button("Запустить генерацию сетки скважин"):
         #     self.grid_generator.generate_grid()
-            
-        #     # Расчёт метрик сетки
+        
+        # # Кнопка запуска расчёта метрик сетки
+        # if st.button("Запустить расчет метрик"):
         #     self.grid_generator.calculate_grid_metrics()
+        if st.button("Запустить генерацию сетки скважин и расчет параметров сетки"):
+            self.grid_generator.generate_grid()
+            self.grid_generator.calculate_grid_metrics()
+            if st.session_state.get("grid_generated", False):
+                st.dataframe(self.grid_generator.grid_data, width=400)
+            
+            if st.session_state.get("grid_metrics"):
+                st.dataframe(st.session_state["grid_metrics"], width=400)
 
-        #     # Отображение таблицы координат скважин
-        #     st.subheader("Координаты скважин")
-        #     df_coordinates = self.grid_generator.get_grid_coordinates()  # Предполагаем, что метод существует
-        #     st.dataframe(df_coordinates, use_container_width=False)
 
-        #     # Отображение рассчитанных метрик
-        #     st.subheader("Рассчитанные метрики")
-        #     df_metrics = self.calculate_grid_metrics()  # Предполагаем, что метод существует
-        #     st.dataframe(df_metrics, use_container_width=False)
-        #     # # Отображение рассчитанных метрик
-        #     # st.subheader("Рассчитанные метрики")
-        #     # df_metrics = self.grid_generator.get_grid_metrics()  # Предполагаем, что метод существует
-        #     # st.dataframe(df_metrics, use_container_width=False)
 
         # Кнопки визуализации
         if st.button("Визуализировать контур блока"):
