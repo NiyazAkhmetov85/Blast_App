@@ -1,8 +1,21 @@
+# import streamlit as st
+
+# # ✅ Первая команда в Streamlit-приложении
+# st.set_page_config(page_title="Blast Optimization App", layout="wide")
+# st.image("image.jpg", use_column_width=True)  # Размещает изображение сверху
+
 import streamlit as st
 
-# ✅ Первая команда в Streamlit-приложении
+# Настройки страницы
 st.set_page_config(page_title="Blast Optimization App", layout="wide")
-st.image("image.jpg", use_column_width=True)  # Размещает изображение сверху
+
+# ✅ Попробуем несколько путей загрузки изображения
+image_path = "images/image.jpeg"  # Убедись, что файл находится здесь
+
+try:
+    st.image(image_path, use_container_width=True)  # Новый параметр вместо `use_column_width`
+except Exception as e:
+    st.error(f"Ошибка загрузки изображения: {e}")
 
 
 from utils.session_state_manager import SessionStateManager
