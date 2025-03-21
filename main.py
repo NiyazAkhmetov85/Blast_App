@@ -1,23 +1,3 @@
-# import streamlit as st
-
-# # ✅ Первая команда в Streamlit-приложении
-# st.set_page_config(page_title="Blast Optimization App", layout="wide")
-# st.image("image.jpg", use_column_width=True)  # Размещает изображение сверху
-
-# import streamlit as st
-
-# # Настройки страницы
-# st.set_page_config(page_title="Blast Optimization App", layout="wide")
-
-# # ✅ Попробуем несколько путей загрузки изображения
-# image_path = "images/image.jpeg"  # Убедись, что файл находится здесь
-
-# try:
-#     st.image(image_path, use_container_width=True)  # Новый параметр вместо `use_column_width`
-# except Exception as e:
-#     st.error(f"Ошибка загрузки изображения: {e}")
-
-
 import streamlit as st
 
 # Устанавливаем настройки страницы
@@ -36,22 +16,6 @@ sidebar_style = f"""
     </style>
 """
 st.markdown(sidebar_style, unsafe_allow_html=True)
-
-from utils.session_state_manager import SessionStateManager
-from utils.logs_manager import LogsManager
-from modules.data_initializer import DataInitializer
-
-st.markdown(
-    """
-    <style>
-    body {
-        zoom: 80%;  /* Уменьшает масштаб до 80% */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 
 # ✅ Инициализация логирования и состояния
 logs_manager = LogsManager()
