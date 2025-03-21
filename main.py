@@ -4,19 +4,38 @@
 # st.set_page_config(page_title="Blast Optimization App", layout="wide")
 # st.image("image.jpg", use_column_width=True)  # Размещает изображение сверху
 
+# import streamlit as st
+
+# # Настройки страницы
+# st.set_page_config(page_title="Blast Optimization App", layout="wide")
+
+# # ✅ Попробуем несколько путей загрузки изображения
+# image_path = "images/image.jpeg"  # Убедись, что файл находится здесь
+
+# try:
+#     st.image(image_path, use_container_width=True)  # Новый параметр вместо `use_column_width`
+# except Exception as e:
+#     st.error(f"Ошибка загрузки изображения: {e}")
+
+
 import streamlit as st
 
-# Настройки страницы
+# Устанавливаем настройки страницы
 st.set_page_config(page_title="Blast Optimization App", layout="wide")
 
-# ✅ Попробуем несколько путей загрузки изображения
-image_path = "images/image.jpeg"  # Убедись, что файл находится здесь
+# ✅ CSS для изменения фона боковой панели
+sidebar_bg_image = "images/image.jpeg"  # Путь к изображению
 
-try:
-    st.image(image_path, use_container_width=True)  # Новый параметр вместо `use_column_width`
-except Exception as e:
-    st.error(f"Ошибка загрузки изображения: {e}")
-
+sidebar_style = f"""
+    <style>
+        [data-testid="stSidebar"] {{
+            background-image: url("file://{sidebar_bg_image}");
+            background-size: cover;
+            background-position: center;
+        }}
+    </style>
+"""
+st.markdown(sidebar_style, unsafe_allow_html=True)
 
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
