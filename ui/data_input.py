@@ -61,9 +61,6 @@ class DataInput:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
 
-        # Добавляем кнопку для отображения всех параметров session_state
-        if st.button("Показать параметры session_state"):
-            self.show_all_session_state()
 
         # Отображаем параметры блока
         self.input_form.render_parameters_section()  
@@ -74,11 +71,6 @@ class DataInput:
         # Кнопки управления параметрами
         self.input_form.render_control_buttons()
 
-    def show_all_session_state(self):
-        """Вывод всех параметров session_state"""
-        st.subheader("Содержимое session_state")
-        for key, value in st.session_state.items():
-            st.write(f"**{key}**: {value}")
 
     def show_visualization(self):
         """
