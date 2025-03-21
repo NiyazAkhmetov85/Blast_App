@@ -107,15 +107,14 @@ class DataInput:
             df_coordinates = self.grid_generator.get_grid_coordinates()  # Предполагаем, что метод существует
             st.dataframe(df_coordinates, use_container_width=False)
 
+            # Отображение рассчитанных метрик
+            st.subheader("Рассчитанные метрики")
+            df_metrics = self.calculate_grid_metrics()  # Предполагаем, что метод существует
+            st.dataframe(df_metrics, use_container_width=False)
             # # Отображение рассчитанных метрик
             # st.subheader("Рассчитанные метрики")
             # df_metrics = self.grid_generator.get_grid_metrics()  # Предполагаем, что метод существует
             # st.dataframe(df_metrics, use_container_width=False)
-
-                # Отображение рассчитанных метрик
-                st.subheader("Рассчитанные метрики")
-                df_metrics = self.calculate_grid_metrics()  # Предполагаем, что метод существует
-                st.dataframe(df_metrics, use_container_width=False)
 
         # Кнопки визуализации
         if st.button("Визуализировать контур блока"):
