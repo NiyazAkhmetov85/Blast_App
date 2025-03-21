@@ -126,7 +126,7 @@ class InputForm:
     
     def render_grid_type_selection(self):
         """
-        Выбор типа сетки (квадратная/треугольная).
+        Выбор типа сетки (треугольная/квадратная).
         """
         st.subheader("Выберите тип сетки скважин")
     
@@ -136,7 +136,7 @@ class InputForm:
         # Выбор типа сетки пользователем
         new_grid_type = st.radio(
             label="Тип сетки",
-            options=["square", "triangular"],
+            options=["triangular","square"],
             index=0 if grid_type_default == "square" else 1,
             format_func=lambda x: "Квадратная" if x == "square" else "Треугольная"
         )
