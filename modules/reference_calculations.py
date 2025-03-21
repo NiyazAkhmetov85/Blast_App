@@ -32,19 +32,13 @@ class ReferenceCalculations:
         st.subheader("Выберите тип шкалы")
     
         # Проверяем, установлен ли scale_type в session_state
-        scale_type_default = st.session_state.get("scale_type", "Логарифмическая")
-
-        st.subheader("Выберите тип сетки скважин")
-    
-        # Проверяем, установлен ли grid_type в session_state
-        grid_type_default = st.session_state["user_parameters"].get("grid_type", "triangular")
-
-        
+        # scale_type_default = st.session_state.get("scale_type", "Логарифмическая")
+       
     
         # Выбор типа шкалы пользователем
         new_scale_type = st.radio(
             label="Тип шкалы",
-            options=["Логарифмическая", "Линейная"],
+            options=["Линейная", "Логарифмическая"],
             index=0 if scale_type_default == "Логарифмическая" else 1
         )
     
