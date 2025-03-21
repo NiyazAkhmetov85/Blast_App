@@ -3,6 +3,18 @@ from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 from modules.data_initializer import DataInitializer
 
+st.markdown(
+    """
+    <style>
+    body {
+        zoom: 80%;  /* Уменьшает масштаб до 80% */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # ✅ Первая команда в Streamlit-приложении
 st.set_page_config(page_title="Blast Optimization App", layout="wide")
 
