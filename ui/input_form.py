@@ -131,7 +131,7 @@ class InputForm:
         st.subheader("Выберите тип сетки скважин")
     
         # Проверяем, установлен ли grid_type в session_state
-        grid_type_default = st.session_state["user_parameters"].get("grid_type", "square")
+        grid_type_default = st.session_state["user_parameters"].get("grid_type", "triangular")
     
         # Выбор типа сетки пользователем
         new_grid_type = st.radio(
