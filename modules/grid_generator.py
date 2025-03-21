@@ -72,6 +72,12 @@ class GridGenerator:
         self.grid_data = pd.DataFrame(grid_points, columns=["X", "Y"])
         self.grid_data.insert(0, "ID", range(1, len(self.grid_data) + 1))
         self.grid_data["H"] = H
+        
+        # Пронумеруем скважины, начиная с 1
+        self.grid_data["ID"] = range(1, len(self.grid_data) + 1)
+        
+        # Переставим колонки так, чтобы ID был первым
+        self.grid_data = self.grid_data[["ID", "X", "Y", "H"]]
 
         st.session_state["grid_data"] = self.grid_data.copy()
         st.session_state["grid_generated"] = True
