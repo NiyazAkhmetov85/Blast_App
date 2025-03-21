@@ -14,8 +14,8 @@ class ReferenceCalculations:
         self.ref_table = None  # Таблица эталонных значений
 
         # Проверка типа шкалы перед инициализацией
-        if "scale_type" not in st.session_state:
-            st.session_state["scale_type"] = "Логарифмическая"  # Установлено по умолчанию
+        # if "scale_type" not in st.session_state:
+        #     st.session_state["scale_type"] = "Логарифмическая"  # Установлено по умолчанию
 
 
         # Инициализация хранилищ данных
@@ -33,6 +33,13 @@ class ReferenceCalculations:
     
         # Проверяем, установлен ли scale_type в session_state
         scale_type_default = st.session_state.get("scale_type", "Логарифмическая")
+
+        st.subheader("Выберите тип сетки скважин")
+    
+        # Проверяем, установлен ли grid_type в session_state
+        grid_type_default = st.session_state["user_parameters"].get("grid_type", "triangular")
+
+        
     
         # Выбор типа шкалы пользователем
         new_scale_type = st.radio(
