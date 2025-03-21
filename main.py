@@ -1,4 +1,8 @@
 import streamlit as st
+
+# ✅ Первая команда в Streamlit-приложении
+st.set_page_config(page_title="Blast Optimization App", layout="wide")
+
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 from modules.data_initializer import DataInitializer
@@ -14,9 +18,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-# ✅ Первая команда в Streamlit-приложении
-st.set_page_config(page_title="Blast Optimization App", layout="wide")
 
 # ✅ Инициализация логирования и состояния
 logs_manager = LogsManager()
