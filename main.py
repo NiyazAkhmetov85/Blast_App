@@ -3,24 +3,6 @@ import streamlit as st
 # Устанавливаем настройки страницы
 st.set_page_config(page_title="Blast Optimization App", layout="wide")
 
-# ✅ CSS для изменения фона боковой панели
-sidebar_bg_image = "images/image.jpeg"  # Путь к изображению
-
-sidebar_style = f"""
-    <style>
-        [data-testid="stSidebar"] {{
-            background-image: url("file://{sidebar_bg_image}");
-            background-size: cover;
-            background-position: center;
-        }}
-    </style>
-"""
-st.markdown(sidebar_style, unsafe_allow_html=True)
-
-# ✅ Инициализация логирования и состояния
-logs_manager = LogsManager()
-session_manager = SessionStateManager()
-data_initializer = DataInitializer(session_manager, logs_manager)
 
 # ✅ Отображение заголовка
 st.title("Blast Optimization App")
