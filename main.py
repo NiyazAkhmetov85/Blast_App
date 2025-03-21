@@ -1,4 +1,4 @@
-import streamlit as st 
+import streamlit as st
 
 # ✅ Первая команда в Streamlit-приложении
 st.set_page_config(page_title="Blast Optimization App", layout="wide")
@@ -6,6 +6,10 @@ st.set_page_config(page_title="Blast Optimization App", layout="wide")
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 from modules.data_initializer import DataInitializer
+
+# ✅ Создание экземпляров менеджеров
+session_manager = SessionStateManager()
+logs_manager = LogsManager()
 
 # ✅ Отображение заголовка
 st.title("Blast Optimization App")
