@@ -104,14 +104,12 @@ class DataInput:
             if st.session_state.get("grid_metrics"):
                 st.dataframe(st.session_state["grid_metrics"], width=400)
 
+        # # Кнопки визуализации
+        # if st.button("Визуализировать контур блока"):
+        #     self.visualizer.plot_block_contour()
 
-
-        # Кнопки визуализации
-        if st.button("Визуализировать контур блока"):
-            self.visualizer.plot_block_contour()
-
-        if st.button("Визуализировать сетку скважин"):
-            self.visualizer.plot_drill_grid()
+        # if st.button("Визуализировать сетку скважин"):
+        #     self.visualizer.plot_drill_grid()
 
         if st.button("Комбинированная визуализация"):
             self.visualizer.plot_combined()
