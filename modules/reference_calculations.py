@@ -98,6 +98,6 @@ class ReferenceCalculations:
         """
         Отображение UI.
         """
-        st.sidebar.header("Настройки расчета")
-        if st.sidebar.button("Запустить расчеты"):
+        # st.sidebar.header("Настройки расчета")
+        if st.button("Запустить расчеты"):
             self.run_calculations()
