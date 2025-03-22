@@ -25,7 +25,7 @@ class ReferenceCalculations:
         try:
             st.session_state.pop("x_values", None)
             
-            params = st.session_state.get("parameters", {})
+            params = st.session_state.get("reference_parameters", {})
             if not params:
                 st.error("Ошибка: параметры не загружены.")
                 self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
