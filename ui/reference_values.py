@@ -30,7 +30,7 @@ class RefValues:
         # ✅ Отображаем эталонные показатели
         self.reference_parameters.render_refparameters_section()
 
-        self.ReferenceCalculations.render_ui()
+        self.reference_calculations.render_ui()
 
       
         # # ✅ Кнопка утвердить параметры
