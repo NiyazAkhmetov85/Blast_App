@@ -18,7 +18,7 @@ class ReferenceParameters:
 
     def render_refparameters_section(self):
         params = st.session_state.get("parameters", {})
-        user_params = st.session_state.get("user_parameters", {})
+        # user_params = st.session_state.get("user_parameters", {})
     
         categories_order = ["Эталонные показатели"]
     
@@ -37,17 +37,17 @@ class ReferenceParameters:
     
                     current_val = user_params.get(param_name, default_value)
     
-                    if category == "ЛСК":
-                        st.write(f"**{param_name} ({unit})**: {current_val}")
-                    else:
-                        if param_type == "float":
-                            user_input = st.number_input(
-                                f"{description}, {unit}",
-                                value=float(current_val),
-                                min_value=float(min_val),
-                                max_value=float(max_val),
-                                step=0.1
-                            )
+                    # if category == "ЛСК":
+                    #     st.write(f"**{param_name} ({unit})**: {current_val}")
+                    # else:
+                    #     if param_type == "float":
+                    #         user_input = st.number_input(
+                    #             f"{description}, {unit}",
+                    #             value=float(current_val),
+                    #             min_value=float(min_val),
+                    #             max_value=float(max_val),
+                    #             step=0.1
+                    #         )
                         elif param_type == "int":
                             user_input = st.number_input(
                                 f"{description}, {unit}",
