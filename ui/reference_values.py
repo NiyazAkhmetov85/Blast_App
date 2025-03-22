@@ -20,7 +20,7 @@ class RefValues:
         st.header("📌 Эталонные значения БВР")
     
         # ✅ Отображаем имя текущего блока
-        block_name = st.session_state.get("block_name", "Неизвестный блок")
+        block_name = self.session_manager.get("block_name", "Неизвестный блок")
         if not block_name or block_name == "Неизвестный блок":
             st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
         else:
@@ -42,7 +42,7 @@ class RefValues:
             self.reference_calculations.generate_scale()
     
             # ✅ Проверяем и отображаем сгенерированные x_values
-            x_values = st.session_state.get("x_values", None)
+            x_values = self.session_manager.get("x_values", None)
             if x_values is not None and isinstance(x_values, (list, np.ndarray)) and len(x_values) > 0:
                 df_x_values = pd.DataFrame(sorted(x_values, reverse=True), columns=["Размер фрагмента (x), мм"])
                 st.subheader("🔍 Сгенерированная шкала x_values")
@@ -55,9 +55,10 @@ class RefValues:
             self.reference_calculations.calculate_p_x()
     
             # ✅ Просмотр таблицы PSD и её утверждение (только если P(x) уже рассчитан)
-            if "P_x_data" in st.session_state and st.session_state["P_x_data"] is not None:
+            P_x_data = self.session_manager.get("P_x_data", None)
+            if P_x_data is not None:
                 st.subheader("📊 Итоговые эталонные значения P(x)")
-                st.dataframe(st.session_state["P_x_data"])
+                st.dataframe(P_x_data)
         
                 if st.button("✅ Утвердить шкалу и P(x)"):
                     self.reference_calculations.update_psd_table()
@@ -65,4 +66,3 @@ class RefValues:
                     self.logs_manager.add_log("reference_values", "Шкала и эталонные значения утверждены пользователем.", "успех")
             else:
                 st.warning("⚠ Таблица P(x) не была рассчитана. Сначала нажмите '📈 Рассчитать эталонные P(x)'.")
-
