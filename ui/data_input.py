@@ -88,28 +88,14 @@ class DataInput:
 
         st.info(f"Тип сетки: {st.session_state.get('user_parameters', {}).get('grid_type', 'Не указано')}")
 
-        # # Кнопка запуска генерации сетки скважин
-        # if st.button("Запустить генерацию сетки скважин"):
-        #     self.grid_generator.generate_grid()
-        
-        # # Кнопка запуска расчёта метрик сетки
-        # if st.button("Запустить расчет метрик"):
-        #     self.grid_generator.calculate_grid_metrics()
         if st.button("Запустить генерацию сетки скважин и расчет параметров сетки"):
             self.grid_generator.generate_grid()
             self.grid_generator.calculate_grid_metrics()
             if st.session_state.get("grid_generated", False):
-                st.dataframe(self.grid_generator.grid_data, width=400)
+                st.dataframe(self.grid_generator.grid_data, width=600)
             
             if st.session_state.get("grid_metrics"):
-                st.dataframe(st.session_state["grid_metrics"], width=400)
-
-        # # Кнопки визуализации
-        # if st.button("Визуализировать контур блока"):
-        #     self.visualizer.plot_block_contour()
-
-        # if st.button("Визуализировать сетку скважин"):
-        #     self.visualizer.plot_drill_grid()
+                st.dataframe(st.session_state["grid_metrics"], width=600)
 
         if st.button("Комбинированная визуализация"):
             self.visualizer.plot_combined()
