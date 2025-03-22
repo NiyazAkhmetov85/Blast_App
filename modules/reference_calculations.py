@@ -42,8 +42,7 @@ class ReferenceCalculations:
             x_values = np.logspace(np.log10(min_x), np.log10(max_x), num=50)
             st.session_state["x_values"] = x_values
 
-            st.success("Логарифмическая шкала успешно сгенерирована!")
-            self.logs_manager.add_log("reference_calculations", "Шкала успешно сгенерирована.", "успех")
+            self.logs_manager.add_log("reference_calculations", "Логарифмическая шкала успешно сгенерирована.", "успех")
         except Exception as e:
             st.error(f"Ошибка генерации шкалы: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка генерации шкалы: {e}", "ошибка")
@@ -66,15 +65,34 @@ class ReferenceCalculations:
             df = df.sort_values(by="Размер фрагмента (x), мм", ascending=False)  # Сортировка от максимума к минимуму
 
             st.session_state["P_x_data"] = df
-            
-            st.success("Расчеты выполнены успешно!")
             self.logs_manager.add_log("reference_calculations", "Расчеты выполнены успешно.", "успех")
 
-            st.subheader("Результаты расчетов")
-            st.dataframe(df)
+            self.update_psd_table()
         except Exception as e:
             st.error(f"Ошибка выполнения расчетов: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка выполнения расчетов: {e}", "ошибка")
+
+    def update_psd_table(self):
+        """
+        Обновляет таблицу PSD в session_state.
+        """
+        try:
+            df = st.session_state.get("P_x_data")
+            if df is None or df.empty:
+                st.error("Ошибка: нет данных для обновления таблицы PSD.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
+                return
+
+            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False).reset_index(drop=True)
+            st.session_state["psd_table"] = df_sorted
+
+            st.success("✅ Таблица PSD успешно обновлена!")
+            self.logs_manager.add_log("reference_calculations", "Таблица PSD обновлена.", "успех")
+            st.subheader("Результаты расчетов")
+            st.dataframe(df_sorted)
+        except Exception as e:
+            st.error(f"Ошибка обновления PSD: {e}")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
 
     def render_ui(self):
         """
