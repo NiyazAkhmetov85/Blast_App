@@ -71,16 +71,6 @@ class ReferenceParameters:
             )
             st.sidebar.success("Эталонные параметры успешно утверждены!")
 
-        # # **Кнопка "Удалить эталонные параметры"**
-        # if st.button("❌ Удалить эталонные параметры", key="delete_ref_parameters"):
-        #     st.session_state["reference_parameters"] = {}
-        #     st.session_state["user_parameters"] = {}
-        #     self.logs_manager.add_log(
-        #         module="ReferenceParameters",
-        #         event="Эталонные параметры удалены.",
-        #         log_type="предупреждение"
-        #     )
-        #     st.sidebar.warning("Все эталонные параметры удалены.")
 
     def _render_refgroup(self, group_name, group_parameters, editable=True):
         """
