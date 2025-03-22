@@ -61,26 +61,17 @@ class ReferenceParameters:
     
                         user_params[param_name] = user_input
 
-        # **Кнопка "Утвердить эталонные параметры"**
-        if st.button("✅ Утвердить эталонные параметры", key="approve_ref_parameters"):
-            st.session_state["reference_parameters"] = user_params.copy()
-            self.logs_manager.add_log(
-                module="ReferenceParameters",
-                event="Эталонные параметры утверждены пользователем.",
-                log_type="успех"
-            )
-            st.sidebar.success("Эталонные параметры успешно утверждены!")
 
-        # **Кнопка "Удалить эталонные параметры"**
-        if st.button("❌ Удалить эталонные параметры", key="delete_ref_parameters"):
-            st.session_state["reference_parameters"] = {}
-            st.session_state["user_parameters"] = {}
-            self.logs_manager.add_log(
-                module="ReferenceParameters",
-                event="Эталонные параметры удалены.",
-                log_type="предупреждение"
-            )
-            st.sidebar.warning("Все эталонные параметры удалены.")
+        # # **Кнопка "Удалить эталонные параметры"**
+        # if st.button("❌ Удалить эталонные параметры", key="delete_ref_parameters"):
+        #     st.session_state["reference_parameters"] = {}
+        #     st.session_state["user_parameters"] = {}
+        #     self.logs_manager.add_log(
+        #         module="ReferenceParameters",
+        #         event="Эталонные параметры удалены.",
+        #         log_type="предупреждение"
+        #     )
+        #     st.sidebar.warning("Все эталонные параметры удалены.")
 
     def _render_refgroup(self, group_name, group_parameters, editable=True):
         """
@@ -129,3 +120,14 @@ class ReferenceParameters:
     
                 if editable:
                     st.session_state["parameters"][param_key]["default_value"] = new_value
+                    
+
+        # **Кнопка "Утвердить эталонные параметры"**
+        if st.button("✅ Утвердить эталонные параметры", key="approve_ref_parameters"):
+            st.session_state["reference_parameters"] = user_params.copy()
+            self.logs_manager.add_log(
+                module="ReferenceParameters",
+                event="Эталонные параметры утверждены пользователем.",
+                log_type="успех"
+            )
+            st.sidebar.success("Эталонные параметры успешно утверждены!")
