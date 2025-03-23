@@ -117,17 +117,6 @@ class ReferenceCalculations:
             fig1.update_traces(mode='lines+markers')
             st.plotly_chart(fig1)
 
-            # Вторая визуализация (X: 0, 10, 100, x_max)
-            max_x = df["Размер фрагмента (x), мм"].max()
-            filtered_df = df[df["Размер фрагмента (x), мм"].isin([0, 10, 100, max_x])]
-            fig2 = px.line(filtered_df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
-                          title="Кумулятивная кривая (Ограниченные значения: 0, 10, 100, x_max)",
-                          labels={"Размер фрагмента (x), мм": "Размер фрагмента (мм)", "Эталонные P(x), %": "Кумулятивное распределение (%)"})
-            fig2.update_traces(mode='lines+markers')
-            st.plotly_chart(fig2)
-        except Exception as e:
-            st.error(f"Ошибка визуализации кривых: {e}")
-            self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривых: {e}", "ошибка")
 
     def render_ui(self):
         """
