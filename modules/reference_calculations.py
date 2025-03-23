@@ -41,12 +41,7 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
                 return
 
-            max_x = params.get("target_x_max", {}).get("default_value")
-            if max_x is None:
-                st.error("Ошибка: отсутствует значение target_x_max.")
-                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствует target_x_max.", "ошибка")
-                return
-
+            max_x = params.get("target_x_max", 1000)  # Исправлено: теперь max_x всегда число
             max_x = self.round_to_nearest_100(max_x)
             x_values = [x for x in self.STANDARD_X_VALUES if x <= max_x]
             st.session_state["x_values"] = x_values
