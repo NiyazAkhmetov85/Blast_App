@@ -57,26 +57,66 @@ class ReferenceCalculations:
         Запуск всех расчетов и отображение результатов.
         """
         try:
+            # Генерация шкалы
             self.generate_scale()
             
             if "x_values" not in st.session_state:
                 return
             
             x_values = st.session_state["x_values"]
-            P_x_data = np.cumsum(np.random.rand(len(x_values)))  # Заглушка для расчетов
-            P_x_data /= P_x_data[-1]  # Нормализация
-
-            df = pd.DataFrame({"Размер фрагмента (x), мм": x_values, "Эталонные P(x), %": P_x_data * 100})
-            df = df.sort_values(by="Размер фрагмента (x), мм", ascending=True)  # Сортировка от минимума к максимуму
-
+            
+            # Получаем эталонные параметры для расчёта P(x)
+            params = st.session_state.get("reference_parameters", {})
+            x_max_ref = params.get("target_x_max", 1000)  # Предполагаем, что это число
+            x_50 = params.get("target_x_50")
+            b = params.get("target_b")
+            
+            # Проверяем, что все необходимые параметры заданы и корректны
+            if None in (x_max_ref, x_50, b):
+                st.error("Ошибка: отсутствуют необходимые эталонные параметры (target_x_max, target_x_50 или target_b).")
+                self.logs_manager.add_log("reference_calculations", "Отсутствуют один или несколько параметров: target_x_max, target_x_50, target_b.", "ошибка")
+                return
+            
+            if not all(isinstance(val, (int, float)) for val in [x_max_ref, x_50, b]):
+                st.error("Ошибка: target_x_max, target_x_50 и target_b должны быть числами.")
+                self.logs_manager.add_log("reference_calculations", "Параметры target_x_max, target_x_50 и target_b должны быть числами.", "ошибка")
+                return
+            
+            # Расчет P(x) по формуле для каждого x из x_values
+            p_x_values = []
+            for x in x_values:
+                if x > x_max_ref:  # Пропускаем значения, превышающие заданный x_max
+                    continue
+                try:
+                    # Вычисление логарифмов
+                    num = np.log(x_max_ref / x)
+                    den = np.log(x_max_ref / x_50)
+                    # Если делитель равен 0, пропускаем это значение
+                    if den == 0:
+                        continue
+                    p_x = 1 / (1 + (num / den) ** b)
+                    p_x_values.append((x, p_x * 100))  # Переводим в проценты
+                except Exception as calc_e:
+                    self.logs_manager.add_log("reference_calculations", f"Ошибка при расчете P(x) для x={x}: {calc_e}", "ошибка")
+            
+            if len(p_x_values) == 0:
+                st.error("Ошибка: после расчета не осталось допустимых значений P(x).")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: пустой расчет P(x) после фильтрации.", "ошибка")
+                return
+            
+            # Создаем DataFrame с расчетными значениями
+            df = pd.DataFrame(p_x_values, columns=["Размер фрагмента (x), мм", "Эталонные P(x), %"])
+            df = df.sort_values(by="Размер фрагмента (x), мм", ascending=True)
+            
             st.session_state["P_x_data"] = df
-            self.logs_manager.add_log("reference_calculations", "Расчеты выполнены успешно.", "успех")
-
+            self.logs_manager.add_log("reference_calculations", "Расчеты эталонных P(x) выполнены успешно.", "успех")
+            
             self.update_psd_table()
             self.visualize_cumulative_curve()
         except Exception as e:
             st.error(f"Ошибка выполнения расчетов: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка выполнения расчетов: {e}", "ошибка")
+
 
     def update_psd_table(self):
         """
@@ -88,10 +128,11 @@ class ReferenceCalculations:
                 st.error("Ошибка: нет данных для обновления таблицы PSD.")
                 self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
                 return
-
+    
+            # Для удобства визуализации сортируем по возрастанию размеров
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
             st.session_state["psd_table"] = df_sorted
-
+    
             st.success("✅ Таблица PSD успешно обновлена!")
             self.logs_manager.add_log("reference_calculations", "Таблица PSD обновлена.", "успех")
             st.subheader("Результаты расчетов")
@@ -99,6 +140,7 @@ class ReferenceCalculations:
         except Exception as e:
             st.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
+
 
     def visualize_cumulative_curve(self):
         """
