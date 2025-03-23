@@ -100,24 +100,33 @@ class ReferenceCalculations:
             st.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
 
-    def visualize_cumulative_curve(self):
+    def visualize_cumulative_curves(self):
         """
-        Визуализация эталонной кумулятивной кривой распределения.
+        Визуализация эталонной кумулятивной кривой распределения (две версии).
         """
         try:
             df = st.session_state.get("P_x_data")
             if df is None or df.empty:
-                st.warning("Нет данных для построения графика.")
+                st.warning("Нет данных для построения графиков.")
                 return
 
-            fig = px.line(df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
-                          title="Эталонная кумулятивная кривая распределения",
+            # Первая визуализация (полный диапазон)
+            fig1 = px.line(df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
+                          title="Эталонная кумулятивная кривая распределения (Полный диапазон)",
                           labels={"Размер фрагмента (x), мм": "Размер фрагмента (мм)", "Эталонные P(x), %": "Кумулятивное распределение (%)"})
-            fig.update_traces(mode='lines+markers')
-            st.plotly_chart(fig)
+            fig1.update_traces(mode='lines+markers')
+            st.plotly_chart(fig1)
+
+            # Вторая визуализация (X: 0, 10, 100, x_max)
+            filtered_df = df[df["Размер фрагмента (x), мм"].isin([0, 10, 100, df["Размер фрагмента (x), мм"].max()])]
+            fig2 = px.line(filtered_df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
+                          title="Кумулятивная кривая (Ограниченные значения: 0, 10, 100, x_max)",
+                          labels={"Размер фрагмента (x), мм": "Размер фрагмента (мм)", "Эталонные P(x), %": "Кумулятивное распределение (%)"})
+            fig2.update_traces(mode='lines+markers')
+            st.plotly_chart(fig2)
         except Exception as e:
-            st.error(f"Ошибка визуализации кривой: {e}")
-            self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривой: {e}", "ошибка")
+            st.error(f"Ошибка визуализации кривых: {e}")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривых: {e}", "ошибка")
 
     def render_ui(self):
         """
