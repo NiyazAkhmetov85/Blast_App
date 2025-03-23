@@ -73,7 +73,7 @@ class ReferenceCalculations:
             self.logs_manager.add_log("reference_calculations", "Расчеты выполнены успешно.", "успех")
 
             self.update_psd_table()
-            self.visualize_cumulative_curve()
+            self.visualize_cumulative_curves()
         except Exception as e:
             st.error(f"Ошибка выполнения расчетов: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка выполнения расчетов: {e}", "ошибка")
