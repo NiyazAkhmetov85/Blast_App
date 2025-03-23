@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import plotly.express as px
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 
@@ -72,6 +73,7 @@ class ReferenceCalculations:
             self.logs_manager.add_log("reference_calculations", "Расчеты выполнены успешно.", "успех")
 
             self.update_psd_table()
+            self.visualize_cumulative_curve()
         except Exception as e:
             st.error(f"Ошибка выполнения расчетов: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка выполнения расчетов: {e}", "ошибка")
@@ -97,6 +99,25 @@ class ReferenceCalculations:
         except Exception as e:
             st.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
+
+    def visualize_cumulative_curve(self):
+        """
+        Визуализация эталонной кумулятивной кривой распределения.
+        """
+        try:
+            df = st.session_state.get("P_x_data")
+            if df is None or df.empty:
+                st.warning("Нет данных для построения графика.")
+                return
+
+            fig = px.line(df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
+                          title="Эталонная кумулятивная кривая распределения",
+                          labels={"Размер фрагмента (x), мм": "Размер фрагмента (мм)", "Эталонные P(x), %": "Кумулятивное распределение (%)"})
+            fig.update_traces(mode='lines+markers')
+            st.plotly_chart(fig)
+        except Exception as e:
+            st.error(f"Ошибка визуализации кривой: {e}")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривой: {e}", "ошибка")
 
     def render_ui(self):
         """
