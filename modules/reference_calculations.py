@@ -8,12 +8,16 @@ class ReferenceCalculations:
     """
     Класс для выполнения расчетов эталонных значений.
     """
+    STANDARD_X_VALUES = [
+        0.07, 0.25, 1, 2, 4, 8, 12, 16, 20, 25, 32, 40, 50, 60, 90, 125, 200, 300, 400, 500, 750, 1000
+    ]
+
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
         self.ref_table = None  # Таблица эталонных значений
 
-        # Устанавливаем логарифмическую шкалу по умолчанию
+        # Устанавливаем стандартные параметры
         st.session_state.setdefault("scale_type", "Логарифмическая")
         st.session_state.setdefault("P_x_data", {})
         st.session_state.setdefault("psd_table", {})
@@ -22,11 +26,11 @@ class ReferenceCalculations:
         """
         Округление значения до ближайшего кратного 100.
         """
-        return round(value / 100) * 100
+        return min(round(value / 100) * 100, 1000)  # Ограничиваем x_max 1000 мм
 
     def generate_scale(self):
         """
-        Генерация логарифмической шкалы x_values.
+        Генерация шкалы x_values по стандартным значениям.
         """
         try:
             st.session_state.pop("x_values", None)
@@ -37,19 +41,17 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
                 return
 
-            min_x = params.get("x_range_min", {}).get("default_value")
             max_x = params.get("target_x_max", {}).get("default_value")
-            
-            if min_x is None or max_x is None or min_x >= max_x:
-                st.error("Ошибка: некорректные значения x_range_min или target_x_max.")
-                self.logs_manager.add_log("reference_calculations", "Ошибка: некорректные значения x_range_min или target_x_max.", "ошибка")
+            if max_x is None:
+                st.error("Ошибка: отсутствует значение target_x_max.")
+                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствует target_x_max.", "ошибка")
                 return
 
             max_x = self.round_to_nearest_100(max_x)
-            x_values = np.logspace(np.log10(min_x), np.log10(max_x), num=50)
+            x_values = [x for x in self.STANDARD_X_VALUES if x <= max_x]
             st.session_state["x_values"] = x_values
 
-            self.logs_manager.add_log("reference_calculations", f"Логарифмическая шкала успешно сгенерирована до {max_x} мм.", "успех")
+            self.logs_manager.add_log("reference_calculations", f"Шкала успешно сгенерирована до {max_x} мм.", "успех")
         except Exception as e:
             st.error(f"Ошибка генерации шкалы: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка генерации шкалы: {e}", "ошибка")
