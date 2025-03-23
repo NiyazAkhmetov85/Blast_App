@@ -42,7 +42,7 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
                 return
 
-            max_x = params.get("target_x_max", 1000)  # Исправлено: теперь max_x всегда число
+            max_x = params.get("target_x_max", 1000)  # Теперь max_x всегда число
             max_x = self.round_to_nearest_100(max_x)
             x_values = [x for x in self.STANDARD_X_VALUES if x <= max_x]
             st.session_state["x_values"] = x_values
