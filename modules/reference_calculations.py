@@ -18,6 +18,12 @@ class ReferenceCalculations:
         st.session_state.setdefault("P_x_data", {})
         st.session_state.setdefault("psd_table", {})
 
+    def round_to_nearest_100(self, value):
+        """
+        Округление значения до ближайшего кратного 100.
+        """
+        return round(value / 100) * 100
+
     def generate_scale(self):
         """
         Генерация логарифмической шкалы x_values.
@@ -39,10 +45,11 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: некорректные значения x_range_min или target_x_max.", "ошибка")
                 return
 
+            max_x = self.round_to_nearest_100(max_x)
             x_values = np.logspace(np.log10(min_x), np.log10(max_x), num=50)
             st.session_state["x_values"] = x_values
 
-            self.logs_manager.add_log("reference_calculations", "Логарифмическая шкала успешно сгенерирована.", "успех")
+            self.logs_manager.add_log("reference_calculations", f"Логарифмическая шкала успешно сгенерирована до {max_x} мм.", "успех")
         except Exception as e:
             st.error(f"Ошибка генерации шкалы: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка генерации шкалы: {e}", "ошибка")
@@ -98,6 +105,5 @@ class ReferenceCalculations:
         """
         Отображение UI.
         """
-        # st.sidebar.header("Настройки расчета")
         if st.button("Запустить расчеты"):
             self.run_calculations()
