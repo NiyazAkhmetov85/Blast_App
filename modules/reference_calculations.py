@@ -66,7 +66,7 @@ class ReferenceCalculations:
             P_x_data /= P_x_data[-1]  # Нормализация
 
             df = pd.DataFrame({"Размер фрагмента (x), мм": x_values, "Эталонные P(x), %": P_x_data * 100})
-            df = df.sort_values(by="Размер фрагмента (x), мм", ascending=False)  # Сортировка от максимума к минимуму
+            df = df.sort_values(by="Размер фрагмента (x), мм", ascending=True)  # Сортировка от минимума к максимуму
 
             st.session_state["P_x_data"] = df
             self.logs_manager.add_log("reference_calculations", "Расчеты выполнены успешно.", "успех")
@@ -87,7 +87,7 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
                 return
 
-            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False).reset_index(drop=True)
+            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
             st.session_state["psd_table"] = df_sorted
 
             st.success("✅ Таблица PSD успешно обновлена!")
