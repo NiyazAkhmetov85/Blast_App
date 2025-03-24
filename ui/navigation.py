@@ -6,8 +6,7 @@ from utils.logs_manager import LogsManager
 
 from ui.data_input import DataInput
 from ui.reference_values import RefValues
-from ui.results_summary import ResultsSummary
-
+from ui.results_summary import ResultsSummary  # ✅ Добавлен импорт
 
 
 # ✅ Инициализация менеджеров
@@ -20,14 +19,17 @@ if "parameters_loaded" not in st.session_state:
     data_initializer.load_default_parameters()
     st.session_state["parameters_loaded"] = True
 
+
 def reload_parameters():
     """
     Перезагрузка параметров с очисткой дублирующихся сообщений.
     """
-    # Очистка старых сообщений
     if "status_messages" not in st.session_state:
         st.session_state["status_messages"] = []
 
+    # ✅ Повторная загрузка параметров
+    data_initializer.load_default_parameters()
+    st.sidebar.success("🔄 Параметры успешно перезагружены!")
 
 
 def show_sidebar():
@@ -47,7 +49,7 @@ def navigation():
     # ✅ Определение вкладок и их обработчиков
     data_input = DataInput(session_manager, logs_manager)
     reference_values = RefValues(session_manager, logs_manager)
-
+    results_summary = ResultsSummary(session_manager, logs_manager)  # ✅ Создан объект
 
     TAB_OPTIONS = {
         "📥 Импорт данных блока": data_input.show_import_block,
@@ -55,9 +57,8 @@ def navigation():
         "📊 Визуализация блока": data_input.show_visualization,
         "📜 Итоговые параметры": data_input.show_summary_screen,
         "📌 Эталонные значения": reference_values.show_reference_values,
-        "📈 Итоговые расчеты": results_summary.show_results_summary
+        "📈 Итоговые расчеты": results_summary.show_results_summary  # ✅ Исправлен вызов
     }
-
 
     # ✅ Размещение вкладок
     selected_tab = st.sidebar.radio("Выберите раздел", list(TAB_OPTIONS.keys()))
