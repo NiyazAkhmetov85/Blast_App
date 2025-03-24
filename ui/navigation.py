@@ -6,6 +6,8 @@ from utils.logs_manager import LogsManager
 
 from ui.data_input import DataInput
 from ui.reference_values import RefValues
+from ui.results_summary import ResultsSummary
+
 
 
 # ✅ Инициализация менеджеров
@@ -105,7 +107,7 @@ def navigation():
         "📊 Визуализация блока": data_input.show_visualization,
         "📜 Итоговые параметры": data_input.show_summary_screen,
         "📌 Эталонные значения": reference_values.show_reference_values
-        # "📈 Итоговые расчеты": show_results_summary
+        "📈 Итоговые расчеты": show_results_summary.show_results_summary
     }
 
     # ✅ Размещение вкладок
