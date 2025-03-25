@@ -1,20 +1,22 @@
 import streamlit as st
 import pandas as pd
+from modules.reference_calculations import ReferenceCalculations  # ✅ Импортируем обновленный расчет P(x)
 from modules.calculations import Calculations
 from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 
 class FragmentationCalculator:
     """
-    Класс для запуска всех расчетов модуля Calculations и сохранения результатов.
+    Класс для запуска всех расчетов БВР и сохранения результатов.
     """
     def __init__(self, session_manager: SessionStateManager):
         self.session_manager = session_manager
         self.logs_manager = LogsManager(session_manager)
         self.calc = Calculations(session_manager, self.logs_manager)
+        self.ref_calc = ReferenceCalculations(session_manager, self.logs_manager)  # ✅ Добавляем расчет эталонного P(x)
 
-        # ✅ Проверяем, загружены ли параметры перед расчетами
-        required_keys = ["user_parameters", "conf_ref_vals", "grid_data"]
+        # ✅ Проверяем, загружены ли входные параметры перед расчетами
+        required_keys = ["user_parameters", "reference_parameters", "grid_data"]
         missing_keys = [key for key in required_keys if key not in st.session_state or not st.session_state[key]]
 
         if missing_keys:
@@ -30,7 +32,7 @@ class FragmentationCalculator:
 
     def run_calculations(self):
         """
-        Запускает последовательное выполнение всех расчетов и сохраняет результаты.
+        Запускает последовательное выполнение всех расчетов.
         """
         self.session_manager.set_state("current_step", "Запуск расчетов")
         st.session_state["status_message"] = "Запуск расчетов..."
@@ -49,15 +51,18 @@ class FragmentationCalculator:
                 self.calc.calculate_b,
                 self.calc.calculate_g_n,
                 self.calc.calculate_x_50,
-                self.calc.calculate_p_x
             ]
 
-            # ✅ Запуск всех расчетов с логированием
+            # ✅ Запуск расчетов БВР
             for i, step in enumerate(calculation_steps, 1):
                 step_name = step.__name__
                 self.logs_manager.add_log("fragmentation_calculator", f"Выполняется: {step_name}", "информация")
                 step()
                 progress_bar.progress(i / len(calculation_steps))
+
+            # ✅ Отдельный запуск расчета эталонных значений P(x)
+            self.logs_manager.add_log("fragmentation_calculator", "Запуск расчета эталонного P(x)", "информация")
+            self.ref_calc.run_calculations()  # ✅ Используем ReferenceCalculations вместо calculations.calculate_p_x()
 
             # ✅ Сохраняем расчетные данные
             self.save_to_session_state()
