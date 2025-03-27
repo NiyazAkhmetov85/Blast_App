@@ -53,28 +53,29 @@ class InputForm:
                         if param_type == "float":
                             user_input = st.number_input(
                                 f"{description}, {unit}",
-                                value=float(current_val),
-                                min_value=float(min_val),
-                                max_value=float(max_val),
+                                value=float(current_val) if current_val is not None else 0.0,
+                                min_value=float(min_val) if min_val is not None else None,
+                                max_value=float(max_val) if max_val is not None else None,
                                 step=0.1
                             )
+                            user_params[param_name] = float(user_input)
                         elif param_type == "int":
                             user_input = st.number_input(
                                 f"{description}, {unit}",
-                                value=int(current_val),
-                                min_value=int(min_val),
-                                max_value=int(max_val),
+                                value=int(current_val) if current_val is not None else 0,
+                                min_value=int(min_val) if min_val is not None else None,
+                                max_value=int(max_val) if max_val is not None else None,
                                 step=1
                             )
+                            user_params[param_name] = int(user_input)
                         else:
                             user_input = st.text_input(f"{description}, {unit}", value=str(current_val))
-    
-                        # Сохраняем пользовательское значение обратно в session_state
-                        user_params[param_name] = user_input
+                            user_params[param_name] = user_input  # Оставляем строку без изменений
     
         # Сохраняем обновленные параметры
         st.session_state["user_parameters"] = user_params
-
+        
+    
     def _render_group(self, group_name, group_parameters, editable=True):
         """
         Отображает параметры в указанной группе.
