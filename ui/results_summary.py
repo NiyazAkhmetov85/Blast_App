@@ -82,24 +82,24 @@ class ResultsSummary:
         st.subheader("Итоговая таблица PSD")
         st.dataframe(df_psd)
 
-    # def display_cumulative_curve(self):
-    #     """
-    #     Визуализация кумулятивной кривой распределения фрагментов.
-    #     """
-    #     df_psd = st.session_state.get("psd_table")
+    def display_cumulative_curve(self):
+        """
+        Визуализация кумулятивной кривой распределения фрагментов.
+        """
+        df_psd = st.session_state.get("psd_table")
 
-    #     if df_psd is None or df_psd.empty:
-    #         st.warning("Нет данных для построения графика.")
-    #         return
+        if df_psd is None or df_psd.empty:
+            st.warning("Нет данных для построения графика.")
+            return
 
-    #     import plotly.express as px
+        import plotly.express as px
 
-    #     fig = px.line(
-    #         df_psd,
-    #         x="Размер фрагмента (x), мм",
-    #         y=["Эталонные P(x), %", "P(x) рассчитанные, %"],
-    #         title="Кумулятивная кривая распределения фрагментов",
-    #         labels={"value": "Кумулятивное распределение (%)", "variable": "Тип"},
-    #         markers=True
-    #     )
-    #     st.plotly_chart(fig)
+        fig = px.line(
+            df_psd,
+            x="Размер фрагмента (x), мм",
+            y=["Эталонные P(x), %", "P(x) рассчитанные, %"],
+            title="Кумулятивная кривая распределения фрагментов",
+            labels={"value": "Кумулятивное распределение (%)", "variable": "Тип"},
+            markers=True
+        )
+        st.plotly_chart(fig)
