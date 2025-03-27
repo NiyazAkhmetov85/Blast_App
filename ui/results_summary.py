@@ -36,8 +36,7 @@ class ResultsSummary:
             with st.spinner("Выполняются расчёты..."):
                 self.calculator.run_calculations()  # Расчёт параметров БВР
                 self.psd_calculator.run_calculations()  # Формирование PSD-таблицы
-            #     self.logs_manager.add_log("results_summary", "Все расчёты успешно выполнены", "успех")
-            # st.success("Все расчёты успешно выполнены!")
+
 
         # Блок визуализации
         st.subheader("Визуализация результатов")
