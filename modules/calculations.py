@@ -7,6 +7,7 @@ from scipy.special import gamma
 from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 
+
 # Декоратор для обработки ошибок
 def error_handler(func):
     def wrapper(self, *args, **kwargs):
@@ -22,15 +23,18 @@ class Calculations:
     Класс для выполнения расчетов параметров буровзрывных работ.
     """
 
-    def __init__(self, state_tracker, logs_manager):
-        self.state_tracker = state_tracker
+    def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
+        """
+        Инициализация менеджера загрузки параметров.
+        """
+        self.session_manager = session_manager
         self.logs_manager = logs_manager
         self.results = {}
 
-        # Используем user_parameters вместо parameters
+
         self.params = st.session_state.get("user_parameters", {})
 
-        # Проверяем, загружены ли эталонные значения
+
         if not st.session_state.get("conf_ref_vals"):
             st.warning("⚠ Утверждённые эталонные значения отсутствуют. Проверьте ввод данных.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют эталонные значения.", log_type="ошибка")
@@ -58,7 +62,7 @@ class Calculations:
 
         # Проверяем, есть ли значение и является ли оно числом
         if rho is None or not isinstance(rho, (int, float)):
-            st.warning("❌ Ошибка: Параметр rho отсутствует или имеет неверный формат.")
+            st.sidebar.warning("❌ Ошибка: Параметр rho отсутствует или имеет неверный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: некорректное значение rho.", log_type="ошибка")
             return
 
@@ -75,7 +79,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет RDI: {self.results['RDI']:.2f}", log_type="успех")
-        st.success(f"✅ RDI успешно рассчитан: {self.results['RDI']:.2f}")
+        st.sidebar.success(f"✅ RDI успешно рассчитан: {self.results['RDI']:.2f}")
 
     @error_handler
     def calculate_hf(self):
