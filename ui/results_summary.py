@@ -20,46 +20,46 @@ class ResultsSummary:
         """
         Интерфейс итоговых расчётов, PSD-таблицы и визуализации кумулятивной кривой.
         """
-        st.header("📊 Итоговые расчёты и визуализация")
+        st.header("Итоговые расчёты и визуализация")
 
         block_name = self.session_manager.get_state("current_block", "Не задан")
-        st.info(f"🔹 Текущий блок: **{block_name}**")
+        st.info(f"Текущий блок: **{block_name}**")
 
         # Кнопка для запуска расчётов
-        if st.button("▶ Запустить расчёты"):
-            with st.spinner("⏳ Выполняются расчёты..."):
+        if st.button("Запустить расчёты"):
+            with st.spinner("Выполняются расчёты..."):
                 self.calculator.run_calculations()  # Расчёт параметров БВР
                 self.psd_calculator.run_calculations()  # Формирование PSD-таблицы
-                self.logs_manager.add_log("results_summary", "✅ Все расчёты успешно выполнены", "успех")
-            st.success("✅ Все расчёты успешно выполнены!")
+                self.logs_manager.add_log("results_summary", "Все расчёты успешно выполнены", "успех")
+            st.success("Все расчёты успешно выполнены!")
 
         # Блок визуализации
-        st.subheader("📊 Визуализация результатов")
+        st.subheader("Визуализация результатов")
 
         col1, col2 = st.columns(2)
 
         with col1:
-            if st.button("📊 Показать таблицу PSD"):
+            if st.button("Показать таблицу PSD"):
                 self.display_psd_table()
 
         with col2:
-            if st.button("📈 Показать кумулятивную кривую"):
+            if st.button("Показать кумулятивную кривую"):
                 self.display_cumulative_curve()
 
         # Блок очистки данных
-        st.subheader("🗑 Очистка визуализации")
+        st.subheader("Очистка визуализации")
 
         col3, col4 = st.columns(2)
 
         with col3:
-            if st.button("🗑 Очистить таблицу"):
+            if st.button("Очистить таблицу"):
                 self.session_manager.set_state("psd_table", None)
-                st.warning("⚠ Таблица PSD очищена.")
+                st.warning("Таблица PSD очищена.")
 
         with col4:
-            if st.button("🗑 Очистить график"):
+            if st.button("Очистить график"):
                 self.session_manager.set_state("cumulative_curve", None)
-                st.warning("⚠ График кумулятивной кривой очищен.")
+                st.warning("График кумулятивной кривой очищен.")
 
     def display_psd_table(self):
         """
@@ -68,10 +68,10 @@ class ResultsSummary:
         df_psd = st.session_state.get("psd_table")
 
         if df_psd is None or df_psd.empty:
-            st.warning("⚠ PSD-таблица отсутствует.")
+            st.warning("PSD-таблица отсутствует.")
             return
 
-        st.subheader("📊 Итоговая таблица PSD")
+        st.subheader("Итоговая таблица PSD")
         st.dataframe(df_psd)
 
     def display_cumulative_curve(self):
@@ -81,7 +81,7 @@ class ResultsSummary:
         df_psd = st.session_state.get("psd_table")
 
         if df_psd is None or df_psd.empty:
-            st.warning("⚠ Нет данных для построения графика.")
+            st.warning("Нет данных для построения графика.")
             return
 
         import plotly.express as px
