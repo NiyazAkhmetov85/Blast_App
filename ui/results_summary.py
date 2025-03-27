@@ -30,8 +30,6 @@ class ResultsSummary:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
 
-        # block_name = self.session_manager.get_state("current_block", "Не задан")
-        # st.info(f"Текущий блок: **{block_name}**")
 
         # Кнопка для запуска расчётов
         if st.button("Запустить расчёты"):
