@@ -445,103 +445,103 @@ class Calculations:
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", log_type="успех")
         st.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
 
-    @error_handler
-    def calculate_p_x(self):
-        """
-        Рассчитывает P(x) и добавляет в DataFrame.
-        """
-        try:
-            # Очистка предыдущих расчетов P(x)
-            if "P_x_data" in st.session_state:
-                st.session_state.pop("P_x_data")
+#     @error_handler
+#     def calculate_p_x(self):
+#         """
+#         Рассчитывает P(x) и добавляет в DataFrame.
+#         """
+#         try:
+#             # Очистка предыдущих расчетов P(x)
+#             if "P_x_data" in st.session_state:
+#                 st.session_state.pop("P_x_data")
 
-            # Проверяем, есть ли эталонные значения
-            if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
-                st.error("❌ Ошибка: отсутствуют эталонные значения P(x).")
-                self.logs_manager.add_log(module="calculations", event="Ошибка: P_x_data не найден.", log_type="ошибка")
-                return
+#             # Проверяем, есть ли эталонные значения
+#             if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
+#                 st.error("❌ Ошибка: отсутствуют эталонные значения P(x).")
+#                 self.logs_manager.add_log(module="calculations", event="Ошибка: P_x_data не найден.", log_type="ошибка")
+#                 return
 
-            # Получаем необходимые параметры
-            ref_vals = st.session_state.get("conf_ref_vals", {})
-            max_x = ref_vals.get("target_x_max")
-            x_50_calc = self.results.get("x_50")
-            b_calc = self.results.get("b")
+#             # Получаем необходимые параметры
+#             ref_vals = st.session_state.get("conf_ref_vals", {})
+#             max_x = ref_vals.get("target_x_max")
+#             x_50_calc = self.results.get("x_50")
+#             b_calc = self.results.get("b")
 
-            # Проверяем наличие всех параметров
-            if None in (max_x, x_50_calc, b_calc):
-                st.warning("❌ Ошибка: Некоторые расчетные параметры отсутствуют.")
-                self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют target_x_max, x_50 или b.", log_type="ошибка")
-                return
+#             # Проверяем наличие всех параметров
+#             if None in (max_x, x_50_calc, b_calc):
+#                 st.warning("❌ Ошибка: Некоторые расчетные параметры отсутствуют.")
+#                 self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют target_x_max, x_50 или b.", log_type="ошибка")
+#                 return
 
-            # Проверяем корректность параметров
-            if not isinstance(b_calc, (int, float)) or b_calc == 0:
-                st.error("❌ Ошибка: b_calc должен быть числом и не равным 0.")
-                self.logs_manager.add_log(module="calculations", event="Ошибка: b_calc некорректен (0 или не число).", log_type="ошибка")
-                return
+#             # Проверяем корректность параметров
+#             if not isinstance(b_calc, (int, float)) or b_calc == 0:
+#                 st.error("❌ Ошибка: b_calc должен быть числом и не равным 0.")
+#                 self.logs_manager.add_log(module="calculations", event="Ошибка: b_calc некорректен (0 или не число).", log_type="ошибка")
+#                 return
 
-            df = st.session_state["P_x_data"].copy()
+#             df = st.session_state["P_x_data"].copy()
 
-            # Проверяем, что в данных есть x_values
-            if "Размер фрагмента (x), мм" not in df.columns:
-                st.error("❌ Ошибка: Отсутствуют данные о размерах фрагментов.")
-                self.logs_manager.add_log(module="calculations", event="Ошибка: в P_x_data отсутствует 'Размер фрагмента (x), мм'.", log_type="ошибка")
-                return
+#             # Проверяем, что в данных есть x_values
+#             if "Размер фрагмента (x), мм" not in df.columns:
+#                 st.error("❌ Ошибка: Отсутствуют данные о размерах фрагментов.")
+#                 self.logs_manager.add_log(module="calculations", event="Ошибка: в P_x_data отсутствует 'Размер фрагмента (x), мм'.", log_type="ошибка")
+#                 return
 
-            x_values = df["Размер фрагмента (x), мм"].values
+#             x_values = df["Размер фрагмента (x), мм"].values
 
-            if len(x_values) == 0:
-                st.error("❌ Ошибка: x_values пуст, расчет невозможен.")
-                self.logs_manager.add_log(module="calculations", event="Ошибка: x_values пустой массив.", log_type="ошибка")
-                return
+#             if len(x_values) == 0:
+#                 st.error("❌ Ошибка: x_values пуст, расчет невозможен.")
+#                 self.logs_manager.add_log(module="calculations", event="Ошибка: x_values пустой массив.", log_type="ошибка")
+#                 return
 
-            # Рассчитываем P_x, добавляем защиту от деления на 0
-            try:
-                p_x_calc = 1 / (1 + (np.log(max_x / x_values) / np.log(max_x / x_50_calc)) ** b_calc)
-            except ZeroDivisionError:
-                st.error("❌ Ошибка: Деление на 0 при расчете P(x).")
-                self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете P(x).", log_type="ошибка")
-                return
+#             # Рассчитываем P_x, добавляем защиту от деления на 0
+#             try:
+#                 p_x_calc = 1 / (1 + (np.log(max_x / x_values) / np.log(max_x / x_50_calc)) ** b_calc)
+#             except ZeroDivisionError:
+#                 st.error("❌ Ошибка: Деление на 0 при расчете P(x).")
+#                 self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете P(x).", log_type="ошибка")
+#                 return
 
-            df["Рассчитанные P(x), %"] = p_x_calc * 100
+#             df["Рассчитанные P(x), %"] = p_x_calc * 100
 
-            # Обновление session_state
-            st.session_state["P_x_data"] = df
-            if "calculation_results" not in st.session_state:
-                st.session_state["calculation_results"] = {}
+#             # Обновление session_state
+#             st.session_state["P_x_data"] = df
+#             if "calculation_results" not in st.session_state:
+#                 st.session_state["calculation_results"] = {}
 
-            st.session_state["calculation_results"]["P_x_data"] = df
+#             st.session_state["calculation_results"]["P_x_data"] = df
 
-            # Логирование успешного расчета
-            self.logs_manager.add_log(module="calculations", event=f"✅ Рассчитанные значения P(x) добавлены. Количество значений: {len(df)}", log_type="успех")
-            st.success(f"✅ Рассчитанные P(x) успешно добавлены! Количество значений: {len(df)}")
+#             # Логирование успешного расчета
+#             self.logs_manager.add_log(module="calculations", event=f"✅ Рассчитанные значения P(x) добавлены. Количество значений: {len(df)}", log_type="успех")
+#             st.success(f"✅ Рассчитанные P(x) успешно добавлены! Количество значений: {len(df)}")
 
-        except Exception as e:
-            self.logs_manager.add_log(module="calculations", event=f"Ошибка расчета P(x): {str(e)}", log_type="ошибка")
-            st.error(f"❌ Ошибка при расчете P(x): {e}")
+#         except Exception as e:
+#             self.logs_manager.add_log(module="calculations", event=f"Ошибка расчета P(x): {str(e)}", log_type="ошибка")
+#             st.error(f"❌ Ошибка при расчете P(x): {e}")
 
-if __name__ == "__main__":
-    state_tracker = SessionStateManager()
-    logs_manager = LogsManager()
-    calc = Calculations(state_tracker, logs_manager)
+# if __name__ == "__main__":
+#     state_tracker = SessionStateManager()
+#     logs_manager = LogsManager()
+#     calc = Calculations(state_tracker, logs_manager)
 
-    try:
-        # Выполняем все расчеты с логированием и защитой от ошибок
-        calc.calculate_rdi()
-        calc.calculate_hf()
-        calc.calculate_a()
-        calc.calculate_s_anfo()
-        calc.calculate_q()
-        calc.calculate_x_max()
-        calc.calculate_n()
-        calc.calculate_b()
-        calc.calculate_g_n()
-        calc.calculate_x_50()
-        calc.calculate_p_x()
+#     try:
+#         # Выполняем все расчеты с логированием и защитой от ошибок
+#         calc.calculate_rdi()
+#         calc.calculate_hf()
+#         calc.calculate_a()
+#         calc.calculate_s_anfo()
+#         calc.calculate_q()
+#         calc.calculate_x_max()
+#         calc.calculate_n()
+#         calc.calculate_b()
+#         calc.calculate_g_n()
+#         calc.calculate_x_50()
+#         calc.calculate_p_x()
 
-        # Сохранение результатов
-        calc.save_to_session_state()
-        st.success("✅ Все расчеты успешно выполнены и сохранены!")
+#         # Сохранение результатов
+#         calc.save_to_session_state()
+#         st.success("✅ Все расчеты успешно выполнены и сохранены!")
 
-    except Exception as e:
-        logs_manager.add_log(module="calculations", event=f"❌ Ошибка выполнения расчетов: {str(e)}", log_type="ошибка")
-        st.error(f"❌ Ошибка выполнения расчетов: {e}")
+#     except Exception as e:
+#         logs_manager.add_log(module="calculations", event=f"❌ Ошибка выполнения расчетов: {str(e)}", log_type="ошибка")
+#         st.error(f"❌ Ошибка выполнения расчетов: {e}")
