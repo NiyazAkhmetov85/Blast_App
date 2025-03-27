@@ -22,16 +22,24 @@ class ResultsSummary:
         """
         st.header("Итоговые расчёты и визуализация")
 
-        block_name = self.session_manager.get_state("current_block", "Не задан")
-        st.info(f"Текущий блок: **{block_name}**")
+        # Проверяем наличие имени блока
+        block_name = st.session_state.get("block_name", "Неизвестный блок")
+
+        if not block_name or block_name == "Неизвестный блок":
+            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
+        else:
+            st.info(f"Импортированный блок: **{block_name}**")
+
+        # block_name = self.session_manager.get_state("current_block", "Не задан")
+        # st.info(f"Текущий блок: **{block_name}**")
 
         # Кнопка для запуска расчётов
         if st.button("Запустить расчёты"):
             with st.spinner("Выполняются расчёты..."):
                 self.calculator.run_calculations()  # Расчёт параметров БВР
                 self.psd_calculator.run_calculations()  # Формирование PSD-таблицы
-                self.logs_manager.add_log("results_summary", "Все расчёты успешно выполнены", "успех")
-            st.success("Все расчёты успешно выполнены!")
+            #     self.logs_manager.add_log("results_summary", "Все расчёты успешно выполнены", "успех")
+            # st.success("Все расчёты успешно выполнены!")
 
         # Блок визуализации
         st.subheader("Визуализация результатов")
@@ -74,24 +82,24 @@ class ResultsSummary:
         st.subheader("Итоговая таблица PSD")
         st.dataframe(df_psd)
 
-    def display_cumulative_curve(self):
-        """
-        Визуализация кумулятивной кривой распределения фрагментов.
-        """
-        df_psd = st.session_state.get("psd_table")
+    # def display_cumulative_curve(self):
+    #     """
+    #     Визуализация кумулятивной кривой распределения фрагментов.
+    #     """
+    #     df_psd = st.session_state.get("psd_table")
 
-        if df_psd is None or df_psd.empty:
-            st.warning("Нет данных для построения графика.")
-            return
+    #     if df_psd is None or df_psd.empty:
+    #         st.warning("Нет данных для построения графика.")
+    #         return
 
-        import plotly.express as px
+    #     import plotly.express as px
 
-        fig = px.line(
-            df_psd,
-            x="Размер фрагмента (x), мм",
-            y=["Эталонные P(x), %", "P(x) рассчитанные, %"],
-            title="Кумулятивная кривая распределения фрагментов",
-            labels={"value": "Кумулятивное распределение (%)", "variable": "Тип"},
-            markers=True
-        )
-        st.plotly_chart(fig)
+    #     fig = px.line(
+    #         df_psd,
+    #         x="Размер фрагмента (x), мм",
+    #         y=["Эталонные P(x), %", "P(x) рассчитанные, %"],
+    #         title="Кумулятивная кривая распределения фрагментов",
+    #         labels={"value": "Кумулятивное распределение (%)", "variable": "Тип"},
+    #         markers=True
+    #     )
+    #     st.plotly_chart(fig)
