@@ -57,7 +57,7 @@ def navigation():
         "📊 Визуализация блока": data_input.show_visualization,
         "📜 Итоговые параметры": data_input.show_summary_screen,
         "📌 Эталонные значения": reference_values.show_reference_values,
-        "📈 Итоговые расчеты": results_summary.show_results_summary
+        # "📈 Итоговые расчеты": results_summary.show_results_summary
     }
 
     # ✅ Размещение вкладок
