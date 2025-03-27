@@ -49,7 +49,7 @@ def navigation():
     # ✅ Определение вкладок и их обработчиков
     data_input = DataInput(session_manager, logs_manager)
     reference_values = RefValues(session_manager, logs_manager)
-    results_summary = ResultsSummary(session_manager, logs_manager)  # ✅ Создан объект
+    results_summary = ResultsSummary(session_manager, logs_manager)
 
     TAB_OPTIONS = {
         "📥 Импорт данных блока": data_input.show_import_block,
@@ -57,7 +57,7 @@ def navigation():
         "📊 Визуализация блока": data_input.show_visualization,
         "📜 Итоговые параметры": data_input.show_summary_screen,
         "📌 Эталонные значения": reference_values.show_reference_values,
-        "📈 Итоговые расчеты": results_summary.show_results_summary  # ✅ Исправлен вызов
+        "📈 Итоговые расчеты": results_summary.show_results_summary
     }
 
     # ✅ Размещение вкладок
