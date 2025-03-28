@@ -37,7 +37,7 @@ class ReferenceCalculations:
             
             params = st.session_state.get("reference_parameters", {})
             if not params:
-                st.error("Ошибка: параметры не загружены.")
+                st.sidebar.error("Ошибка: параметры не загружены.")
                 self.logs_manager.add_log("reference_calculations", "Ошибка: параметры отсутствуют в session_state.", "ошибка")
                 return
 
@@ -48,7 +48,7 @@ class ReferenceCalculations:
 
             self.logs_manager.add_log("reference_calculations", f"Шкала успешно сгенерирована до {max_x} мм.", "успех")
         except Exception as e:
-            st.error(f"Ошибка генерации шкалы: {e}")
+            st.sidebar.error(f"Ошибка генерации шкалы: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка генерации шкалы: {e}", "ошибка")
 
     def run_calculations(self):
@@ -72,12 +72,12 @@ class ReferenceCalculations:
             
             # Проверяем, что все необходимые параметры заданы и корректны
             if None in (x_max_ref, x_50, b):
-                st.error("Ошибка: отсутствуют необходимые эталонные параметры (target_x_max, target_x_50 или target_b).")
+                st.sidebar.error("Ошибка: отсутствуют необходимые эталонные параметры (target_x_max, target_x_50 или target_b).")
                 self.logs_manager.add_log("reference_calculations", "Отсутствуют один или несколько параметров: target_x_max, target_x_50, target_b.", "ошибка")
                 return
             
             if not all(isinstance(val, (int, float)) for val in [x_max_ref, x_50, b]):
-                st.error("Ошибка: target_x_max, target_x_50 и target_b должны быть числами.")
+                st.sidebar.error("Ошибка: target_x_max, target_x_50 и target_b должны быть числами.")
                 self.logs_manager.add_log("reference_calculations", "Параметры target_x_max, target_x_50 и target_b должны быть числами.", "ошибка")
                 return
             
@@ -99,7 +99,7 @@ class ReferenceCalculations:
                     self.logs_manager.add_log("reference_calculations", f"Ошибка при расчете P(x) для x={x}: {calc_e}", "ошибка")
             
             if len(p_x_values) == 0:
-                st.error("Ошибка: после расчета не осталось допустимых значений P(x).")
+                st.sidebar.error("Ошибка: после расчета не осталось допустимых значений P(x).")
                 self.logs_manager.add_log("reference_calculations", "Ошибка: пустой расчет P(x) после фильтрации.", "ошибка")
                 return
             
@@ -113,7 +113,7 @@ class ReferenceCalculations:
             self.update_psd_table()
             self.visualize_cumulative_curve()
         except Exception as e:
-            st.error(f"Ошибка выполнения расчетов: {e}")
+            st.sidebar.error(f"Ошибка выполнения расчетов: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка выполнения расчетов: {e}", "ошибка")
 
 
@@ -124,7 +124,7 @@ class ReferenceCalculations:
         try:
             df = st.session_state.get("P_x_data")
             if df is None or df.empty:
-                st.error("Ошибка: нет данных для обновления таблицы PSD.")
+                st.sidebar.error("Ошибка: нет данных для обновления таблицы PSD.")
                 self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
                 return
     
@@ -132,12 +132,12 @@ class ReferenceCalculations:
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
             st.session_state["psd_table"] = df_sorted
     
-            st.subheader.success("Таблица PSD успешно обновлена!")
+            st.sidebar.success("Таблица PSD успешно обновлена!")
             self.logs_manager.add_log("reference_calculations", "Таблица PSD обновлена.", "успех")
             st.subheader("Результаты расчетов")
             st.dataframe(df_sorted)
         except Exception as e:
-            st.error(f"Ошибка обновления PSD: {e}")
+            st.sidebar.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
 
 
@@ -148,7 +148,7 @@ class ReferenceCalculations:
         try:
             df = st.session_state.get("P_x_data")
             if df is None or df.empty:
-                st.subheader.warning("Нет данных для построения графика.")
+                st.sidebar.warning("Нет данных для построения графика.")
                 return
 
             fig = px.line(df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
@@ -157,7 +157,7 @@ class ReferenceCalculations:
             fig.update_traces(mode='lines+markers')
             st.plotly_chart(fig)
         except Exception as e:
-            st.error(f"Ошибка визуализации кривой: {e}")
+            st.sidebar.error(f"Ошибка визуализации кривой: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривой: {e}", "ошибка")
 
     def render_ui(self):
