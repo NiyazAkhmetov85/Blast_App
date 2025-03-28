@@ -8,7 +8,6 @@ from ui.data_input import DataInput
 from ui.reference_values import RefValues
 from ui.results_summary import ResultsSummary  # ✅ Добавлен импорт
 
-
 # ✅ Инициализация менеджеров
 session_manager = SessionStateManager()
 logs_manager = LogsManager()
@@ -19,25 +18,31 @@ if "parameters_loaded" not in st.session_state:
     data_initializer.load_default_parameters()
     st.session_state["parameters_loaded"] = True
 
-
 def reload_parameters():
     """
     Перезагрузка параметров с очисткой дублирующихся сообщений.
     """
     if "status_messages" not in st.session_state:
         st.session_state["status_messages"] = []
-
+    
     # ✅ Повторная загрузка параметров
     data_initializer.load_default_parameters()
     st.sidebar.success("🔄 Параметры успешно перезагружены!")
-
 
 def show_sidebar():
     """
     Отображение боковой панели с кнопками и логами.
     """
     st.sidebar.button("🔄 Перезагрузить параметры", on_click=reload_parameters)
-
+    
+    # ✅ Отображение логов
+    st.sidebar.subheader("📜 Логи приложения")
+    logs = logs_manager.get_logs()  # Метод получения логов
+    if logs:
+        for log in logs[-50:]:  # Показываем только последние 10 записей
+            st.sidebar.text(log)
+    else:
+        st.sidebar.info("Логи отсутствуют.")
 
 def navigation():
     """
