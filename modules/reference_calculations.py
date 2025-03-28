@@ -19,7 +19,6 @@ class ReferenceCalculations:
         self.ref_table = None  # Таблица эталонных значений
 
         # Устанавливаем стандартные параметры
-        # st.session_state.setdefault("scale_type", "Логарифмическая")
         st.session_state.setdefault("P_x_data", {})
         st.session_state.setdefault("psd_table", {})
 
@@ -133,12 +132,12 @@ class ReferenceCalculations:
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
             st.session_state["psd_table"] = df_sorted
     
-            st.success("✅ Таблица PSD успешно обновлена!")
+            st.subheader.success("Таблица PSD успешно обновлена!")
             self.logs_manager.add_log("reference_calculations", "Таблица PSD обновлена.", "успех")
             st.subheader("Результаты расчетов")
             st.dataframe(df_sorted)
         except Exception as e:
-            st.error(f"Ошибка обновления PSD: {e}")
+            st.subheader.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
 
 
