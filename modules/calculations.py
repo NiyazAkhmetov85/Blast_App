@@ -325,3 +325,46 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
+
+
+
+    @error_handler
+    def run_all_calculations(self):
+        """
+        Запуск всех расчетов БВР последовательно.
+        """
+        st.session_state["status_message"] = "Запуск расчетов БВР..."
+    
+        try:
+            # ✅ Прогресс-бар
+            progress_bar = st.progress(0)
+            calculation_steps = [
+                self.calculate_rdi,
+                self.calculate_hf,
+                self.calculate_a,
+                self.calculate_s_anfo,
+                self.calculate_q,
+                self.calculate_x_max,
+                self.calculate_n,
+                self.calculate_b,
+                self.calculate_g_n,
+                self.calculate_x_50,
+            ]
+    
+            # ✅ Запуск расчетов
+            for i, step in enumerate(calculation_steps, 1):
+                step_name = step.__name__
+                self.logs_manager.add_log("calculations", f"Выполняется: {step_name}", "информация")
+                step()
+                progress_bar.progress(i / len(calculation_steps))
+    
+            self.logs_manager.add_log("calculations", "✅ Все расчеты БВР успешно выполнены.", "успех")
+            st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
+    
+        except Exception as e:
+            self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+            st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+    
+        finally:
+            st.session_state["status_message"] = "Готов к работе"
+
