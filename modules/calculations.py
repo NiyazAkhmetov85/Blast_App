@@ -345,11 +345,26 @@ class Calculations:
                 self.calculate_s_anfo,
                 self.calculate_q,
                 self.calculate_x_max,
-                self.calculate_n,
-                self.calculate_b,
-                self.calculate_g_n,
-                self.calculate_x_50,
+                self.calculate_x_50,   
+                self.calculate_n,     
+                self.calculate_g_n,     
+                self.calculate_b,       
             ]
+
+            
+            # progress_bar = st.progress(0)
+            # calculation_steps = [
+            #     self.calculate_rdi,
+            #     self.calculate_hf,
+            #     self.calculate_a,
+            #     self.calculate_s_anfo,
+            #     self.calculate_q,
+            #     self.calculate_x_max,
+            #     self.calculate_n,
+            #     self.calculate_b,
+            #     self.calculate_g_n,
+            #     self.calculate_x_50,
+            # ]
     
             # ✅ Запуск расчетов
             for i, step in enumerate(calculation_steps, 1):
