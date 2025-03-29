@@ -31,12 +31,10 @@ class Calculations:
         self.logs_manager = logs_manager
         self.results = {}
 
-
         self.params = st.session_state.get("user_parameters", {})
 
-
         if not st.session_state.get("conf_ref_vals"):
-            st.warning("⚠ Утверждённые эталонные значения отсутствуют. Проверьте ввод данных.")
+            st.warning("Утверждённые эталонные значения отсутствуют. Проверьте ввод данных.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют эталонные значения.", log_type="ошибка")
 
         self._initialize_session_state()
