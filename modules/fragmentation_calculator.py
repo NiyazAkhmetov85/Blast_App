@@ -14,20 +14,20 @@ class FragmentationCalculator:
         self.logs_manager = LogsManager(session_manager)
         self.calc = Calculations(session_manager, self.logs_manager)
 
-        # # ✅ Проверяем входные данные
-        # required_keys = ["user_parameters", "reference_parameters", "grid_data"]
-        # missing_keys = [key for key in required_keys if key not in st.session_state or not st.session_state[key]]
+        # ✅ Проверяем входные данные
+        required_keys = ["user_parameters", "reference_parameters", "grid_data"]
+        missing_keys = [key for key in required_keys if key not in st.session_state or not st.session_state[key]]
 
-        # if missing_keys:
-        #     st.error(f"❌ Ошибка: отсутствуют входные данные: {', '.join(missing_keys)}")
-        #     self.logs_manager.add_log("fragmentation_calculator", f"Ошибка: отсутствуют данные: {', '.join(missing_keys)}", "ошибка")
-        #     return
+        if missing_keys:
+            st.error(f"❌ Ошибка: отсутствуют входные данные: {', '.join(missing_keys)}")
+            self.logs_manager.add_log("fragmentation_calculator", f"Ошибка: отсутствуют данные: {', '.join(missing_keys)}", "ошибка")
+            return
 
-        # # ✅ Создаем `calculation_results`, если его нет
-        # if "calculation_results" not in st.session_state:
-        #     st.session_state["calculation_results"] = {}
+        # ✅ Создаем `calculation_results`, если его нет
+        if "calculation_results" not in st.session_state:
+            st.session_state["calculation_results"] = {}
 
-        # self.logs_manager.add_log("fragmentation_calculator", "FragmentationCalculator успешно инициализирован.", "успех")
+        self.logs_manager.add_log("fragmentation_calculator", "FragmentationCalculator успешно инициализирован.", "успех")
 
     def run_calculations(self):
         """
