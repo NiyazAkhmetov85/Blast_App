@@ -351,9 +351,9 @@ class Calculations:
                 self.calculate_s_anfo,
                 self.calculate_q,
                 self.calculate_x_max,
-                self.calculate_x_50,   
                 self.calculate_n,     
-                self.calculate_g_n,     
+                self.calculate_g_n,   
+                self.calculate_x_50,   
                 self.calculate_b,       
             ]
 
