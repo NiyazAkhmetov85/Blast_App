@@ -167,6 +167,52 @@ class Calculations:
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
         st.sidebar.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
 
+
+    @error_handler
+    def calculate_x_50(self):
+        """
+        Расчет медианного размера фрагмента (x_50).
+        """
+        g_n = self.results.get("g_n")
+        A = self.results.get("A")
+        Q = self.params.get("Q")
+        s_ANFO = self.results.get("s_ANFO")
+        q = self.results.get("q")
+
+        # Проверка наличия всех параметров
+        missing_params = [p for p in ["g_n", "A", "Q", "s_ANFO", "q"] if locals()[p] is None]
+
+        if missing_params:
+            st.warning(f"❌ Ошибка: Отсутствуют параметры: {', '.join(missing_params)}. Расчет x_50 невозможен.")
+            self.logs_manager.add_log(module="calculations", event=f"Ошибка: Отсутствуют параметры {missing_params}.", log_type="ошибка")
+            return
+
+        # Проверка, что все параметры являются числами
+        if not all(isinstance(locals()[p], (int, float)) for p in ["g_n", "A", "Q", "s_ANFO", "q"]):
+            st.warning("❌ Ошибка: Некорректные параметры для расчета x_50.")
+            self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректные параметры для расчета x_50.", log_type="ошибка")
+            return
+
+        if q <= 0 or s_ANFO <= 0:
+            st.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
+            self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректные значения q или s_ANFO.", log_type="ошибка")
+            return
+
+        try:
+            # Выполняем расчет x_50
+            self.results["x_50"] = (g_n * A * Q ** (1 / 6) * (115 / s_ANFO) ** (19 / 30) / q ** 0.8)
+        except ZeroDivisionError:
+            st.error("❌ Ошибка: Деление на 0 при расчете x_50.")
+            self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете x_50.", log_type="ошибка")
+            return
+
+        # Сохранение результата в st.session_state
+        st.session_state["calculation_results"]["x_50"] = self.results["x_50"]
+
+        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", log_type="успех")
+        st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
+    
+
     @error_handler
     def calculate_n(self):
         """
@@ -217,6 +263,36 @@ class Calculations:
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет n: {self.results['n']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Коэффициент равномерности n успешно рассчитан: {self.results['n']:.4f}")
 
+
+    @error_handler
+    def calculate_g_n(self):
+        """
+        Расчет показателя g(n).
+        """
+        n = self.results.get("n")
+
+        if n is None or not isinstance(n, (int, float)) or n <= 0:
+            st.warning("❌ Ошибка: Параметр n отсутствует или некорректен.")
+            self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректный параметр n.", log_type="ошибка")
+            return
+
+        try:
+            ln_2 = math.log(2)
+            gamma_value = math.gamma(1 + 1 / n)
+            self.results["g_n"] = (ln_2 ** (1 / n)) / gamma_value
+        except ZeroDivisionError:
+            st.error("❌ Ошибка: Деление на 0 при расчете g(n).")
+            self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете g(n).", log_type="ошибка")
+            return
+
+        # Сохранение результата в st.session_state
+        st.session_state["calculation_results"]["g_n"] = self.results["g_n"]
+
+        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет g(n): {self.results['g_n']:.4f}", log_type="успех")
+        st.sidebar.success(f"✅ Показатель g(n) успешно рассчитан: {self.results['g_n']:.4f}")
+
+    
+
     @error_handler
     def calculate_b(self):
         """
@@ -255,77 +331,6 @@ class Calculations:
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет b: {self.results['b']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Параметр формы кривой b успешно рассчитан: {self.results['b']:.4f}")
 
-    @error_handler
-    def calculate_g_n(self):
-        """
-        Расчет показателя g(n).
-        """
-        n = self.results.get("n")
-
-        if n is None or not isinstance(n, (int, float)) or n <= 0:
-            st.warning("❌ Ошибка: Параметр n отсутствует или некорректен.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректный параметр n.", log_type="ошибка")
-            return
-
-        try:
-            ln_2 = math.log(2)
-            gamma_value = math.gamma(1 + 1 / n)
-            self.results["g_n"] = (ln_2 ** (1 / n)) / gamma_value
-        except ZeroDivisionError:
-            st.error("❌ Ошибка: Деление на 0 при расчете g(n).")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете g(n).", log_type="ошибка")
-            return
-
-        # Сохранение результата в st.session_state
-        st.session_state["calculation_results"]["g_n"] = self.results["g_n"]
-
-        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет g(n): {self.results['g_n']:.4f}", log_type="успех")
-        st.sidebar.success(f"✅ Показатель g(n) успешно рассчитан: {self.results['g_n']:.4f}")
-
-    @error_handler
-    def calculate_x_50(self):
-        """
-        Расчет медианного размера фрагмента (x_50).
-        """
-        g_n = self.results.get("g_n")
-        A = self.results.get("A")
-        Q = self.params.get("Q")
-        s_ANFO = self.results.get("s_ANFO")
-        q = self.results.get("q")
-
-        # Проверка наличия всех параметров
-        missing_params = [p for p in ["g_n", "A", "Q", "s_ANFO", "q"] if locals()[p] is None]
-
-        if missing_params:
-            st.warning(f"❌ Ошибка: Отсутствуют параметры: {', '.join(missing_params)}. Расчет x_50 невозможен.")
-            self.logs_manager.add_log(module="calculations", event=f"Ошибка: Отсутствуют параметры {missing_params}.", log_type="ошибка")
-            return
-
-        # Проверка, что все параметры являются числами
-        if not all(isinstance(locals()[p], (int, float)) for p in ["g_n", "A", "Q", "s_ANFO", "q"]):
-            st.warning("❌ Ошибка: Некорректные параметры для расчета x_50.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректные параметры для расчета x_50.", log_type="ошибка")
-            return
-
-        if q <= 0 or s_ANFO <= 0:
-            st.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректные значения q или s_ANFO.", log_type="ошибка")
-            return
-
-        try:
-            # Выполняем расчет x_50
-            self.results["x_50"] = (g_n * A * Q ** (1 / 6) * (115 / s_ANFO) ** (19 / 30) / q ** 0.8)
-        except ZeroDivisionError:
-            st.error("❌ Ошибка: Деление на 0 при расчете x_50.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете x_50.", log_type="ошибка")
-            return
-
-        # Сохранение результата в st.session_state
-        st.session_state["calculation_results"]["x_50"] = self.results["x_50"]
-
-        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", log_type="успех")
-        st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
-
 
 
     @error_handler
@@ -352,20 +357,7 @@ class Calculations:
             ]
 
             
-            # progress_bar = st.progress(0)
-            # calculation_steps = [
-            #     self.calculate_rdi,
-            #     self.calculate_hf,
-            #     self.calculate_a,
-            #     self.calculate_s_anfo,
-            #     self.calculate_q,
-            #     self.calculate_x_max,
-            #     self.calculate_n,
-            #     self.calculate_b,
-            #     self.calculate_g_n,
-            #     self.calculate_x_50,
-            # ]
-    
+   
             # ✅ Запуск расчетов
             for i, step in enumerate(calculation_steps, 1):
                 step_name = step.__name__
@@ -379,7 +371,3 @@ class Calculations:
         except Exception as e:
             self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
             st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
-    
-        finally:
-            st.session_state["status_message"] = "Готов к работе"
-
