@@ -72,19 +72,3 @@ class FragmentationCalculator:
         finally:
             self.session_manager.set_state("current_step", None)
             st.session_state["status_message"] = "Готов к работе"
-
-    # def save_to_session_state(self):
-    #     """
-    #     Сохраняет расчётные параметры БВР в session_state.
-    #     """
-    #     if "calculation_results" not in st.session_state:
-    #         st.session_state["calculation_results"] = {}
-
-    #     # Сохраняем параметры, если они существуют
-    #     for param in ["x_max", "x_50", "b"]:
-    #         if param in st.session_state:
-    #             st.session_state["calculation_results"][param] = st.session_state[param]
-
-    #     if not st.session_state["calculation_results"]:
-    #         st.warning("⚠ Расчеты выполнены, но результатов нет. Проверьте входные данные.")
-    #         self.logs_manager.add_log("fragmentation_calculator", "Предупреждение: calculation_results пуст после расчетов.", "предупреждение")
