@@ -33,7 +33,7 @@ class Calculations:
 
         self.params = st.session_state.get("user_parameters", {})
 
-        if not st.session_state.get("conf_ref_vals"):
+        if not st.session_state.get("reference_parameters"):
             st.warning("Утверждённые эталонные значения отсутствуют. Проверьте ввод данных.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют эталонные значения.", log_type="ошибка")
 
@@ -43,7 +43,7 @@ class Calculations:
         """
         Инициализирует ключи в session_state.
         """
-        required_keys = ["conf_ref_vals", "calculation_results", "P_x_data"]
+        required_keys = ["reference_parameters", "calculation_results", "P_x_data"]
         for key in required_keys:
             if key not in st.session_state or st.session_state[key] is None:
                 st.session_state[key] = {} if key == "calculation_results" else None
@@ -106,7 +106,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет HF: {self.results['HF']:.2f}", log_type="успех")
-        st.success(f"✅ HF успешно рассчитан: {self.results['HF']:.2f}")
+        st.sidebar.success(f"✅ HF успешно рассчитан: {self.results['HF']:.2f}")
 
     @error_handler
     def calculate_a(self):
@@ -136,7 +136,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет A: {self.results['A']:.2f}", log_type="успех")
-        st.success(f"✅ A успешно рассчитан: {self.results['A']:.2f}")
+        st.sidebar.success(f"✅ A успешно рассчитан: {self.results['A']:.2f}")
 
     @error_handler
     def calculate_s_anfo(self):
@@ -166,7 +166,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет s_ANFO: {self.results['s_ANFO']:.2f}%", log_type="успех")
-        st.success(f"✅ s_ANFO успешно рассчитан: {self.results['s_ANFO']:.2f}%")
+        st.sidebar.success(f"✅ s_ANFO успешно рассчитан: {self.results['s_ANFO']:.2f}%")
 
     @error_handler
     def calculate_q(self):
@@ -207,7 +207,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет специфического заряда q: {self.results['q']:.4f}", log_type="успех")
-        st.success(f"✅ Специфический заряд q успешно рассчитан: {self.results['q']:.4f}")
+        st.sidebar.success(f"✅ Специфический заряд q успешно рассчитан: {self.results['q']:.4f}")
 
     # Блок 2: Расчет ключевых параметров
     @error_handler
@@ -247,7 +247,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
-        st.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
+        st.sidebar.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
 
     @error_handler
     def calculate_n(self):
@@ -306,7 +306,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет n: {self.results['n']:.4f}", log_type="успех")
-        st.success(f"✅ Коэффициент равномерности n успешно рассчитан: {self.results['n']:.4f}")
+        st.sidebar.success(f"✅ Коэффициент равномерности n успешно рассчитан: {self.results['n']:.4f}")
 
     @error_handler
     def calculate_b(self):
@@ -350,7 +350,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет b: {self.results['b']:.4f}", log_type="успех")
-        st.success(f"✅ Параметр формы кривой b успешно рассчитан: {self.results['b']:.4f}")
+        st.sidebar.success(f"✅ Параметр формы кривой b успешно рассчитан: {self.results['b']:.4f}")
 
     @error_handler
     def calculate_g_n(self):
@@ -396,7 +396,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет g(n): {self.results['g_n']:.4f}", log_type="успех")
-        st.success(f"✅ Показатель g(n) успешно рассчитан: {self.results['g_n']:.4f}")
+        st.sidebar.success(f"✅ Показатель g(n) успешно рассчитан: {self.results['g_n']:.4f}")
 
     @error_handler
     def calculate_x_50(self):
@@ -445,7 +445,7 @@ class Calculations:
 
         # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", log_type="успех")
-        st.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
+        st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
 
 #     @error_handler
 #     def calculate_p_x(self):
