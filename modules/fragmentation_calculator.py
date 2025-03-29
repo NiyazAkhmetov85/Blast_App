@@ -59,32 +59,32 @@ class FragmentationCalculator:
                 step()
                 progress_bar.progress(i / len(calculation_steps))
 
-            # ✅ Сохранение расчетов
-            self.save_to_session_state()
+            # # ✅ Сохранение расчетов
+            # self.save_to_session_state()
 
             self.logs_manager.add_log("fragmentation_calculator", "✅ Все расчеты БВР успешно выполнены.", "успех")
-            st.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
+            st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
 
         except Exception as e:
             self.logs_manager.add_log("fragmentation_calculator", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-            st.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+            st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
 
         finally:
             self.session_manager.set_state("current_step", None)
             st.session_state["status_message"] = "Готов к работе"
 
-    def save_to_session_state(self):
-        """
-        Сохраняет расчётные параметры БВР в session_state.
-        """
-        if "calculation_results" not in st.session_state:
-            st.session_state["calculation_results"] = {}
+    # def save_to_session_state(self):
+    #     """
+    #     Сохраняет расчётные параметры БВР в session_state.
+    #     """
+    #     if "calculation_results" not in st.session_state:
+    #         st.session_state["calculation_results"] = {}
 
-        # Сохраняем параметры, если они существуют
-        for param in ["x_max", "x_50", "b"]:
-            if param in st.session_state:
-                st.session_state["calculation_results"][param] = st.session_state[param]
+    #     # Сохраняем параметры, если они существуют
+    #     for param in ["x_max", "x_50", "b"]:
+    #         if param in st.session_state:
+    #             st.session_state["calculation_results"][param] = st.session_state[param]
 
-        if not st.session_state["calculation_results"]:
-            st.warning("⚠ Расчеты выполнены, но результатов нет. Проверьте входные данные.")
-            self.logs_manager.add_log("fragmentation_calculator", "Предупреждение: calculation_results пуст после расчетов.", "предупреждение")
+    #     if not st.session_state["calculation_results"]:
+    #         st.warning("⚠ Расчеты выполнены, но результатов нет. Проверьте входные данные.")
+    #         self.logs_manager.add_log("fragmentation_calculator", "Предупреждение: calculation_results пуст после расчетов.", "предупреждение")
