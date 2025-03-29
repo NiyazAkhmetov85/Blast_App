@@ -16,25 +16,11 @@ class ResultsSummary:
         # self.psd_calculator = PSDCalculator(session_manager)
         # self.results_display = ResultsDisplay()
 
-
     def show_results_summary(self):
-        """
-        Интерфейс итоговых расчётов, PSD-таблицы и визуализации кумулятивной кривой.
-        """
-        st.header("Итоговые расчёты и визуализация")
+        st.title("Итоговые расчеты параметров БВР")
 
-        # Проверяем наличие имени блока
-        block_name = st.session_state.get("block_name", "Неизвестный блок")
-
-        if not block_name or block_name == "Неизвестный блок":
-            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
-        else:
-            st.info(f"Импортированный блок: **{block_name}**")
-
-        # Кнопка для запуска расчётов БВР
+        # Кнопка запуска расчётов
         if st.button("Запустить расчеты БВР"):
-            with st.spinner("Выполняются расчёты..."):
-                try:
-                    from modules.calculations import Calculations  # Импорт объединённого модуля
-                    calc = Calculations(self.session_manager, self.logs_manager)
-                    calc.run_all_calculations()  # Запуск всех расчётов
+            self.calculator.run_all_calculations()
+
+        # Здесь будут другие компоненты: графики, таблицы, метрики и т.д. (по мере разработки)
