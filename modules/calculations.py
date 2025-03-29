@@ -30,25 +30,24 @@ class Calculations:
         self.session_manager = session_manager
         self.logs_manager = logs_manager
         self.results = {}
-
         self.params = st.session_state.get("user_parameters", {})
 
-        if not st.session_state.get("reference_parameters"):
-            st.warning("Утверждённые эталонные значения отсутствуют. Проверьте ввод данных.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют эталонные значения.", log_type="ошибка")
+        # if not st.session_state.get("reference_parameters"):
+        #     st.warning("Утверждённые эталонные значения отсутствуют. Проверьте ввод данных.")
+        #     self.logs_manager.add_log(module="calculations", event="Ошибка: отсутствуют эталонные значения.", log_type="ошибка")
 
-        self._initialize_session_state()
+    #     self._initialize_session_state()
 
-    def _initialize_session_state(self):
-        """
-        Инициализирует ключи в session_state.
-        """
-        required_keys = ["reference_parameters", "calculation_results", "P_x_data"]
-        for key in required_keys:
-            if key not in st.session_state or st.session_state[key] is None:
-                st.session_state[key] = {} if key == "calculation_results" else None
+    # def _initialize_session_state(self):
+    #     """
+    #     Инициализирует ключи в session_state.
+    #     """
+    #     required_keys = ["reference_parameters", "calculation_results", "P_x_data"]
+    #     for key in required_keys:
+    #         if key not in st.session_state or st.session_state[key] is None:
+    #             st.session_state[key] = {} if key == "calculation_results" else None
 
-        self.logs_manager.add_log(module="calculations", event="Инициализация session_state завершена.", log_type="успех")
+    #     self.logs_manager.add_log(module="calculations", event="Инициализация session_state завершена.", log_type="успех")
 
     # Блок 1: Расчет вспомогательных параметров
     @error_handler
