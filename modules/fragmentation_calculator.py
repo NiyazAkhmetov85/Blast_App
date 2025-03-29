@@ -33,7 +33,7 @@ class FragmentationCalculator:
         """
         Запускает последовательное выполнение всех расчетов БВР.
         """
-        self.session_manager.set_state("current_step", "Запуск расчетов БВР")
+        # self.session_manager.set_state("current_step", "Запуск расчетов БВР")
         st.session_state["status_message"] = "Запуск расчетов БВР..."
 
         try:
