@@ -335,6 +335,91 @@ class Calculations:
 
 
     @error_handler
+    def calculate_n_iterative(self, tolerance=0.05, max_iterations=5):
+        """
+        Итерационный расчет коэффициента равномерности распределения (n),
+        с использованием эталонного x_50 как начального приближения.
+        tolerance - допустимая погрешность в долях (5% = 0.05)
+        max_iterations - максимальное количество итераций
+        """
+    
+        # Получаем начальное приближение x_50
+        x_50_ref = st.session_state.get("reference_parameters", {}).get("target_x_50")
+    
+        if x_50_ref is None or not isinstance(x_50_ref, (int, float)):
+            st.error("❌ Ошибка: отсутствует эталонное значение x_50.")
+            self.logs_manager.add_log("calculations", "Ошибка: отсутствует эталонное значение x_50.", "ошибка")
+            return
+    
+        # Исходные параметры из session_state
+        S = self.params.get("S")
+        B = self.params.get("B")
+        Ø_h = self.params.get("Ø_h", 0) / 1000
+        SD = self.params.get("SD")
+        L_b = self.params.get("L_b")
+        L_c = self.params.get("L_c")
+        L_tot = self.params.get("L_tot")
+        H = self.params.get("H")
+    
+        x_max = self.results.get("x_max")
+    
+        # Проверяем наличие всех параметров
+        required_params = [S, B, Ø_h, SD, L_b, L_c, L_tot, H, x_max]
+        if any(p is None for p in required_params):
+            st.error("❌ Ошибка: отсутствуют необходимые исходные параметры.")
+            self.logs_manager.add_log("calculations", "Ошибка: не все исходные параметры доступны.", "ошибка")
+            return
+    
+        n = None
+        x_50_current = x_50_ref
+    
+        for iteration in range(1, max_iterations + 1):
+            n_prev = n
+    
+            # Расчет n на текущей итерации
+            n = (
+                2 * math.log(2) * math.log(x_max / x_50_current) *
+                (2.2 - 0.014 * (B / Ø_h)) *
+                (1 - SD / B) *
+                math.sqrt((1 + S / B) / 2) *
+                ((L_b - L_c) / L_tot + 0.1) ** 0.1 *
+                (L_tot / H)
+            )
+    
+            # Расчет нового x_50 на основе полученного n
+            self.results["n"] = n
+            self.calculate_g_n()
+            self.calculate_x_50()
+            x_50_new = self.results.get("x_50")
+    
+            # Выводим промежуточные результаты
+            st.write(f"Итерация {iteration}: n = {n:.4f}, x_50 = {x_50_new:.4f}")
+    
+            # Проверка сходимости
+            if x_50_new and abs(x_50_new - x_50_current) / x_50_current <= tolerance:
+                st.success(f"✅ Итерации завершены с достаточной точностью за {iteration} шагов.")
+                break
+    
+            # Подготовка к следующей итерации
+            x_50_current = x_50_new
+        else:
+            st.warning("⚠️ Достигнуто максимальное число итераций без достаточной сходимости.")
+    
+        # Сохраняем финальное значение n и x_50
+        if "calculation_results" not in st.session_state:
+            st.session_state["calculation_results"] = {}
+    
+        st.session_state["calculation_results"]["n"] = n
+        st.session_state["calculation_results"]["x_50"] = x_50_current
+    
+        self.logs_manager.add_log(
+            "calculations",
+            f"✅ Итерационный расчет n завершён: n={n:.4f}, x_50={x_50_current:.4f}",
+            "успех"
+        )
+
+
+    @error_handler
     def run_all_calculations(self):
         """
         Запуск всех расчетов БВР последовательно.
@@ -351,14 +436,11 @@ class Calculations:
                 self.calculate_s_anfo,
                 self.calculate_q,
                 self.calculate_x_max,
-                self.calculate_n,     
+                self.run_iterative_calculation,  # Итерационный расчёт вместо calculate_n и calculate_x_50
                 self.calculate_g_n,   
-                self.calculate_x_50,   
                 self.calculate_b,       
             ]
-
-            
-   
+    
             # ✅ Запуск расчетов
             for i, step in enumerate(calculation_steps, 1):
                 step_name = step.__name__
@@ -372,3 +454,4 @@ class Calculations:
         except Exception as e:
             self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
             st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+
