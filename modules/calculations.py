@@ -436,7 +436,7 @@ class Calculations:
                 self.calculate_s_anfo,
                 self.calculate_q,
                 self.calculate_x_max,
-                self.run_iterative_calculation,  # Итерационный расчёт вместо calculate_n и calculate_x_50
+                self.calculate_n_iterative,
                 self.calculate_g_n,   
                 self.calculate_b,       
             ]
