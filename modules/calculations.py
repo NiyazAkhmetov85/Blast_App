@@ -9,14 +9,24 @@ from utils.session_state_manager import SessionStateManager
 
 
 # Декоратор для обработки ошибок
+# def error_handler(func):
+#     def wrapper(self, *args, **kwargs):
+#         try:
+#             return func(self, *args, **kwargs)
+#         except Exception as e:
+#             LogsManager.add_log(module="calculations", event=f"Ошибка в {func.__name__}: {str(e)}", log_type="ошибка")
+#             st.error(f"Ошибка в {func.__name__}: {str(e)}")
+#     return wrapper
+
 def error_handler(func):
     def wrapper(self, *args, **kwargs):
         try:
             return func(self, *args, **kwargs)
         except Exception as e:
-            LogsManager.add_log(module="calculations", event=f"Ошибка в {func.__name__}: {str(e)}", log_type="ошибка")
+            self.logs_manager.add_log(module="calculations", event=f"Ошибка в {func.__name__}: {str(e)}", log_type="ошибка")
             st.error(f"Ошибка в {func.__name__}: {str(e)}")
     return wrapper
+
 
 
 class Calculations:
