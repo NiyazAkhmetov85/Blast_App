@@ -166,8 +166,6 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
         st.sidebar.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
-
-
   
 
     @error_handler
@@ -300,7 +298,7 @@ class Calculations:
         Расчет b (параметра формы кривой).
         """
         x_max = self.results.get("x_max")
-        x_50 = self.results.get("x_50")  # Берем рассчитанное значение x_50, а не из параметров
+        x_50 = self.results.get("target_x_50")  # Берем рассчитанное значение x_50, а не из параметров
         n = self.results.get("n")
 
         # Проверка наличия всех необходимых параметров
