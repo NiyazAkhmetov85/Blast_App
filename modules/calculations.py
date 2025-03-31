@@ -466,14 +466,14 @@ class Calculations:
             self.logs_manager.add_log("calculations", "✅ Все расчеты БВР успешно выполнены.", "успех")
             st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
 
-        # ✅ Автоматическое отображение таблицы результатов
-        st.subheader("Результаты расчетов БВР")
-        results_df = pd.DataFrame.from_dict(st.session_state["calculation_results"], orient='index', columns=['Значение'])
-        st.dataframe(results_df)
-
-    except Exception as e:
-        self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-        st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+            # ✅ Автоматическое отображение таблицы результатов
+            st.subheader("Результаты расчетов БВР")
+            results_df = pd.DataFrame.from_dict(st.session_state["calculation_results"], orient='index', columns=['Значение'])
+            st.dataframe(results_df)
+    
+        except Exception as e:
+            self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+            st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
     
         # except Exception as e:
         #     self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
