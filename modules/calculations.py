@@ -419,7 +419,6 @@ class Calculations:
 
 
 
-
     @error_handler
     def run_all_calculations(self):
         """
@@ -437,7 +436,7 @@ class Calculations:
                 self.calculate_q,
                 self.calculate_x_max,
                 self.calculate_n_iterative,  # Итерационный расчёт n и x_50
-                self.calculate_g_n,           # Перерасчёт g_n после итераций
+                # self.calculate_g_n,           # Перерасчёт g_n после итераций
                 self.calculate_b,
             ]
     
