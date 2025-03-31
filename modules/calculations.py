@@ -355,6 +355,12 @@ class Calculations:
         # Проверка наличия всех необходимых параметров
         missing_params = [p for p in ["x_max", "x_50", "n"] if locals()[p] is None]
 
+        
+        if self.results.get("x_max") is None:
+            st.error("❌ Ошибка: x_max не был рассчитан ранее.")
+            self.logs_manager.add_log(module="calculations", event="Ошибка: x_max не был рассчитан ранее.", log_type="ошибка")
+            return
+
         if missing_params:
             st.warning(f"❌ Ошибка: Отсутствуют параметры: {', '.join(missing_params)}. Расчет b невозможен.")
             self.logs_manager.add_log(module="calculations", event=f"Ошибка: Отсутствуют параметры {missing_params}.", log_type="ошибка")
