@@ -420,11 +420,18 @@ class Calculations:
         st.session_state["calculation_results"]["n"] = n
         st.session_state["calculation_results"]["x_50"] = x_50_current
     
+        # self.logs_manager.add_log(
+        #     "calculations",
+        #     f"✅ Итерационный расчет n завершён: n={n:.4f}, x_50={x_50_current:.4f}",
+        #     "успех"
+        # )
+
         self.logs_manager.add_log(
-            "calculations",
-            f"✅ Итерационный расчет n завершён: n={n:.4f}, x_50={x_50_current:.4f}",
-            "успех"
+        module="calculations",
+        event=f"✅ Итерационный расчет n завершён: n={n:.4f}, x_50={x_50_current:.4f}",
+        log_type="успех"
         )
+
 
 
     @error_handler
@@ -458,8 +465,17 @@ class Calculations:
     
             self.logs_manager.add_log("calculations", "✅ Все расчеты БВР успешно выполнены.", "успех")
             st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
+
+        # ✅ Автоматическое отображение таблицы результатов
+        st.subheader("Результаты расчетов БВР")
+        results_df = pd.DataFrame.from_dict(st.session_state["calculation_results"], orient='index', columns=['Значение'])
+        st.dataframe(results_df)
+
+    except Exception as e:
+        self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+        st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
     
-        except Exception as e:
-            self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-            st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+        # except Exception as e:
+        #     self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+        #     st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
 
