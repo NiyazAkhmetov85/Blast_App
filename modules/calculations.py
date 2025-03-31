@@ -298,7 +298,7 @@ class Calculations:
         Расчет b (параметра формы кривой).
         """
         x_max = self.results.get("x_max")
-        x_50 = self.results.get("target_x_50")  # Берем рассчитанное значение x_50, а не из параметров
+        x_50 = self.results.get("x_50")
         n = self.results.get("n")
 
         # Проверка наличия всех необходимых параметров
