@@ -461,9 +461,41 @@ class Calculations:
             self.logs_manager.add_log("calculations", "✅ Все расчеты БВР успешно выполнены.", "успех")
             st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
     
-            st.subheader("Результаты расчетов БВР")
-            results_df = pd.DataFrame.from_dict(st.session_state["calculation_results"], orient='index', columns=['Значение'])
-            st.dataframe(results_df)
+            # st.subheader("Результаты расчетов БВР")
+            # results_df = pd.DataFrame.from_dict(st.session_state["calculation_results"], orient='index', columns=['Значение'])
+            # st.dataframe(results_df)
+
+
+            st.subheader("Итоговые параметры БВР")
+            
+            # Словарь с описанием параметров, единицами и порядком сортировки
+            parameter_info = {
+                "x_50": {"name": "Медианный размер фрагмента", "unit": "мм", "order": 1},
+                "x_max": {"name": "Максимальный размер фрагмента", "unit": "мм", "order": 2},
+                "b": {"name": "Показатель формы кривой", "unit": "-", "order": 3},
+                "n": {"name": "Коэффициент равномерности", "unit": "-", "order": 4},
+                "g_n": {"name": "Показатель g(n)", "unit": "-", "order": 5},
+                "RDI": {"name": "Индекс плотности породы (RDI)", "unit": "-", "order": 6},
+                "HF": {"name": "Фактор твёрдости породы (HF)", "unit": "-", "order": 7},
+                "A": {"name": "Индекс взрываемости породы (A)", "unit": "-", "order": 8},
+                "s_ANFO": {"name": "Относительная энергия ВВ (s_ANFO)", "unit": "%", "order": 9},
+                "q": {"name": "Специфический заряд", "unit": "кг/м³", "order": 10},
+            }
+            
+            # Подготовка данных для таблицы
+            data = []
+            for key, value in st.session_state.get("calculation_results", {}).items():
+                meta = parameter_info.get(key, {"name": key, "unit": "", "order": 99})
+                data.append({
+                    "Параметр": meta["name"],
+                    "Значение": round(value, 4),
+                    "Ед. изм.": meta["unit"],
+                    "Порядок": meta["order"]
+                })
+            
+            df = pd.DataFrame(data).sort_values("Порядок")
+            st.dataframe(df[["Параметр", "Значение", "Ед. изм."]], use_container_width=True)
+
     
         except Exception as e:
             self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
