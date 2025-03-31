@@ -56,6 +56,9 @@ class ReferenceCalculations:
         Запуск всех расчетов и отображение результатов.
         """
         try:
+            # Расчет x_50
+            self.calculate_x_50() 
+           
             # Генерация шкалы
             self.generate_scale()
             
@@ -166,10 +169,7 @@ class ReferenceCalculations:
         except Exception as e:
             st.sidebar.error(f"Ошибка расчета x_50: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка расчета x_50: {e}", "ошибка")
-
-
-
-    
+  
 
     def visualize_cumulative_curve(self):
         """
