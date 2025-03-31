@@ -167,15 +167,33 @@ class Calculations:
         S *= 1000  # Преобразование S в мм
         B *= 1000  # Преобразование B в мм
 
-        self.results["x_max"] = min(in_situ_block_size, S, B)
+        # self.results["x_max"] = min(in_situ_block_size, S, B)
 
+        # if "calculation_results" not in st.session_state:
+        #     st.session_state["calculation_results"] = {}
+
+        # st.session_state["calculation_results"]["x_max"] = self.results["x_max"]
+
+        # self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
+        # st.sidebar.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
+
+
+        self.results["x_max"] = float(min(in_situ_block_size, S, B))
+        
         if "calculation_results" not in st.session_state:
             st.session_state["calculation_results"] = {}
-
+        
         st.session_state["calculation_results"]["x_max"] = self.results["x_max"]
+        
+        self.logs_manager.add_log(
+            module="calculations", 
+            event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", 
+            log_type="успех"
+        )
+        st.sidebar.success(
+            f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм"
+        )
 
-        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
-        st.sidebar.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
   
 
     @error_handler
@@ -348,44 +366,43 @@ class Calculations:
         """
         Расчет b (параметра формы кривой).
         """
-        x_max = self.results.get("x_max")
-        x_50 = self.results.get("x_50")
-        n = self.results.get("n")
-
-        # Проверка наличия всех необходимых параметров
-        missing_params = [p for p in ["x_max", "x_50", "n"] if locals()[p] is None]
-
-        
-        if self.results.get("x_max") is None:
-            st.error("❌ Ошибка: x_max не был рассчитан ранее.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: x_max не был рассчитан ранее.", log_type="ошибка")
+        try:
+            x_max = float(self.results["x_max"])
+            x_50 = float(self.results["x_50"])
+            n = float(self.results["n"])
+        except (TypeError, ValueError, KeyError):
+            st.error("❌ Ошибка: один из параметров (x_max, x_50, n) имеет неверный формат или отсутствует.")
+            self.logs_manager.add_log(
+                module="calculations",
+                event="Ошибка: Некорректный формат или отсутствие параметров (x_max, x_50, n).",
+                log_type="ошибка"
+            )
             return
-
-        if missing_params:
-            st.warning(f"❌ Ошибка: Отсутствуют параметры: {', '.join(missing_params)}. Расчет b невозможен.")
-            self.logs_manager.add_log(module="calculations", event=f"Ошибка: Отсутствуют параметры {missing_params}.", log_type="ошибка")
-            return
-
-        # Проверяем, являются ли параметры числами
-        if not all(isinstance(locals()[p], (int, float)) for p in ["x_max", "x_50", "n"]):
-            st.warning("❌ Ошибка: Некоторые параметры имеют некорректный формат.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: Некоторые параметры имеют некорректный формат.", log_type="ошибка")
-            return
-
+    
         # Проверка деления на 0
         if x_50 <= 0:
             st.error("❌ Ошибка: x_50 должен быть больше 0.")
-            self.logs_manager.add_log(module="calculations", event="Ошибка: x_50 <= 0.", log_type="ошибка")
+            self.logs_manager.add_log(
+                module="calculations",
+                event="Ошибка: x_50 <= 0.",
+                log_type="ошибка"
+            )
             return
-
+    
         # Выполняем расчет
         self.results["b"] = 2 * math.log(2) * math.log(x_max / x_50) * n
-
+    
         # Сохранение результата в st.session_state
         st.session_state["calculation_results"]["b"] = self.results["b"]
         
-        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет b: {self.results['b']:.4f}", log_type="успех")
+        # Логируем результат
+        self.logs_manager.add_log(
+            module="calculations",
+            event=f"✅ Успешный расчет b: {self.results['b']:.4f}",
+            log_type="успех"
+        )
         st.sidebar.success(f"✅ Параметр формы кривой b успешно рассчитан: {self.results['b']:.4f}")
+
 
 
 
