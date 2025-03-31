@@ -320,47 +320,79 @@ class Calculations:
     #     st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
 
 
+    # @error_handler
+    # def calculate_x_50(self):
+    #     """
+    #     Расчет медианного размера фрагмента (x_50).
+    #     """
+    #     g_n = self.results.get("g_n")
+    #     A = self.results.get("A")
+    #     Q = self.params.get("Q")
+    #     s_ANFO = self.results.get("s_ANFO")
+    #     q = self.results.get("q")
+    
+    #     # Проверка наличия всех параметров
+    #     if None in (g_n, A, Q, s_ANFO, q):
+    #         st.warning("❌ Ошибка: Отсутствуют входные параметры для расчета x_50.")
+    #         self.logs_manager.add_log("calculations", "Ошибка: отсутствуют входные параметры для x_50.", "ошибка")
+    #         return
+    
+    #     # Проверка, что все параметры являются числами
+    #     if not all(isinstance(val, (int, float)) for val in [g_n, A, Q, s_ANFO, q]):
+    #         st.warning("❌ Ошибка: Один из параметров для расчета x_50 имеет неверный формат.")
+    #         self.logs_manager.add_log("calculations", "Ошибка: Некорректный формат параметров x_50.", "ошибка")
+    #         return
+    
+    #     # Проверка корректности значений (избегаем деления на 0)
+    #     if q <= 0 or s_ANFO <= 0:
+    #         st.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
+    #         self.logs_manager.add_log("calculations", "Ошибка: q или s_ANFO <= 0.", "ошибка")
+    #         return
+    
+    #     # Выполняем расчет x_50
+    #     self.results["x_50"] = (g_n * A * Q ** (1 / 6) * (115 / s_ANFO) ** (19 / 30)) / (q ** 0.8)
+    
+    #     # Готовим session_state
+    #     st.session_state["calculation_results"].pop("x_50", None)
+    #     st.session_state["calculation_results"]["x_50"] = self.results["x_50"]
+    
+    #     # Логируем успешный расчет с указанием результата
+    #     self.logs_manager.add_log("calculations", f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", "успех")
+    #     st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
+    
     @error_handler
     def calculate_x_50(self):
         """
         Расчет медианного размера фрагмента (x_50).
         """
-        g_n = self.results.get("g_n")
         A = self.results.get("A")
         Q = self.params.get("Q")
         s_ANFO = self.results.get("s_ANFO")
         q = self.results.get("q")
     
-        # Проверка наличия всех параметров
-        if None in (g_n, A, Q, s_ANFO, q):
+        if None in (A, Q, s_ANFO, q):
             st.warning("❌ Ошибка: Отсутствуют входные параметры для расчета x_50.")
             self.logs_manager.add_log("calculations", "Ошибка: отсутствуют входные параметры для x_50.", "ошибка")
             return
     
-        # Проверка, что все параметры являются числами
-        if not all(isinstance(val, (int, float)) for val in [g_n, A, Q, s_ANFO, q]):
-            st.warning("❌ Ошибка: Один из параметров для расчета x_50 имеет неверный формат.")
-            self.logs_manager.add_log("calculations", "Ошибка: Некорректный формат параметров x_50.", "ошибка")
-            return
-    
-        # Проверка корректности значений (избегаем деления на 0)
         if q <= 0 or s_ANFO <= 0:
             st.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
             self.logs_manager.add_log("calculations", "Ошибка: q или s_ANFO <= 0.", "ошибка")
             return
     
-        # Выполняем расчет x_50
-        self.results["x_50"] = (g_n * A * Q ** (1 / 6) * (115 / s_ANFO) ** (19 / 30)) / (q ** 0.8)
+        try:
+            self.results["x_50"] = A * Q**(1/6) * (115 / s_ANFO)**0.633 / q**0.8
+        except ZeroDivisionError:
+            st.error("❌ Ошибка: Деление на 0 при расчете x_50.")
+            self.logs_manager.add_log("calculations", "Ошибка: Деление на 0 при расчете x_50.", "ошибка")
+            return
     
-        # Готовим session_state
-        st.session_state["calculation_results"].pop("x_50", None)
         st.session_state["calculation_results"]["x_50"] = self.results["x_50"]
     
-        # Логируем успешный расчет с указанием результата
         self.logs_manager.add_log("calculations", f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", "успех")
         st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
 
-    
+
     @error_handler
     def calculate_b(self):
         """
