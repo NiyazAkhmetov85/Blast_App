@@ -10,19 +10,16 @@ class DataInitializer:
         self.logs_manager = logs_manager
         self.default_file = "config/full_parameter_list.json"
 
-        # ✅ Инициализация ключей session_state
-        st.session_state.setdefault("parameters", {})
-        st.session_state.setdefault("parameters_loaded", False)
-        st.session_state.setdefault("user_parameters", {})
+        # ✅ Корректно инициализируем ключи в session_state
+        if "parameters" not in st.session_state:
+            st.session_state["parameters"] = {}
 
-        # ✅ Загрузка параметров только при первом запуске
+        if "parameters_loaded" not in st.session_state:  # Добавляем проверку
+            st.session_state["parameters_loaded"] = False
+
+        # Загружаем параметры только если они ещё не загружены
         if not st.session_state["parameters_loaded"]:
             self.load_default_parameters()
-
-    @st.cache_data(show_spinner=False)
-    def _load_json_from_file(self, file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
 
     def load_default_parameters(self):
         """
@@ -34,18 +31,24 @@ class DataInitializer:
                 self.logs_manager.add_log("data_initializer", "Файл параметров не найден", "ошибка")
                 return
 
-            data = self._load_json_from_file(self.default_file)
+            with open(self.default_file, "r", encoding="utf-8") as file:
+                data = json.load(file)
 
+            # Проверяем наличие ключа "parameters"
             if "parameters" not in data or not isinstance(data["parameters"], list):
-                st.sidebar.error("Файл параметров некорректен или пуст.")
-                self.logs_manager.add_log("data_initializer", "Формат параметров некорректен", "ошибка")
+                st.sidebar.error(f"Файл {self.default_file} не содержит корректные параметры!")
+                self.logs_manager.add_log("data_initializer", "Файл параметров пуст или некорректен", "ошибка")
                 return
 
-            st.session_state["parameters"] = {param["name"]: param for param in data["parameters"]}
-            st.session_state["parameters_loaded"] = True
+            # Загружаем параметры только если они не загружены
+            if not st.session_state["parameters"]:
+                st.session_state["parameters"] = {param["name"]: param for param in data["parameters"]}
 
-            st.sidebar.success("✅ Параметры успешно загружены.")
-            self.logs_manager.add_log("data_initializer", f"Загружено {len(data['parameters'])} параметров", "успех")
+                # Сообщение о загрузке параметров показываем только один раз
+                if not st.session_state["parameters_loaded"]:
+                    st.sidebar.success("Параметры успешно загружены!")
+                    self.logs_manager.add_log("data_initializer", f"Загружены {len(st.session_state['parameters'])} параметров", "успех")
+                    st.session_state["parameters_loaded"] = True  # Устанавливаем флаг
 
         except Exception as e:
             st.sidebar.error(f"Ошибка загрузки параметров: {e}")
@@ -53,8 +56,8 @@ class DataInitializer:
 
     def reload_parameters(self):
         """
-        Принудительно перезагружает параметры.
+        Позволяет пользователю загрузить параметры заново через кнопку.
         """
-        st.session_state["parameters"] = {}
-        st.session_state["parameters_loaded"] = False
+        st.session_state["parameters"] = {}  # Очистка перед загрузкой
+        st.session_state["parameters_loaded"] = False  # Сбрасываем флаг
         self.load_default_parameters()
