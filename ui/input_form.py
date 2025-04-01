@@ -3,34 +3,19 @@ from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 import copy 
 
+
 class InputForm:
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
+        """
+        Инициализация формы ввода данных.
+        """
         self.session_manager = session_manager
         self.logs_manager = logs_manager
 
+        # Инициализация пользовательских параметров
         if "parameters" not in st.session_state:
             st.session_state["parameters"] = {}
             self.logs_manager.add_log("input_form", "⚠️ Параметры не загружены при инициализации", "warning")
-            st.warning("⚠️ Внимание: параметры пока не загружены. Проверьте конфигурацию или загрузите данные.")
-        else:
-            # Автоматический вызов формы при наличии параметров
-            if "user_parameters" not in st.session_state:
-                st.session_state["user_parameters"] = {}
-            self.render_parameters_section()
-
-
-# class InputForm:
-#     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
-#         """
-#         Инициализация формы ввода данных.
-#         """
-#         self.session_manager = session_manager
-#         self.logs_manager = logs_manager
-
-#         # Инициализация пользовательских параметров
-#         if "parameters" not in st.session_state:
-#             st.session_state["parameters"] = {}
-#             self.logs_manager.add_log("input_form", "⚠️ Параметры не загружены при инициализации", "warning")
 
 
     def render_parameters_section(self):
