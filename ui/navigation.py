@@ -6,7 +6,7 @@ from utils.logs_manager import LogsManager
 
 from ui.data_input import DataInput
 from ui.reference_values import RefValues
-from ui.results_summary import ResultsSummary  # ✅ Добавлен импорт
+from ui.results_summary import ResultsSummary
 
 
 # ✅ Инициализация менеджеров
@@ -20,23 +20,23 @@ if "parameters_loaded" not in st.session_state:
     st.session_state["parameters_loaded"] = True
 
 
-def reload_parameters():
-    """
-    Перезагрузка параметров с очисткой дублирующихся сообщений.
-    """
-    if "status_messages" not in st.session_state:
-        st.session_state["status_messages"] = []
+# def reload_parameters():
+#     """
+#     Перезагрузка параметров с очисткой дублирующихся сообщений.
+#     """
+#     if "status_messages" not in st.session_state:
+#         st.session_state["status_messages"] = []
 
-    # ✅ Повторная загрузка параметров
-    data_initializer.load_default_parameters()
-    st.sidebar.success("🔄 Параметры успешно перезагружены!")
+#     # ✅ Повторная загрузка параметров
+#     data_initializer.load_default_parameters()
+#     st.sidebar.success("🔄 Параметры успешно перезагружены!")
 
 
-def show_sidebar():
-    """
-    Отображение боковой панели с кнопками и логами.
-    """
-    st.sidebar.button("🔄 Перезагрузить параметры", on_click=reload_parameters)
+# def show_sidebar():
+#     """
+#     Отображение боковой панели с кнопками и логами.
+#     """
+#     st.sidebar.button("🔄 Перезагрузить параметры", on_click=reload_parameters)
 
 
 def navigation():
