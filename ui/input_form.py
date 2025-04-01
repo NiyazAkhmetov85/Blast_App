@@ -130,32 +130,32 @@ class InputForm:
         """
         Выбор типа сетки (треугольная/квадратная).
         """
-        st.subheader("Выберите тип сетки скважин")
-    
-        # Защита: убеждаемся, что ключ инициализирован
-        if "user_parameters" not in st.session_state:
-            st.session_state["user_parameters"] = {}
-    
-        # Получаем текущее значение или устанавливаем по умолчанию
-        grid_type_default = st.session_state["user_parameters"].get("grid_type", "triangular")
-    
-        # Радиокнопка с явным указанием value и уникальным key
-        new_grid_type = st.radio(
-            label="Тип сетки",
-            options=["triangular", "square"],
-            format_func=lambda x: "Квадратная" if x == "square" else "Треугольная",
-            key="grid_type_selection",  # уникальный ключ — обязательно
-            value=grid_type_default     # задаём текущее состояние
-        )
-    
-        # Обновляем, только если значение изменилось
-        if new_grid_type != st.session_state["user_parameters"].get("grid_type"):
-            st.session_state["user_parameters"]["grid_type"] = new_grid_type
-            self.logs_manager.add_log(
-                module="input_form",
-                event=f"Тип сетки изменён пользователем: {'Квадратная' if new_grid_type == 'square' else 'Треугольная'}",
-                log_type="info"
+            st.subheader("Выберите тип сетки скважин")
+        
+            # Защита: убеждаемся, что ключ инициализирован
+            if "user_parameters" not in st.session_state:
+                st.session_state["user_parameters"] = {}
+        
+            # Получаем текущее значение или устанавливаем по умолчанию
+            grid_type_default = st.session_state["user_parameters"].get("grid_type", "triangular")
+        
+            # Радиокнопка с явным указанием value и уникальным key
+            new_grid_type = st.radio(
+                label="Тип сетки",
+                options=["triangular", "square"],
+                format_func=lambda x: "Квадратная" if x == "square" else "Треугольная",
+                key="grid_type_selection",  # уникальный ключ — обязательно
+                value=grid_type_default     # задаём текущее состояние
             )
+        
+            # Обновляем, только если значение изменилось
+            if new_grid_type != st.session_state["user_parameters"].get("grid_type"):
+                st.session_state["user_parameters"]["grid_type"] = new_grid_type
+                self.logs_manager.add_log(
+                    module="input_form",
+                    event=f"Тип сетки изменён пользователем: {'Квадратная' if new_grid_type == 'square' else 'Треугольная'}",
+                    log_type="info"
+                )
 
     
     # def render_grid_type_selection(self):
