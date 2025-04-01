@@ -91,6 +91,7 @@ class DataInput:
         if st.button("Запустить генерацию сетки скважин и расчет параметров сетки"):
             self.grid_generator.generate_grid()
             self.grid_generator.calculate_grid_metrics()
+            st.subheader("Расчитанные координаты скважин")
             if st.session_state.get("grid_generated", False):
                 st.dataframe(self.grid_generator.grid_data, width=600)
             
