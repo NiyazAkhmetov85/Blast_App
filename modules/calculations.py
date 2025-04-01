@@ -550,7 +550,7 @@ class Calculations:
                 except (ValueError, TypeError):
                     numeric_value = value
                 row = (
-                    f"{description} ({key}), {block_name}",
+                    f"{description} ({key})",
                     numeric_value,
                     unit
                 )
