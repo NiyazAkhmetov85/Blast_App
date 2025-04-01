@@ -123,43 +123,43 @@ class DataInput:
             block_name = st.session_state.get("block_name", "Блок")
             st.subheader(f"Исходные параметры — {block_name}")
             
-            # Получение параметров из session_state
-            params_all = st.session_state.get("user_parameters", {})
-            reference_all = st.session_state.get("reference_parameters", {})
-            param_definitions = st.session_state.get("parameters", {})
-            
-            # Словарь для хранения категорий и их параметров
-            categorized_params = {}
-            
-            # Объединённый список всех параметров
-            combined_params = {**params_all, **reference_all}
-            
-            for key, value in combined_params.items():
-                param_meta = param_definitions.get(key, {})
-                description = param_meta.get("description", key)
-                unit = param_meta.get("unit", "")
-                category = param_meta.get("category", "Прочие параметры")
-            
-                # Безопасное округление
-                try:
-                    numeric_value = round(float(value), 4)
-                except (ValueError, TypeError):
-                    numeric_value = value
-            
-                row = (f"{description} ({key}), {block_name}", numeric_value, unit)
-            
-                # Сохраняем в нужную категорию
-                if category not in categorized_params:
-                    categorized_params[category] = []
-                categorized_params[category].append(row)
-            
-            # Отображаем таблицы по категориям
-            for category_name, rows in categorized_params.items():
-                if not rows:
-                    continue
-                st.markdown(f"**{category_name}**")
-                df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
-                st.dataframe(df, use_container_width=True, hide_index=True)
+                # Получение параметров из session_state
+                params_all = st.session_state.get("user_parameters", {})
+                reference_all = st.session_state.get("reference_parameters", {})
+                param_definitions = st.session_state.get("parameters", {})
+                
+                # Словарь для хранения категорий и их параметров
+                categorized_params = {}
+                
+                # Объединённый список всех параметров
+                combined_params = {**params_all, **reference_all}
+                
+                for key, value in combined_params.items():
+                    param_meta = param_definitions.get(key, {})
+                    description = param_meta.get("description", key)
+                    unit = param_meta.get("unit", "")
+                    category = param_meta.get("category", "Прочие параметры")
+                
+                    # Безопасное округление
+                    try:
+                        numeric_value = round(float(value), 4)
+                    except (ValueError, TypeError):
+                        numeric_value = value
+                
+                    row = (f"{description} ({key}), {block_name}", numeric_value, unit)
+                
+                    # Сохраняем в нужную категорию
+                    if category not in categorized_params:
+                        categorized_params[category] = []
+                    categorized_params[category].append(row)
+                
+                # Отображаем таблицы по категориям
+                for category_name, rows in categorized_params.items():
+                    if not rows:
+                        continue
+                    st.markdown(f"**{category_name}**")
+                    df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
+                    st.dataframe(df, use_container_width=True, hide_index=True)
 
            
       
