@@ -464,7 +464,7 @@ class Calculations:
 
             # 1. Итоговые параметры БВР
             block_name = st.session_state.get("block_name", "Без названия")
-            st.subheader(f"Итоговые параметры БВР — {block_name}")
+            st.subheader(f"Итоговые параметры БВР {block_name}")
             
             parameter_info = {
                 "x_50": {"name": "Медианный размер фрагмента", "unit": "мм", "order": 1},
@@ -494,7 +494,7 @@ class Calculations:
             
             
             # 2. Исходные параметры БВР
-            st.subheader(f"Исходные параметры — {block_name}")
+            st.subheader(f"Исходные параметры {block_name}")
             
             categories = {
                 "Геометрические параметры": [],
