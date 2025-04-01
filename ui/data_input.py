@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from modules.data_processing import DataProcessing
 from modules.grid_generator import GridGenerator
 from modules.visualization import Visualization
@@ -104,7 +105,6 @@ class DataInput:
         # Кнопка очистки визуализации
         if st.button("Очистить визуализацию"):
             self.visualizer.clear_visualization()
-
 
 
     def show_summary_screen(self):
@@ -244,7 +244,6 @@ class DataInput:
         # else:
         #     st.warning("Нет утвержденных параметров для отображения.")
     
-
 
 # Пример использования
 if __name__ == "__main__":
