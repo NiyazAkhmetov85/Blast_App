@@ -154,14 +154,31 @@ class DataInput:
                 if category not in categorized_params:
                     categorized_params[category] = []
                 categorized_params[category].append(row)
-    
+                
             # Отображаем таблицы по категориям
             for category_name, rows in categorized_params.items():
                 if not rows:
                     continue
                 st.markdown(f"**{category_name}**")
                 df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
-                st.dataframe(df, use_container_width=True, hide_index=True)
+                
+                # Задаём фиксированную ширину для столбцов "Значение" и "Ед. изм."
+                df_styled = df.style.set_properties(
+                    subset=["Значение", "Ед. изм."],
+                    **{"width": "100px"}  # здесь можно указать нужное значение ширины, напр. "100px" или "120px"
+                )
+                
+                st.dataframe(df_styled, use_container_width=True)
+    
+            # # Отображаем таблицы по категориям
+            # for category_name, rows in categorized_params.items():
+            #     if not rows:
+            #         continue
+            #     st.markdown(f"**{category_name}**")
+            #     df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
+            #     st.dataframe(df, use_container_width=True, hide_index=True)
+
+
 
     # def show_summary_screen(self):
     #     """
