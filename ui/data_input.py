@@ -123,68 +123,68 @@ class DataInput:
             block_name = st.session_state.get("block_name", "Блок")
             st.subheader(f"Исходные параметры — {block_name}")
             
-                # Получение параметров из session_state
-                params_all = st.session_state.get("user_parameters", {})
-                reference_all = st.session_state.get("reference_parameters", {})
-                param_definitions = st.session_state.get("parameters", {})
+                # # Получение параметров из session_state
+                # params_all = st.session_state.get("user_parameters", {})
+                # reference_all = st.session_state.get("reference_parameters", {})
+                # param_definitions = st.session_state.get("parameters", {})
                 
-                # Словарь для хранения категорий и их параметров
-                categorized_params = {}
+                # # Словарь для хранения категорий и их параметров
+                # categorized_params = {}
                 
-                # Объединённый список всех параметров
-                combined_params = {**params_all, **reference_all}
+                # # Объединённый список всех параметров
+                # combined_params = {**params_all, **reference_all}
                 
-                for key, value in combined_params.items():
-                    param_meta = param_definitions.get(key, {})
-                    description = param_meta.get("description", key)
-                    unit = param_meta.get("unit", "")
-                    category = param_meta.get("category", "Прочие параметры")
+                # for key, value in combined_params.items():
+                #     param_meta = param_definitions.get(key, {})
+                #     description = param_meta.get("description", key)
+                #     unit = param_meta.get("unit", "")
+                #     category = param_meta.get("category", "Прочие параметры")
                 
-                    # Безопасное округление
-                    try:
-                        numeric_value = round(float(value), 4)
-                    except (ValueError, TypeError):
-                        numeric_value = value
+                #     # Безопасное округление
+                #     try:
+                #         numeric_value = round(float(value), 4)
+                #     except (ValueError, TypeError):
+                #         numeric_value = value
                 
-                    row = (f"{description} ({key}), {block_name}", numeric_value, unit)
+                #     row = (f"{description} ({key}), {block_name}", numeric_value, unit)
                 
-                    # Сохраняем в нужную категорию
-                    if category not in categorized_params:
-                        categorized_params[category] = []
-                    categorized_params[category].append(row)
+                #     # Сохраняем в нужную категорию
+                #     if category not in categorized_params:
+                #         categorized_params[category] = []
+                #     categorized_params[category].append(row)
                 
-                # Отображаем таблицы по категориям
-                for category_name, rows in categorized_params.items():
-                    if not rows:
-                        continue
-                    st.markdown(f"**{category_name}**")
-                    df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
-                    st.dataframe(df, use_container_width=True, hide_index=True)
+                # # Отображаем таблицы по категориям
+                # for category_name, rows in categorized_params.items():
+                #     if not rows:
+                #         continue
+                #     st.markdown(f"**{category_name}**")
+                #     df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
+                #     st.dataframe(df, use_container_width=True, hide_index=True)
 
            
       
-        # # Проверка наличия параметров
-        # if "user_parameters" in st.session_state and st.session_state["user_parameters"]:
-        #     st.subheader("Утвержденные параметры блока")
+        # Проверка наличия параметров
+        if "user_parameters" in st.session_state and st.session_state["user_parameters"]:
+            st.subheader("Утвержденные параметры блока")
     
-        #     # Обход параметров: поддержка как вложенных, так и простых структур
-        #     parameters = st.session_state["user_parameters"]
-        #     if isinstance(parameters, dict):
-        #         for group, params in parameters.items():
-        #             if isinstance(params, dict):
-        #                 st.write(f"**{group}:**")
-        #                 for param, value in params.items():
-        #                     if isinstance(value, dict) and "value" in value and "description" in value:
-        #                         st.write(f"- {param}: `{value['value']}` ({value['description']})")
-        #                     else:
-        #                         st.write(f"- {param}: `{value}`")
-        #             else:
-        #                 st.write(f"- {group}: `{params}`")  # Если структура плоская
-        #     else:
-        #         st.warning("Ошибка: `user_parameters` имеет некорректный формат!")
+            # Обход параметров: поддержка как вложенных, так и простых структур
+            parameters = st.session_state["user_parameters"]
+            if isinstance(parameters, dict):
+                for group, params in parameters.items():
+                    if isinstance(params, dict):
+                        st.write(f"**{group}:**")
+                        for param, value in params.items():
+                            if isinstance(value, dict) and "value" in value and "description" in value:
+                                st.write(f"- {param}: `{value['value']}` ({value['description']})")
+                            else:
+                                st.write(f"- {param}: `{value}`")
+                    else:
+                        st.write(f"- {group}: `{params}`")  # Если структура плоская
+            else:
+                st.warning("Ошибка: `user_parameters` имеет некорректный формат!")
     
-        # else:
-        #     st.warning("Нет утвержденных параметров для отображения.")
+        else:
+            st.warning("Нет утвержденных параметров для отображения.")
     
 
 
