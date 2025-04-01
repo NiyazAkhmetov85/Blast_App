@@ -25,11 +25,6 @@ session_manager = SessionStateManager()
 logs_manager = LogsManager()
 data_initializer = DataInitializer(session_manager, logs_manager)
 
-# ✅ Инициализация параметров при первом запуске
-if "parameters" not in st.session_state or "user_parameters" not in st.session_state:
-    data_initializer.load_default_parameters()
-    logs_manager.add_log("main", "Параметры инициализированы при старте", "информация")
-
 
 # ✅ Заголовок приложения
 st.title("Blast Optimization App")
