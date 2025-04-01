@@ -1,9 +1,12 @@
 import math
 import json
+from collections import defaultdict
+
 import numpy as np
 import pandas as pd
 import streamlit as st
 from scipy.special import gamma
+
 from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 
@@ -491,49 +494,86 @@ class Calculations:
             results_df = pd.DataFrame(results_data).sort_values("Порядок")
             st.dataframe(results_df[["Параметр", "Значение", "Ед. изм."]], use_container_width=True, hide_index=True)
 
-
-
-            # 2. Исходные параметры БВР
+            # 1. Получаем данные из session_state
             block_name = st.session_state.get("block_name", "Блок")
             st.subheader(f"Исходные параметры — {block_name}")
             
-            # Получение параметров из session_state
             params_all = st.session_state.get("user_parameters", {})
             reference_all = st.session_state.get("reference_parameters", {})
             param_definitions = st.session_state.get("parameters", {})
             
-            # Словарь для хранения категорий и их параметров
-            categorized_params = {}
-            
-            # Объединённый список всех параметров
+            # Объединяем параметры. Если ключи пересекаются,
+            # значения из reference_all заменят значения из params_all.
             combined_params = {**params_all, **reference_all}
             
-            for key, value in combined_params.items():
-                param_meta = param_definitions.get(key, {})
-                description = param_meta.get("description", key)
-                unit = param_meta.get("unit", "")
-                category = param_meta.get("category", "Прочие параметры")
-            
-                # Безопасное округление
+            # Функция для безопасного округления значения
+            def safe_round(value):
                 try:
-                    numeric_value = round(float(value), 4)
+                    return round(float(value), 4)
                 except (ValueError, TypeError):
-                    numeric_value = value
+                    return value
             
-                row = (f"{description} ({key}), {block_name}", numeric_value, unit)
+            # 2. Группируем параметры по категориям, используя defaultdict
+            categorized_params = defaultdict(list)
             
-                # Сохраняем в нужную категорию
-                if category not in categorized_params:
-                    categorized_params[category] = []
+            for key, value in combined_params.items():
+                meta = param_definitions.get(key, {})
+                description = meta.get("description", key)
+                unit = meta.get("unit", "")
+                category = meta.get("category", "Прочие параметры")
+                
+                row = (f"{description} ({key}), {block_name}", safe_round(value), unit)
                 categorized_params[category].append(row)
             
-            # Отображаем таблицы по категориям
-            for category_name, rows in categorized_params.items():
+            # 3. Выводим таблицы для каждой категории
+            for category, rows in categorized_params.items():
                 if not rows:
                     continue
-                st.markdown(f"**{category_name}**")
+                st.markdown(f"**{category}**")
                 df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
                 st.dataframe(df, use_container_width=True, hide_index=True)
+
+            # # 2. Исходные параметры БВР
+            # block_name = st.session_state.get("block_name", "Блок")
+            # st.subheader(f"Исходные параметры — {block_name}")
+            
+            # # Получение параметров из session_state
+            # params_all = st.session_state.get("user_parameters", {})
+            # reference_all = st.session_state.get("reference_parameters", {})
+            # param_definitions = st.session_state.get("parameters", {})
+            
+            # # Словарь для хранения категорий и их параметров
+            # categorized_params = {}
+            
+            # # Объединённый список всех параметров
+            # combined_params = {**params_all, **reference_all}
+            
+            # for key, value in combined_params.items():
+            #     param_meta = param_definitions.get(key, {})
+            #     description = param_meta.get("description", key)
+            #     unit = param_meta.get("unit", "")
+            #     category = param_meta.get("category", "Прочие параметры")
+            
+            #     # Безопасное округление
+            #     try:
+            #         numeric_value = round(float(value), 4)
+            #     except (ValueError, TypeError):
+            #         numeric_value = value
+            
+            #     row = (f"{description} ({key}), {block_name}", numeric_value, unit)
+            
+            #     # Сохраняем в нужную категорию
+            #     if category not in categorized_params:
+            #         categorized_params[category] = []
+            #     categorized_params[category].append(row)
+            
+            # # Отображаем таблицы по категориям
+            # for category_name, rows in categorized_params.items():
+            #     if not rows:
+            #         continue
+            #     st.markdown(f"**{category_name}**")
+            #     df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
+            #     st.dataframe(df, use_container_width=True, hide_index=True)
 
            
   
