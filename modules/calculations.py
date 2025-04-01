@@ -537,6 +537,6 @@ class Calculations:
 
            
   
-        # except Exception as e:
-        #     self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-        #     st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+        except Exception as e:
+            self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+            st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
