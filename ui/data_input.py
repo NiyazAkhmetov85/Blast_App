@@ -109,7 +109,7 @@ class DataInput:
         """
         Экран итогового обзора перед переходом к следующим разделам.
         """
-        st.title("Итоговый обзор блока")
+        st.title("Исходные параметры блока")
     
         # Проверяем наличие имени блока
         block_name = st.session_state.get("block_name", "Неизвестный блок")
@@ -119,28 +119,28 @@ class DataInput:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
     
-        # Проверка наличия параметров
-        if "user_parameters" in st.session_state and st.session_state["user_parameters"]:
-            st.subheader("Утвержденные параметры блока")
+        # # Проверка наличия параметров
+        # if "user_parameters" in st.session_state and st.session_state["user_parameters"]:
+        #     st.subheader("Утвержденные параметры блока")
     
-            # Обход параметров: поддержка как вложенных, так и простых структур
-            parameters = st.session_state["user_parameters"]
-            if isinstance(parameters, dict):
-                for group, params in parameters.items():
-                    if isinstance(params, dict):
-                        st.write(f"**{group}:**")
-                        for param, value in params.items():
-                            if isinstance(value, dict) and "value" in value and "description" in value:
-                                st.write(f"- {param}: `{value['value']}` ({value['description']})")
-                            else:
-                                st.write(f"- {param}: `{value}`")
-                    else:
-                        st.write(f"- {group}: `{params}`")  # Если структура плоская
-            else:
-                st.warning("Ошибка: `user_parameters` имеет некорректный формат!")
+        #     # Обход параметров: поддержка как вложенных, так и простых структур
+        #     parameters = st.session_state["user_parameters"]
+        #     if isinstance(parameters, dict):
+        #         for group, params in parameters.items():
+        #             if isinstance(params, dict):
+        #                 st.write(f"**{group}:**")
+        #                 for param, value in params.items():
+        #                     if isinstance(value, dict) and "value" in value and "description" in value:
+        #                         st.write(f"- {param}: `{value['value']}` ({value['description']})")
+        #                     else:
+        #                         st.write(f"- {param}: `{value}`")
+        #             else:
+        #                 st.write(f"- {group}: `{params}`")  # Если структура плоская
+        #     else:
+        #         st.warning("Ошибка: `user_parameters` имеет некорректный формат!")
     
-        else:
-            st.warning("Нет утвержденных параметров для отображения.")
+        # else:
+        #     st.warning("Нет утвержденных параметров для отображения.")
     
 
 
