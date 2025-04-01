@@ -493,124 +493,50 @@ class Calculations:
 
 
 
-            # 2. Исходные параметры БВР
-            block_name = st.session_state.get("block_name", "Блок")
-            st.subheader(f"Исходные параметры — {block_name}")
+        #     # 2. Исходные параметры БВР
+        #     block_name = st.session_state.get("block_name", "Блок")
+        #     st.subheader(f"Исходные параметры — {block_name}")
             
-            # Получение параметров из session_state
-            params_all = st.session_state.get("user_parameters", {})
-            reference_all = st.session_state.get("reference_parameters", {})
-            param_definitions = st.session_state.get("parameters", {})
+        #     # Получение параметров из session_state
+        #     params_all = st.session_state.get("user_parameters", {})
+        #     reference_all = st.session_state.get("reference_parameters", {})
+        #     param_definitions = st.session_state.get("parameters", {})
             
-            # Словарь для хранения категорий и их параметров
-            categorized_params = {}
+        #     # Словарь для хранения категорий и их параметров
+        #     categorized_params = {}
             
-            # Объединённый список всех параметров
-            combined_params = {**params_all, **reference_all}
+        #     # Объединённый список всех параметров
+        #     combined_params = {**params_all, **reference_all}
             
-            for key, value in combined_params.items():
-                param_meta = param_definitions.get(key, {})
-                description = param_meta.get("description", key)
-                unit = param_meta.get("unit", "")
-                category = param_meta.get("category", "Прочие параметры")
+        #     for key, value in combined_params.items():
+        #         param_meta = param_definitions.get(key, {})
+        #         description = param_meta.get("description", key)
+        #         unit = param_meta.get("unit", "")
+        #         category = param_meta.get("category", "Прочие параметры")
             
-                # Безопасное округление
-                try:
-                    numeric_value = round(float(value), 4)
-                except (ValueError, TypeError):
-                    numeric_value = value
+        #         # Безопасное округление
+        #         try:
+        #             numeric_value = round(float(value), 4)
+        #         except (ValueError, TypeError):
+        #             numeric_value = value
             
-                row = (f"{description} ({key}), {block_name}", numeric_value, unit)
+        #         row = (f"{description} ({key}), {block_name}", numeric_value, unit)
             
-                # Сохраняем в нужную категорию
-                if category not in categorized_params:
-                    categorized_params[category] = []
-                categorized_params[category].append(row)
+        #         # Сохраняем в нужную категорию
+        #         if category not in categorized_params:
+        #             categorized_params[category] = []
+        #         categorized_params[category].append(row)
             
-            # Отображаем таблицы по категориям
-            for category_name, rows in categorized_params.items():
-                if not rows:
-                    continue
-                st.markdown(f"**{category_name}**")
-                df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
-                st.dataframe(df, use_container_width=True, hide_index=True)
+        #     # Отображаем таблицы по категориям
+        #     for category_name, rows in categorized_params.items():
+        #         if not rows:
+        #             continue
+        #         st.markdown(f"**{category_name}**")
+        #         df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
+        #         st.dataframe(df, use_container_width=True, hide_index=True)
 
-
-
-
-            # # 2. Исходные параметры БВР
-            # st.subheader(f"Исходные параметры — {st.session_state.get('block_name', 'Блок')}")
-            
-            # # Категории
-            # categories = {
-            #     "Геометрические параметры": [],
-            #     "Физико-механические свойства породы": [],
-            #     "Параметры буровзрывных работ": [],
-            #     "Эталонные параметры": []
-            # }
-            
-            # # Получаем данные из session_state
-            # params_all = st.session_state.get("user_parameters", {})
-            # reference_all = st.session_state.get("reference_parameters", {})
-            # param_definitions = st.session_state.get("parameters", {})
-            # block_name = st.session_state.get("block_name", "Блок")
-            
-            # # Ключи по категориям
-            # geom_keys = ["S", "B", "H", "Ø_h", "SD", "L_b", "L_c", "L_tot", "in_situ_block_size"]
-            # rock_keys = ["rho", "sigma_c", "E", "RMD"]
-            # blasting_keys = ["Q", "energy_vv"]
-            # reference_keys = ["target_x_max", "target_n", "target_b", "x_range_min", "target_x_50"]
-            
-            # # Обработка пользовательских параметров
-            # for key, value in params_all.items():
-            #     param_meta = param_definitions.get(key, {})
-            #     description = param_meta.get("description", key)
-            #     unit = param_meta.get("unit", "")
-            #     # Безопасное округление
-            #     try:
-            #         numeric_value = round(float(value), 4)
-            #     except (ValueError, TypeError):
-            #         numeric_value = value
-            #     row = (
-            #         f"{description} ({key})",
-            #         numeric_value,
-            #         unit
-            #     )
-            #     if key in geom_keys:
-            #         categories["Геометрические параметры"].append(row)
-            #     elif key in rock_keys:
-            #         categories["Физико-механические свойства породы"].append(row)
-            #     elif key in blasting_keys:
-            #         categories["Параметры буровзрывных работ"].append(row)
-            
-            # # Обработка эталонных параметров
-            # for key, value in reference_all.items():
-            #     param_meta = param_definitions.get(key, {})
-            #     description = param_meta.get("description", key)
-            #     unit = param_meta.get("unit", "")
-            #     # Безопасное округление
-            #     try:
-            #         numeric_value = round(float(value), 4)
-            #     except (ValueError, TypeError):
-            #         numeric_value = value
-            #     row = (
-            #         f"{description} ({key})",
-            #         numeric_value,
-            #         unit
-            #     )
-            #     if key in reference_keys:
-            #         categories["Эталонные параметры"].append(row)
-            
-            # # Отображение таблиц по категориям
-            # for category, rows in categories.items():
-            #     if not rows:
-            #         continue
-            #     st.markdown(f"**{category}**")
-            #     df_group = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
-            #     st.dataframe(df_group, use_container_width=True, hide_index=True)
-
-            
+           
   
-        except Exception as e:
-            self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-            st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+        # except Exception as e:
+        #     self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+        #     st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
