@@ -464,9 +464,10 @@ class Calculations:
             st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
 
 
+            
             # 1. Итоговые параметры БВР
             block_name = st.session_state.get("block_name", "Без названия")
-            st.subheader(f"Итоговые параметры БВР {block_name}")
+            st.subheader(f"Итоговые параметры БВР — {block_name}")
             
             parameter_info = {
                 "x_50": {"name": "Медианный размер фрагмента", "unit": "мм", "order": 1},
@@ -484,36 +485,33 @@ class Calculations:
             results_data = []
             for key, value in st.session_state.get("calculation_results", {}).items():
                 meta = parameter_info.get(key, {"name": key, "unit": "", "order": 99})
-                results_data.append({
-                    "Параметр": f"{meta['name']}, {key}",
-                    "Значение": round(value, 4),
-                    "Ед. изм.": meta["unit"],
-                    "Порядок": meta["order"]
-                })
+                try:
+                    value_rounded = round(float(value), 4)
+                except (ValueError, TypeError):
+                    value_rounded = value
             
-            results_df = pd.DataFrame(results_data).sort_values("Порядок")
-            st.dataframe(results_df[["Параметр", "Значение", "Ед. изм."]], use_container_width=True, hide_index=True)
-
-            # 1. Получаем данные из session_state
-            block_name = st.session_state.get("block_name", "Блок")
+                results_data.append((f"{meta['name']} ({key})", value_rounded, meta["unit"], meta["order"]))
+            
+            # Преобразуем в DataFrame и сортируем
+            df = pd.DataFrame(results_data, columns=["Параметр", "Значение", "Ед. изм.", "Порядок"]).sort_values("Порядок")
+            st.markdown(df[["Параметр", "Значение", "Ед. изм."]].to_html(index=False), unsafe_allow_html=True)
+            
+            
+            # 2. Исходные параметры
             st.subheader(f"Исходные параметры — {block_name}")
             
             params_all = st.session_state.get("user_parameters", {})
             reference_all = st.session_state.get("reference_parameters", {})
             param_definitions = st.session_state.get("parameters", {})
             
-            # Объединяем параметры. Если ключи пересекаются,
-            # значения из reference_all заменят значения из params_all.
             combined_params = {**params_all, **reference_all}
             
-            # Функция для безопасного округления значения
             def safe_round(value):
                 try:
                     return round(float(value), 4)
                 except (ValueError, TypeError):
-                    return value
+                    return str(value)
             
-            # 2. Группируем параметры по категориям, используя defaultdict
             categorized_params = defaultdict(list)
             
             for key, value in combined_params.items():
@@ -521,17 +519,86 @@ class Calculations:
                 description = meta.get("description", key)
                 unit = meta.get("unit", "")
                 category = meta.get("category", "Прочие параметры")
-                
-                row = (f"{description} ({key}), {block_name}", safe_round(value), unit)
+            
+                row = (f"{description} ({key})", safe_round(value), unit)
                 categorized_params[category].append(row)
             
-            # 3. Выводим таблицы для каждой категории
             for category, rows in categorized_params.items():
                 if not rows:
                     continue
                 st.markdown(f"**{category}**")
                 df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
-                st.dataframe(df, use_container_width=True, hide_index=True)
+                st.markdown(df.to_html(index=False), unsafe_allow_html=True)
+
+
+            # # 1. Итоговые параметры БВР
+            # block_name = st.session_state.get("block_name", "Без названия")
+            # st.subheader(f"Итоговые параметры БВР {block_name}")
+            
+            # parameter_info = {
+            #     "x_50": {"name": "Медианный размер фрагмента", "unit": "мм", "order": 1},
+            #     "x_max": {"name": "Максимальный размер фрагмента", "unit": "мм", "order": 2},
+            #     "b": {"name": "Показатель формы кривой", "unit": "-", "order": 3},
+            #     "n": {"name": "Коэффициент равномерности", "unit": "-", "order": 4},
+            #     "g_n": {"name": "Показатель g(n)", "unit": "-", "order": 5},
+            #     "RDI": {"name": "Индекс плотности породы", "unit": "-", "order": 6},
+            #     "HF": {"name": "Фактор твёрдости породы", "unit": "-", "order": 7},
+            #     "A": {"name": "Индекс взрываемости породы", "unit": "-", "order": 8},
+            #     "s_ANFO": {"name": "Относительная энергия ВВ", "unit": "%", "order": 9},
+            #     "q": {"name": "Специфический заряд", "unit": "кг/м³", "order": 10},
+            # }
+            
+            # results_data = []
+            # for key, value in st.session_state.get("calculation_results", {}).items():
+            #     meta = parameter_info.get(key, {"name": key, "unit": "", "order": 99})
+            #     results_data.append({
+            #         "Параметр": f"{meta['name']}, {key}",
+            #         "Значение": round(value, 4),
+            #         "Ед. изм.": meta["unit"],
+            #         "Порядок": meta["order"]
+            #     })
+            
+            # results_df = pd.DataFrame(results_data).sort_values("Порядок")
+            # st.dataframe(results_df[["Параметр", "Значение", "Ед. изм."]], use_container_width=True, hide_index=True)
+
+            # # 1. Получаем данные из session_state
+            # block_name = st.session_state.get("block_name", "Блок")
+            # st.subheader(f"Исходные параметры — {block_name}")
+            
+            # params_all = st.session_state.get("user_parameters", {})
+            # reference_all = st.session_state.get("reference_parameters", {})
+            # param_definitions = st.session_state.get("parameters", {})
+            
+            # # Объединяем параметры. Если ключи пересекаются,
+            # # значения из reference_all заменят значения из params_all.
+            # combined_params = {**params_all, **reference_all}
+            
+            # # Функция для безопасного округления значения
+            # def safe_round(value):
+            #     try:
+            #         return round(float(value), 4)
+            #     except (ValueError, TypeError):
+            #         return value
+            
+            # # 2. Группируем параметры по категориям, используя defaultdict
+            # categorized_params = defaultdict(list)
+            
+            # for key, value in combined_params.items():
+            #     meta = param_definitions.get(key, {})
+            #     description = meta.get("description", key)
+            #     unit = meta.get("unit", "")
+            #     category = meta.get("category", "Прочие параметры")
+                
+            #     row = (f"{description} ({key}), {block_name}", safe_round(value), unit)
+            #     categorized_params[category].append(row)
+            
+            # # 3. Выводим таблицы для каждой категории
+            # for category, rows in categorized_params.items():
+            #     if not rows:
+            #         continue
+            #     st.markdown(f"**{category}**")
+            #     df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
+            #     st.dataframe(df, use_container_width=True, hide_index=True)
 
             # # 2. Исходные параметры БВР
             # block_name = st.session_state.get("block_name", "Блок")
