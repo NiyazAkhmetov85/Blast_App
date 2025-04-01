@@ -138,10 +138,17 @@ class InputForm:
         # Выбор типа сетки пользователем
         new_grid_type = st.radio(
             label="Тип сетки",
-            options=["triangular","square"],
-            index=0 if grid_type_default == "square" else 1,
-            format_func=lambda x: "Квадратная" if x == "square" else "Треугольная"
+            options=["triangular", "square"],
+            format_func=lambda x: "Квадратная" if x == "square" else "Треугольная",
+            key="grid_type_selection",  # важно: нужен уникальный key для правильной работы
+            value=grid_type_default     # 👈 вместо index
         )
+        # new_grid_type = st.radio(
+        #     label="Тип сетки",
+        #     options=["triangular","square"],
+        #     index=0 if grid_type_default == "square" else 1,
+        #     format_func=lambda x: "Квадратная" if x == "square" else "Треугольная"
+        # )
     
         # Обновляем состояние, если значение изменилось
         if new_grid_type != st.session_state["user_parameters"].get("grid_type"):
