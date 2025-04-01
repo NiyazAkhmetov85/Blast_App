@@ -30,10 +30,6 @@ if "parameters" not in st.session_state or "user_parameters" not in st.session_s
     data_initializer.load_default_parameters()
     logs_manager.add_log("main", "Параметры инициализированы при старте", "информация")
 
-# ✅ Однократное приветствие (опционально)
-if "app_initialized" not in st.session_state:
-    st.info("Welcome to the Blast Optimization App.\n\nPlease select a tab on the left to get started.")
-    st.session_state["app_initialized"] = True
 
 # ✅ Заголовок приложения
 st.title("Blast Optimization App")
