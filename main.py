@@ -32,7 +32,7 @@ if "parameters" not in st.session_state or "user_parameters" not in st.session_s
 
 # ✅ Однократное приветствие (опционально)
 if "app_initialized" not in st.session_state:
-    st.info("👋 Добро пожаловать в приложение *Blast Optimization App*.\n\nВыберите вкладку слева для начала работы.")
+    st.info("Welcome to the Blast Optimization App.\n\nPlease select a tab on the left to get started.")
     st.session_state["app_initialized"] = True
 
 # ✅ Заголовок приложения
