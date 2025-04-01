@@ -55,8 +55,8 @@ def navigation():
         "📥 Импорт данных блока": data_input.show_import_block,
         "📋 Ввод параметров": data_input.show_input_form,
         "📊 Визуализация блока": data_input.show_visualization,
-        "📜 Итоговые параметры": data_input.show_summary_screen,
         "📌 Эталонные значения": reference_values.show_reference_values,
+        "📜 Итоговые параметры": data_input.show_summary_screen,
         "📈 Итоговые расчеты": results_summary.show_results_summary
     }
 
