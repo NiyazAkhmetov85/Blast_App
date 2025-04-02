@@ -1,22 +1,21 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 
 class ResultsDisplay:
-    def __init__(self):
-        """Инициализация модуля отображения результатов."""
-        self.logs_manager = LogsManager()
+    def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
+        self.session_manager = session_manager
+        self.logs_manager = logs_manager
 
         # Проверяем и загружаем имя блока
         self.block_name = st.session_state.get("block_name", "Неизвестный блок")
         if self.block_name == "Неизвестный блок":
-            st.warning("⚠ Имя блока не загружено. Проверьте импорт блока.")
-            self.logs_manager.add_log(module="results_display", event="Предупреждение: Имя блока не загружено.", log_type="предупреждение")
 
         # Проверяем наличие P_x_data
         if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
-            st.warning("⚠ Данные P(x) отсутствуют. Проверьте расчеты.")
+            st.sidebar.warning("⚠ Данные P(x) отсутствуют. Проверьте расчеты.")
             self.logs_manager.add_log(module="results_display", event="Предупреждение: P_x_data отсутствует.", log_type="предупреждение")
 
         # Логируем успешную инициализацию
@@ -29,7 +28,7 @@ class ResultsDisplay:
         try:
             # Проверяем, есть ли данные в session_state
             if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
-                st.warning("❌ Данные PSD отсутствуют. Пожалуйста, загрузите данные.")
+                st.sidebar.warning("❌ Данные PSD отсутствуют. Пожалуйста, загрузите данные.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Данные PSD отсутствуют", log_type="предупреждение")
                 return
 
@@ -38,19 +37,19 @@ class ResultsDisplay:
             # Проверка структуры данных
             required_columns = {"Размер фрагмента (x), мм", "Эталонные P(x), %", "Рассчитанные P(x), %"}
             if not required_columns.issubset(df.columns):
-                st.error("❌ Ошибка: Некорректная структура данных PSD.")
+                st.sidebar.error("❌ Ошибка: Некорректная структура данных PSD.")
                 self.logs_manager.add_log(module="results_display", event="Ошибка: некорректная структура данных PSD", log_type="ошибка")
                 return
 
             # Проверка, не пуст ли DataFrame
             if df.empty:
-                st.warning("⚠ Таблица PSD пуста. Проверьте корректность расчетов.")
+                st.sidebar.warning("⚠ Таблица PSD пуста. Проверьте корректность расчетов.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Таблица PSD пуста", log_type="предупреждение")
                 return
 
             # Проверка значений P(x)
             if (df["Рассчитанные P(x), %"] < 0).any() or (df["Рассчитанные P(x), %"] > 100).any():
-                st.warning("⚠ Найдены некорректные значения в расчетных P(x). Значения должны быть в диапазоне [0, 100]%.")
+                st.sidebar.warning("⚠ Найдены некорректные значения в расчетных P(x). Значения должны быть в диапазоне [0, 100]%.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Некорректные значения в P(x)", log_type="предупреждение")
 
             # Сортируем по убыванию размера фрагментов
@@ -61,7 +60,7 @@ class ResultsDisplay:
             x_max = st.session_state.get("target_x_max", "N/A")
             x_50 = st.session_state.get("target_x_50", "N/A")
 
-            st.write(f"### 📊 Таблица PSD - {self.block_name}")
+            st.write(f"### Таблица PSD - {self.block_name}")
             st.write(f"**Эталонные показатели:** x_min: {x_min}, x_max: {x_max}, X_50: {x_50}")
 
             # Вывод таблицы с форматированием
@@ -76,7 +75,7 @@ class ResultsDisplay:
 
         except Exception as e:
             self.logs_manager.add_log(module="results_display", event=f"Ошибка отображения таблицы PSD: {str(e)}", log_type="ошибка")
-            st.error(f"❌ Ошибка отображения таблицы PSD: {e}")
+            st.sidebar.error(f"❌ Ошибка отображения таблицы PSD: {e}")
 
         finally:
             self.state_tracker.set_state("current_step", None)
@@ -88,7 +87,7 @@ class ResultsDisplay:
         try:
             # Проверяем, есть ли данные в session_state
             if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
-                st.warning("❌ Данные для кумулятивной кривой отсутствуют. Пожалуйста, загрузите данные.")
+                st.sidebar.warning("❌ Данные для кумулятивной кривой отсутствуют. Пожалуйста, загрузите данные.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Данные для кумулятивной кривой отсутствуют", log_type="предупреждение")
                 return
 
@@ -97,19 +96,19 @@ class ResultsDisplay:
             # Проверка структуры данных
             required_columns = {"Размер фрагмента (x), мм", "Эталонные P(x), %", "Рассчитанные P(x), %"}
             if not required_columns.issubset(df.columns):
-                st.error("❌ Ошибка: Некорректная структура данных PSD.")
+                st.sidebar.error("❌ Ошибка: Некорректная структура данных PSD.")
                 self.logs_manager.add_log(module="results_display", event="Ошибка: некорректная структура данных PSD", log_type="ошибка")
                 return
 
             # Проверка, не пуст ли DataFrame
             if df.empty:
-                st.warning("⚠ Данные для построения кумулятивной кривой отсутствуют.")
+                st.sidebar.warning("⚠ Данные для построения кумулятивной кривой отсутствуют.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Пустой DataFrame для кумулятивной кривой", log_type="предупреждение")
                 return
 
             # Проверка значений P(x)
             if (df["Рассчитанные P(x), %"] < 0).any() or (df["Рассчитанные P(x), %"] > 100).any():
-                st.warning("⚠ Найдены некорректные значения в расчетных P(x). Значения должны быть в диапазоне [0, 100]%.")
+                st.sidebar.warning("⚠ Найдены некорректные значения в расчетных P(x). Значения должны быть в диапазоне [0, 100]%.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Некорректные значения в P(x)", log_type="предупреждение")
 
             # Получение эталонных параметров
@@ -143,7 +142,7 @@ class ResultsDisplay:
 
         except Exception as e:
             self.logs_manager.add_log(module="results_display", event=f"Ошибка отображения кумулятивной кривой: {str(e)}", log_type="ошибка")
-            st.error(f"❌ Ошибка отображения кумулятивной кривой: {e}")
+            st.sidebar.error(f"❌ Ошибка отображения кумулятивной кривой: {e}")
 
         finally:
             self.state_tracker.set_state("current_step", None)
@@ -166,13 +165,13 @@ if __name__ == "__main__":
         results_display = ResultsDisplay(state_tracker)
 
         # Кнопка для отображения таблицы PSD
-        if st.button("📊 Показать таблицу PSD"):
+        if st.button("Показать таблицу PSD"):
             st.session_state["show_psd"] = not st.session_state["show_psd"]
         if st.session_state["show_psd"]:
             results_display.display_psd_table()
 
         # Кнопка для отображения кумулятивной кривой
-        if st.button("📈 Показать кумулятивную кривую"):
+        if st.button("Показать кумулятивную кривую"):
             st.session_state["show_curve"] = not st.session_state["show_curve"]
         if st.session_state["show_curve"]:
             results_display.display_cumulative_curve()
