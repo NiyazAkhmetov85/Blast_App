@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+
 from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 
@@ -8,9 +9,9 @@ class PSDCalculator:
     """
     Класс для расчета P(x) (рассчитанные) и формирования PSD-таблицы.
     """
-    def __init__(self, session_manager: SessionStateManager):
+    def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
-        self.logs_manager = LogsManager(session_manager)
+        self.logs_manager = logs_manager
 
     def run_calculations(self):
         """
@@ -27,11 +28,11 @@ class PSDCalculator:
             self.generate_psd_table()
 
             self.logs_manager.add_log("psd_calculator", "✅ Все расчёты PSD успешно выполнены.", "успех")
-            st.success("✅ Все расчёты PSD успешно выполнены и сохранены.")
+            st.sidebar.success("✅ Все расчёты PSD успешно выполнены и сохранены.")
 
         except Exception as e:
             self.logs_manager.add_log("psd_calculator", f"Ошибка при расчетах PSD: {str(e)}", "ошибка")
-            st.error(f"❌ Ошибка при выполнении расчетов PSD: {e}")
+            st.sidebar.error(f"❌ Ошибка при выполнении расчетов PSD: {e}")
 
         finally:
             self.session_manager.set_state("current_step", None)
@@ -59,7 +60,7 @@ class PSDCalculator:
             self.logs_manager.add_log("psd_calculator", "P(x) рассчитанные успешно вычислены.", "успех")
 
         except Exception as e:
-            st.error(f"Ошибка при расчете P(x) рассчитанные: {e}")
+            st.sidebar.error(f"Ошибка при расчете P(x) рассчитанные: {e}")
             self.logs_manager.add_log("psd_calculator", f"Ошибка при расчете P(x) рассчитанные: {e}", "ошибка")
 
     def generate_psd_table(self):
