@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 
@@ -8,10 +9,6 @@ class ResultsDisplay:
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
-
-        # Проверяем и загружаем имя блока
-        self.block_name = st.session_state.get("block_name", "Неизвестный блок")
-        if self.block_name == "Неизвестный блок":
 
         # Проверяем наличие P_x_data
         if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
@@ -51,9 +48,6 @@ class ResultsDisplay:
             if (df["Рассчитанные P(x), %"] < 0).any() or (df["Рассчитанные P(x), %"] > 100).any():
                 st.sidebar.warning("⚠ Найдены некорректные значения в расчетных P(x). Значения должны быть в диапазоне [0, 100]%.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Некорректные значения в P(x)", log_type="предупреждение")
-
-            # Сортируем по убыванию размера фрагментов
-            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False)
 
             # Вывод информации о блоке и эталонных значениях
             x_min = st.session_state.get("x_range_min", "N/A")
