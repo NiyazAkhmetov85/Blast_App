@@ -11,7 +11,6 @@ from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
 
 
-
 def error_handler(func):
     def wrapper(self, *args, **kwargs):
         try:
@@ -22,12 +21,10 @@ def error_handler(func):
     return wrapper
 
 
-
 class Calculations:
     """
     Класс для выполнения расчетов параметров буровзрывных работ.
     """
-
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
@@ -54,9 +51,7 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет RDI: {self.results['RDI']:.2f}", log_type="успех")
         st.sidebar.success(f"✅ RDI успешно рассчитан: {self.results['RDI']:.2f}")
-
-
-    
+   
     @error_handler
     def calculate_hf(self):
         """
@@ -75,9 +70,7 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет HF: {self.results['HF']:.2f}", log_type="успех")
         st.sidebar.success(f"✅ HF успешно рассчитан: {self.results['HF']:.2f}")
-
-
-    
+   
     @error_handler
     def calculate_a(self):
         """
@@ -97,8 +90,6 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет A: {self.results['A']:.2f}", log_type="успех")
         st.sidebar.success(f"✅ A успешно рассчитан: {self.results['A']:.2f}")
-
-
     
     @error_handler
     def calculate_s_anfo(self):
@@ -118,8 +109,6 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет s_ANFO: {self.results['s_ANFO']:.2f}%", log_type="успех")
         st.sidebar.success(f"✅ s_ANFO успешно рассчитан: {self.results['s_ANFO']:.2f}%")
-
-    
 
     @error_handler
     def calculate_q(self):
@@ -150,9 +139,7 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет q: {self.results['q']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Специфический заряд q успешно рассчитан: {self.results['q']:.4f}")
-
-
-    
+   
     @error_handler
     def calculate_x_max(self):
         """
@@ -196,8 +183,6 @@ class Calculations:
             f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм"
         )
 
-    
-  
     @error_handler
     def calculate_n(self):
         """
@@ -247,8 +232,6 @@ class Calculations:
 
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет n: {self.results['n']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Коэффициент равномерности n успешно рассчитан: {self.results['n']:.4f}")
-
-
     
     @error_handler
     def calculate_g_n(self):
@@ -277,8 +260,6 @@ class Calculations:
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет g(n): {self.results['g_n']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Показатель g(n) успешно рассчитан: {self.results['g_n']:.4f}")
 
-    
-    
     @error_handler
     def calculate_x_50(self):
         """
@@ -311,8 +292,6 @@ class Calculations:
         self.logs_manager.add_log("calculations", f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", "успех")
         st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
 
-
-    
     @error_handler
     def calculate_b(self):
         """
@@ -354,7 +333,6 @@ class Calculations:
             log_type="успех"
         )
         st.sidebar.success(f"✅ Параметр формы кривой b успешно рассчитан: {self.results['b']:.4f}")
-
 
 
     @error_handler
@@ -433,7 +411,6 @@ class Calculations:
         )
 
 
-
     @error_handler
     def run_all_calculations(self):
         """
@@ -464,7 +441,6 @@ class Calculations:
             st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
 
 
-            
             # 1. Итоговые параметры БВР
             block_name = st.session_state.get("block_name", "Без названия")
             st.subheader(f"Итоговые параметры БВР — {block_name}")
