@@ -17,26 +17,8 @@ class PSDCalculator:
         """
         Запускает расчёты P(x) рассчитанные и обновляет таблицу PSD.
         """
-        self.session_manager.set_state("current_step", "Запуск расчетов PSD")
-        st.session_state["status_message"] = "Запуск расчетов PSD..."
-
-        try:
-            # ✅ Рассчитываем P(x) рассчитанные
-            self.calculate_p_x_calculated()
-            
-            # ✅ Генерируем PSD-таблицу
-            self.generate_psd_table()
-
-            self.logs_manager.add_log("psd_calculator", "✅ Все расчёты PSD успешно выполнены.", "успех")
-            st.sidebar.success("✅ Все расчёты PSD успешно выполнены и сохранены.")
-
-        except Exception as e:
-            self.logs_manager.add_log("psd_calculator", f"Ошибка при расчетах PSD: {str(e)}", "ошибка")
-            st.sidebar.error(f"❌ Ошибка при выполнении расчетов PSD: {e}")
-
-        finally:
-            self.session_manager.set_state("current_step", None)
-            st.session_state["status_message"] = "Готов к работе"
+        self.calculate_p_x_calculated()
+        self.generate_psd_table()
 
     def calculate_p_x_calculated(self):
         """
@@ -72,9 +54,10 @@ class PSDCalculator:
             df_calculated = st.session_state.get("P_x_calculated")
             df_psd = pd.merge(df_reference, df_calculated, on="Размер фрагмента (x), мм", how="outer").fillna(0)
             st.session_state["psd_table"] = df_psd
-
-            self.logs_manager.add_log("psd_calculator", "PSD-таблица успешно сформирована.", "успех")
-            st.dataframe(df_psd)
-
+    
+            self.logs_manager.add_log("psd_calculator", "✅ PSD-таблица успешно сформирована.", "успех")
+    
         except Exception as e:
             st.error(f"Ошибка при создании PSD-таблицы: {e}")
+            self.logs_manager.add_log("psd_calculator", f"❌ Ошибка при создании PSD-таблицы: {e}", "ошибка")
+
