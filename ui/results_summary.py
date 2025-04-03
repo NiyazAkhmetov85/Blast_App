@@ -17,7 +17,7 @@ class ResultsSummary:
         self.results_display = ResultsDisplay(session_manager, logs_manager)
 
     def show_results_summary(self):
-        st.title("📊 Итоговые расчёты параметров БВР")
+        st.title("Итоговые расчёты параметров БВР")
 
         block_name = st.session_state.get("block_name", "Неизвестный блок")
         if not block_name or block_name == "Неизвестный блок":
@@ -27,14 +27,14 @@ class ResultsSummary:
             st.success(f"Импортированный блок: **{block_name}**")
 
         # 🔘 Кнопка запуска расчётов параметров БВР
-        if st.button("🔄 Запустить расчеты БВР"):
+        if st.button("Запустить расчеты БВР"):
             self.calculator.run_all_calculations()
 
         # 🔘 Кнопка запуска расчётов PSD
-        if st.button("📊 Рассчитать PSD"):
+        if st.button("Рассчитать PSD"):
             self.psd_calculator.run_calculations()
 
         # 🔘 Кнопка отображения визуализаций
-        if st.button("📈 Показать результаты PSD"):
+        if st.button("Показать результаты PSD"):
             self.results_display.display_psd_table()
             self.results_display.display_cumulative_curve()
