@@ -489,6 +489,6 @@ class Calculations:
                 df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
                 st.markdown(df.to_html(index=False), unsafe_allow_html=True)
            
-        except Exception as e:
-        self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-        st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+                except Exception as e:
+                self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+                st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
