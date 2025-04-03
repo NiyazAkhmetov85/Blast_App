@@ -420,8 +420,14 @@ class Calculations:
                 step()
                 progress_bar.progress(i / len(calculation_steps))
     
-            self.logs_manager.add_log("calculations", "✅ Все расчеты БВР успешно выполнены.", "успех")
-            st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
+                self.logs_manager.add_log("calculations", "✅ Все расчеты БВР успешно выполнены.", "успех")
+                st.sidebar.success("✅ Все расчеты БВР успешно выполнены и сохранены.")
+            
+            except Exception as e:
+                
+                self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
+                st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
+
 
 
             # 1. Итоговые параметры БВР
@@ -488,7 +494,3 @@ class Calculations:
                 st.markdown(f"**{category}**")
                 df = pd.DataFrame(rows, columns=["Параметр", "Значение", "Ед. изм."])
                 st.markdown(df.to_html(index=False), unsafe_allow_html=True)
-           
-                # except Exception as e:
-                # self.logs_manager.add_log("calculations", f"Ошибка при расчетах БВР: {str(e)}", "ошибка")
-                # st.sidebar.error(f"❌ Ошибка при выполнении расчетов БВР: {e}")
