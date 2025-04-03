@@ -17,7 +17,7 @@ def error_handler(func):
             return func(self, *args, **kwargs)
         except Exception as e:
             self.logs_manager.add_log(module="calculations", event=f"Ошибка в {func.__name__}: {str(e)}", log_type="ошибка")
-            st.error(f"Ошибка в {func.__name__}: {str(e)}")
+            st.sidebar.error(f"Ошибка в {func.__name__}: {str(e)}")
     return wrapper
 
 
@@ -163,16 +163,6 @@ class Calculations:
         S *= 1000  # Преобразование S в мм
         B *= 1000  # Преобразование B в мм
 
-        # self.results["x_max"] = min(in_situ_block_size, S, B)
-
-        # if "calculation_results" not in st.session_state:
-        #     st.session_state["calculation_results"] = {}
-
-        # st.session_state["calculation_results"]["x_max"] = self.results["x_max"]
-
-        # self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
-        # st.sidebar.success(f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
-
         self.results["x_max"] = float(min(in_situ_block_size, S, B))
         
         if "calculation_results" not in st.session_state:
@@ -180,14 +170,8 @@ class Calculations:
         
         st.session_state["calculation_results"]["x_max"] = self.results["x_max"]
         
-        self.logs_manager.add_log(
-            module="calculations", 
-            event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", 
-            log_type="успех"
-        )
-        st.sidebar.success(
-            f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм"
-        )
+        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет x_max: {self.results['x_max']:.2f} мм", log_type="успех")
+        st.sidebar.success( f"✅ Максимальный размер фрагмента x_max успешно рассчитан: {self.results['x_max']:.2f} мм")
 
     
     @error_handler
@@ -337,11 +321,7 @@ class Calculations:
         st.session_state["calculation_results"]["b"] = self.results["b"]
         
         # Логируем результат
-        self.logs_manager.add_log(
-            module="calculations",
-            event=f"✅ Успешный расчет b: {self.results['b']:.4f}",
-            log_type="успех"
-        )
+        self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет b: {self.results['b']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Параметр формы кривой b успешно рассчитан: {self.results['b']:.4f}")
 
 
@@ -414,11 +394,9 @@ class Calculations:
         st.session_state["calculation_results"]["n"] = n
         st.session_state["calculation_results"]["x_50"] = x_50_current
     
-        self.logs_manager.add_log(
-            module="calculations",
+        self.logs_manager.add_log(module="calculations",
             event=f"✅ Итерационный расчет n завершён: n={n:.4f}, x_50={x_50_current:.4f}",
-            log_type="успех"
-        )
+            log_type="успех")
 
 
     @error_handler
