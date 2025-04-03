@@ -37,3 +37,5 @@ class ResultsSummary:
             self.psd_calculator.run_calculations()
             self.results_display.display_psd_table()
             self.results_display.display_cumulative_curve()
+            if "P_x_data" in st.session_state:
+                st.write(st.session_state["P_x_data"].head())
