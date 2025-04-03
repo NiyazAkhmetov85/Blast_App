@@ -27,7 +27,7 @@ class PSDCalculator:
         try:
             x_values = st.session_state.get("x_values", [])
             if not x_values:
-                st.error("Ошибка: x_values не найдены.")
+                st.sidebar.error("Ошибка: x_values не найдены.")
                 return
 
             params = st.session_state.get("calculation_results", {})
@@ -39,6 +39,7 @@ class PSDCalculator:
 
             df = pd.DataFrame(p_x_calculated, columns=["Размер фрагмента (x), мм", "P(x) рассчитанные, %"])
             st.session_state["P_x_calculated"] = df
+            st.sidebar.success("P(x) рассчитанные успешно вычислены.")
             self.logs_manager.add_log("psd_calculator", "P(x) рассчитанные успешно вычислены.", "успех")
 
         except Exception as e:
@@ -54,10 +55,10 @@ class PSDCalculator:
             df_calculated = st.session_state.get("P_x_calculated")
             df_psd = pd.merge(df_reference, df_calculated, on="Размер фрагмента (x), мм", how="outer").fillna(0)
             st.session_state["psd_table"] = df_psd
-    
-            self.logs_manager.add_log("psd_calculator", "✅ PSD-таблица успешно сформирована.", "успех")
+            st.sidebar.success("✅ Итоговая PSD-таблица успешно сформирована.")
+            self.logs_manager.add_log("psd_calculator", "✅ Итоговая PSD-таблица успешно сформирована.", "успех")
     
         except Exception as e:
-            st.error(f"Ошибка при создании PSD-таблицы: {e}")
+            st.sidebar.error(f"Ошибка при создании PSD-таблицы: {e}")
             self.logs_manager.add_log("psd_calculator", f"❌ Ошибка при создании PSD-таблицы: {e}", "ошибка")
 
