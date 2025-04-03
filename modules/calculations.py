@@ -49,7 +49,6 @@ class Calculations:
 
         self.results["RDI"] = 0.025 * rho - 50
         st.session_state["calculation_results"]["RDI"] = self.results["RDI"]
-
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет RDI: {self.results['RDI']:.2f}", log_type="успех")
         st.sidebar.success(f"✅ RDI успешно рассчитан: {self.results['RDI']:.2f}")
 
@@ -63,13 +62,12 @@ class Calculations:
         sigma_c = self.params.get("sigma_c")
 
         if E is None or sigma_c is None or not isinstance(E, (int, float)) or not isinstance(sigma_c, (int, float)):
-            st.warning("❌ Ошибка: Параметр E или sigma_c отсутствует или имеет неверный формат.")
+            st.sidebar.warning("❌ Ошибка: Параметр E или sigma_c отсутствует или имеет неверный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: некорректное значение E или sigma_c.", log_type="ошибка")
             return
 
         self.results["HF"] = E / 3 if E < 50 else sigma_c / 5
         st.session_state["calculation_results"]["HF"] = self.results["HF"]
-
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет HF: {self.results['HF']:.2f}", log_type="успех")
         st.sidebar.success(f"✅ HF успешно рассчитан: {self.results['HF']:.2f}")
 
@@ -84,13 +82,12 @@ class Calculations:
         HF = self.results.get("HF")
 
         if None in (RMD, RDI, HF) or not all(isinstance(val, (int, float)) for val in [RMD, RDI, HF]):
-            st.warning("❌ Ошибка: Параметр RMD, RDI или HF отсутствует или имеет неверный формат.")
+            st.sidebar.warning("❌ Ошибка: Параметр RMD, RDI или HF отсутствует или имеет неверный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: некорректные значения RMD, RDI или HF.", log_type="ошибка")
             return
 
         self.results["A"] = 0.06 * (RMD + RDI + HF)
         st.session_state["calculation_results"]["A"] = self.results["A"]
-
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет A: {self.results['A']:.2f}", log_type="успех")
         st.sidebar.success(f"✅ A успешно рассчитан: {self.results['A']:.2f}")
 
@@ -103,14 +100,13 @@ class Calculations:
         energy_vv = self.params.get("energy_vv")
 
         if energy_vv is None or not isinstance(energy_vv, (int, float)):
-            st.warning("❌ Ошибка: Параметр energy_vv отсутствует или имеет неверный формат.")
+            st.sidebar.warning("❌ Ошибка: Параметр energy_vv отсутствует или имеет неверный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: некорректное значение energy_vv.", log_type="ошибка")
             return
 
         energy_anfo = 4.2  # Фиксированное значение
         self.results["s_ANFO"] = (energy_vv / energy_anfo) * 100
         st.session_state["calculation_results"]["s_ANFO"] = self.results["s_ANFO"]
-
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет s_ANFO: {self.results['s_ANFO']:.2f}%", log_type="успех")
         st.sidebar.success(f"✅ s_ANFO успешно рассчитан: {self.results['s_ANFO']:.2f}%")
 
@@ -126,12 +122,12 @@ class Calculations:
         B = self.params.get("B")
 
         if None in (Q, H, S, B) or not all(isinstance(val, (int, float)) for val in [Q, H, S, B]):
-            st.warning("❌ Ошибка: Параметры Q, H, S или B отсутствуют или имеют неверный формат.")
+            st.sidebar.warning("❌ Ошибка: Параметры Q, H, S или B отсутствуют или имеют неверный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: некорректные значения Q, H, S или B.", log_type="ошибка")
             return
 
         if H == 0 or S == 0 or B == 0:
-            st.error("❌ Ошибка: значения H, S или B не могут быть равны нулю.")
+            st.sidebar.error("❌ Ошибка: значения H, S или B не могут быть равны нулю.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: значения H, S или B равны 0.", log_type="ошибка")
             return
 
@@ -141,7 +137,6 @@ class Calculations:
             st.session_state["calculation_results"] = {}
 
         st.session_state["calculation_results"]["q"] = self.results["q"]
-
         self.logs_manager.add_log(module="calculations", event=f"✅ Успешный расчет q: {self.results['q']:.4f}", log_type="успех")
         st.sidebar.success(f"✅ Специфический заряд q успешно рассчитан: {self.results['q']:.4f}")
 
@@ -156,7 +151,7 @@ class Calculations:
         B = self.params.get("B")
 
         if None in (in_situ_block_size, S, B) or not all(isinstance(val, (int, float)) for val in [in_situ_block_size, S, B]):
-            st.warning("❌ Ошибка: Параметры in_situ_block_size, S или B отсутствуют или имеют неверный формат.")
+            st.sidebar.warning("❌ Ошибка: Параметры in_situ_block_size, S или B отсутствуют или имеют неверный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: некорректные значения in_situ_block_size, S или B.", log_type="ошибка")
             return
 
@@ -193,17 +188,17 @@ class Calculations:
         missing_params = [p for p in ["x_max", "x_50", "S", "B", "Ø_h", "SD", "L_b", "L_c", "L_tot", "H"] if locals()[p] is None]
         
         if missing_params:
-            st.warning(f"❌ Ошибка: Отсутствуют параметры: {', '.join(missing_params)}.")
+            st.sidebar.warning(f"❌ Ошибка: Отсутствуют параметры: {', '.join(missing_params)}.")
             self.logs_manager.add_log(module="calculations", event=f"Ошибка: Отсутствуют параметры {missing_params}.", log_type="ошибка")
             return
 
         if not all(isinstance(locals()[p], (int, float)) for p in ["x_max", "x_50", "S", "B", "Ø_h", "SD", "L_b", "L_c", "L_tot", "H"]):
-            st.warning("❌ Ошибка: Некоторые параметры имеют некорректный формат.")
+            st.sidebar.warning("❌ Ошибка: Некоторые параметры имеют некорректный формат.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: Некоторые параметры имеют некорректный формат.", log_type="ошибка")
             return
 
         if H == 0 or B == 0 or L_tot == 0:
-            st.error("❌ Ошибка: H, B и L_tot должны быть больше 0.")
+            st.sidebar.error("❌ Ошибка: H, B и L_tot должны быть больше 0.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: H, B или L_tot равны 0.", log_type="ошибка")
             return
 
@@ -233,7 +228,7 @@ class Calculations:
         n = self.results.get("n")
 
         if n is None or not isinstance(n, (int, float)) or n <= 0:
-            st.warning("❌ Ошибка: Параметр n отсутствует или некорректен.")
+            st.sidebar.warning("❌ Ошибка: Параметр n отсутствует или некорректен.")
             self.logs_manager.add_log(module="calculations", event="Ошибка: Некорректный параметр n.", log_type="ошибка")
             return
 
@@ -242,7 +237,7 @@ class Calculations:
             gamma_value = math.gamma(1 + 1 / n)
             self.results["g_n"] = (ln_2 ** (1 / n)) / gamma_value
         except ZeroDivisionError:
-            st.error("❌ Ошибка: Деление на 0 при расчете g(n).")
+            st.sidebar.error("❌ Ошибка: Деление на 0 при расчете g(n).")
             self.logs_manager.add_log(module="calculations", event="Ошибка: Деление на 0 при расчете g(n).", log_type="ошибка")
             return
 
@@ -264,19 +259,19 @@ class Calculations:
         q = self.results.get("q")
     
         if None in (A, Q, s_ANFO, q):
-            st.warning("❌ Ошибка: Отсутствуют входные параметры для расчета x_50.")
+            st.sidebar.warning("❌ Ошибка: Отсутствуют входные параметры для расчета x_50.")
             self.logs_manager.add_log("calculations", "Ошибка: отсутствуют входные параметры для x_50.", "ошибка")
             return
     
         if q <= 0 or s_ANFO <= 0:
-            st.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
+            st.sidebar.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
             self.logs_manager.add_log("calculations", "Ошибка: q или s_ANFO <= 0.", "ошибка")
             return
     
         try:
             self.results["x_50"] = A * Q**(1/6) * (115 / s_ANFO)**0.633 / q**0.8
         except ZeroDivisionError:
-            st.error("❌ Ошибка: Деление на 0 при расчете x_50.")
+            st.sidebar.error("❌ Ошибка: Деление на 0 при расчете x_50.")
             self.logs_manager.add_log("calculations", "Ошибка: Деление на 0 при расчете x_50.", "ошибка")
             return
     
@@ -296,7 +291,7 @@ class Calculations:
             x_50 = float(self.results["x_50"])
             n = float(self.results["n"])
         except (TypeError, ValueError, KeyError):
-            st.error("❌ Ошибка: один из параметров (x_max, x_50, n) имеет неверный формат или отсутствует.")
+            st.sidebar.error("❌ Ошибка: один из параметров (x_max, x_50, n) имеет неверный формат или отсутствует.")
             self.logs_manager.add_log(
                 module="calculations",
                 event="Ошибка: Некорректный формат или отсутствие параметров (x_max, x_50, n).",
@@ -306,7 +301,7 @@ class Calculations:
     
         # Проверка деления на 0
         if x_50 <= 0:
-            st.error("❌ Ошибка: x_50 должен быть больше 0.")
+            st.sidebar.error("❌ Ошибка: x_50 должен быть больше 0.")
             self.logs_manager.add_log(
                 module="calculations",
                 event="Ошибка: x_50 <= 0.",
@@ -333,7 +328,7 @@ class Calculations:
         x_50_ref = st.session_state.get("reference_parameters", {}).get("target_x_50")
     
         if x_50_ref is None or not isinstance(x_50_ref, (int, float)):
-            st.error("❌ Ошибка: отсутствует эталонное значение x_50.")
+            st.sidebar.error("❌ Ошибка: отсутствует эталонное значение x_50.")
             self.logs_manager.add_log("calculations", "Ошибка: отсутствует эталонное значение x_50.", "ошибка")
             return
     
@@ -349,7 +344,7 @@ class Calculations:
     
         required_params = [S, B, Ø_h, SD, L_b, L_c, L_tot, H, x_max]
         if any(p is None for p in required_params):
-            st.error("❌ Ошибка: отсутствуют необходимые исходные параметры.")
+            st.sidebar.error("❌ Ошибка: отсутствуют необходимые исходные параметры.")
             self.logs_manager.add_log("calculations", "Ошибка: не все исходные параметры доступны.", "ошибка")
             return
     
@@ -378,7 +373,7 @@ class Calculations:
             x_50_new = self.results.get("x_50")
     
             if x_50_new is None:
-                st.error("Ошибка: x_50 не рассчитан. Итерации остановлены.")
+                st.sidebar.error("Ошибка: x_50 не рассчитан. Итерации остановлены.")
                 return
     
             st.write(f"Итерация {iteration}: n = {n:.4f}, x_50 = {x_50_new:.4f}")
@@ -389,7 +384,7 @@ class Calculations:
     
             x_50_current = x_50_new
         else:
-            st.warning("⚠️ Достигнуто максимальное число итераций без достаточной сходимости.")
+            st.sidebar.warning("⚠️ Достигнуто максимальное число итераций без достаточной сходимости.")
     
         st.session_state["calculation_results"]["n"] = n
         st.session_state["calculation_results"]["x_50"] = x_50_current
