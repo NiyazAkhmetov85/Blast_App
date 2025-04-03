@@ -9,27 +9,19 @@ class ResultsDisplay:
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
-
-        # Проверяем наличие P_x_data
-        if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
-            st.sidebar.warning("⚠ Данные P(x) отсутствуют. Проверьте расчеты.")
-            self.logs_manager.add_log(module="results_display", event="Предупреждение: P_x_data отсутствует.", log_type="предупреждение")
-
-        # Логируем успешную инициализацию
-        self.logs_manager.add_log(module="results_display", event="Модуль отображения результатов инициализирован.", log_type="успех")
+        self.block_name = st.session_state.get("block_name", "Без названия")
 
     def display_psd_table(self):
         """Отображение таблицы PSD с расчетными и эталонными значениями."""
-        self.state_tracker.set_state("current_step", "Отображение таблицы PSD")
-
         try:
             # Проверяем, есть ли данные в session_state
             if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
                 st.sidebar.warning("❌ Данные PSD отсутствуют. Пожалуйста, загрузите данные.")
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Данные PSD отсутствуют", log_type="предупреждение")
                 return
-
+                
             df = st.session_state["P_x_data"].copy()
+            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False)
 
             # Проверка структуры данных
             required_columns = {"Размер фрагмента (x), мм", "Эталонные P(x), %", "Рассчитанные P(x), %"}
@@ -50,12 +42,11 @@ class ResultsDisplay:
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Некорректные значения в P(x)", log_type="предупреждение")
 
             # Вывод информации о блоке и эталонных значениях
-            x_min = st.session_state.get("x_range_min", "N/A")
             x_max = st.session_state.get("target_x_max", "N/A")
             x_50 = st.session_state.get("target_x_50", "N/A")
 
             st.write(f"### Таблица PSD - {self.block_name}")
-            st.write(f"**Эталонные показатели:** x_min: {x_min}, x_max: {x_max}, X_50: {x_50}")
+            st.write(f"**Эталонные показатели:**  x_max: {x_max}, X_50: {x_50}")
 
             # Вывод таблицы с форматированием
             st.dataframe(df_sorted.style.format({
@@ -71,13 +62,8 @@ class ResultsDisplay:
             self.logs_manager.add_log(module="results_display", event=f"Ошибка отображения таблицы PSD: {str(e)}", log_type="ошибка")
             st.sidebar.error(f"❌ Ошибка отображения таблицы PSD: {e}")
 
-        finally:
-            self.state_tracker.set_state("current_step", None)
-
     def display_cumulative_curve(self):
-        """Отображение кумулятивной кривой с обозначением x_min, x_max, X_50."""
-        self.state_tracker.set_state("current_step", "Отображение кумулятивной кривой")
-
+        """Отображение кумулятивной кривой с обозначением x_max, X_50."""
         try:
             # Проверяем, есть ли данные в session_state
             if "P_x_data" not in st.session_state or st.session_state["P_x_data"] is None:
@@ -106,7 +92,6 @@ class ResultsDisplay:
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Некорректные значения в P(x)", log_type="предупреждение")
 
             # Получение эталонных параметров
-            x_min = st.session_state.get("x_range_min", None)
             x_max = st.session_state.get("target_x_max", None)
             x_50 = st.session_state.get("target_x_50", None)
 
@@ -115,9 +100,7 @@ class ResultsDisplay:
             plt.plot(df["Размер фрагмента (x), мм"], df["Эталонные P(x), %"], label="Эталонные P(x)", linestyle="-", marker="o", color="blue")
             plt.plot(df["Размер фрагмента (x), мм"], df["Рассчитанные P(x), %"], label="Рассчитанные P(x)", linestyle="--", marker="s", color="red")
 
-            # Добавление вертикальных линий для x_min, x_max, x_50 (если заданы)
-            if x_min is not None:
-                plt.axvline(x=x_min, color='green', linestyle=':', label='x_min')
+            # Добавление вертикальных линий для x_max, x_50 (если заданы)
             if x_max is not None:
                 plt.axvline(x=x_max, color='purple', linestyle=':', label='x_max')
             if x_50 is not None:
@@ -137,35 +120,3 @@ class ResultsDisplay:
         except Exception as e:
             self.logs_manager.add_log(module="results_display", event=f"Ошибка отображения кумулятивной кривой: {str(e)}", log_type="ошибка")
             st.sidebar.error(f"❌ Ошибка отображения кумулятивной кривой: {e}")
-
-        finally:
-            self.state_tracker.set_state("current_step", None)
-
-
-
-# Streamlit UI 
-if __name__ == "__main__":
-    if "show_psd" not in st.session_state:
-        st.session_state["show_psd"] = False
-    if "show_curve" not in st.session_state:
-        st.session_state["show_curve"] = False
-    if "show_summary" not in st.session_state:
-        st.session_state["show_summary"] = False
-    
-    state_tracker = st.session_state.get("state_tracker", None)
-    if state_tracker is None:
-        st.error("Ошибка: state_tracker не инициализирован.")
-    else:
-        results_display = ResultsDisplay(state_tracker)
-
-        # Кнопка для отображения таблицы PSD
-        if st.button("Показать таблицу PSD"):
-            st.session_state["show_psd"] = not st.session_state["show_psd"]
-        if st.session_state["show_psd"]:
-            results_display.display_psd_table()
-
-        # Кнопка для отображения кумулятивной кривой
-        if st.button("Показать кумулятивную кривую"):
-            st.session_state["show_curve"] = not st.session_state["show_curve"]
-        if st.session_state["show_curve"]:
-            results_display.display_cumulative_curve()
