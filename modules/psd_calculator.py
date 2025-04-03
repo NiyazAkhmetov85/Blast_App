@@ -53,6 +53,16 @@ class PSDCalculator:
         try:
             df_reference = st.session_state.get("P_x_data")
             df_calculated = st.session_state.get("P_x_calculated")
+    
+            if df_reference is None or df_calculated is None:
+                raise ValueError("Отсутствуют необходимые данные в st.session_state.")
+    
+            if df_reference.empty or df_calculated.empty:
+                raise ValueError("Один из DataFrame пустой.")
+    
+            if "Размер фрагмента (x), мм" not in df_reference.columns or "Размер фрагмента (x), мм" not in df_calculated.columns:
+                raise ValueError("Отсутствует столбец 'Размер фрагмента (x), мм' в одном из DataFrame.")
+    
             df_psd = pd.merge(df_reference, df_calculated, on="Размер фрагмента (x), мм", how="outer").fillna(0)
             st.session_state["psd_table"] = df_psd
             st.sidebar.success("✅ Итоговая PSD-таблица успешно сформирована.")
@@ -61,4 +71,20 @@ class PSDCalculator:
         except Exception as e:
             st.sidebar.error(f"Ошибка при создании PSD-таблицы: {e}")
             self.logs_manager.add_log("psd_calculator", f"❌ Ошибка при создании PSD-таблицы: {e}", "ошибка")
+
+    # def generate_psd_table(self):
+    #     """
+    #     Формирует итоговую таблицу PSD.
+    #     """
+    #     try:
+    #         df_reference = st.session_state.get("P_x_data")
+    #         df_calculated = st.session_state.get("P_x_calculated")
+    #         df_psd = pd.merge(df_reference, df_calculated, on="Размер фрагмента (x), мм", how="outer").fillna(0)
+    #         st.session_state["psd_table"] = df_psd
+    #         st.sidebar.success("✅ Итоговая PSD-таблица успешно сформирована.")
+    #         self.logs_manager.add_log("psd_calculator", "✅ Итоговая PSD-таблица успешно сформирована.", "успех")
+    
+    #     except Exception as e:
+    #         st.sidebar.error(f"Ошибка при создании PSD-таблицы: {e}")
+    #         self.logs_manager.add_log("psd_calculator", f"❌ Ошибка при создании PSD-таблицы: {e}", "ошибка")
 
