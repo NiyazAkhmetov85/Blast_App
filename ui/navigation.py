@@ -29,7 +29,7 @@ def reload_parameters():
 
     # ✅ Повторная загрузка параметров
     data_initializer.reload_parameters()
-    st.sidebar.success(" Параметры успешно перезагружены!")
+    # st.sidebar.success(" Параметры успешно перезагружены!")
 
 
 def show_sidebar():
