@@ -79,7 +79,7 @@ class ReferenceParameters:
         with st.expander(group_name, expanded=False):
             for param_key, param in group_parameters.items():
                 if param_key not in st.session_state["parameters"]:
-                    st.warning(f"⚠️ Параметр '{param_key}' отсутствует.")
+                    st.sidebar.warning(f"⚠️ Параметр '{param_key}' отсутствует.")
                     continue
     
                 param_value = st.session_state["parameters"][param_key].get("default_value", None)
@@ -115,7 +115,7 @@ class ReferenceParameters:
                         disabled=not editable
                     )
                 else:
-                    st.error(f"❌ Неизвестный тип параметра: {param_type}")
+                    st.sidebar.error(f"❌ Неизвестный тип параметра: {param_type}")
     
                 if editable:
                     st.session_state["parameters"][param_key]["default_value"] = new_value
