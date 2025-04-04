@@ -39,51 +39,19 @@ class RefValues:
 
     def render_calculations_ui(self):
         """
-        Интерфейс для запуска расчетов эталонных значений (PSD).
+        Интерфейс для запуска расчетов эталонных значений (PSD) с автоматической визуализацией.
         """
         st.subheader("Запуск расчетов эталонных значений (PSD)")
     
         # Кнопка для запуска расчетов
         if st.button("Запустить расчеты"):
             try:
-                self.reference_calculations.run_calculations()
-                st.sidebar.success("Расчеты успешно выполнены!")
-            except Exception as e:
-                st.sidebar.error(f"Ошибка при выполнении расчетов: {e}")
-
-
-
-    def render_calculations_ui(reference_calculations):
-        """
-        Интерфейс для запуска расчетов эталонных значений (PSD).
-        
-        :param reference_calculations: Экземпляр класса ReferenceCalculations.
-        """
-        st.title("Расчет эталонных значений (PSD)")
-    
-        # Кнопка для запуска расчетов
-        if st.button("Запустить расчеты"):
-            try:
-                reference_calculations.run_calculations()
-                st.success("Расчеты успешно выполнены!")
-            except Exception as e:
-                st.error(f"Ошибка при выполнении расчетов: {e}")
-
-    def render_calculations_ui(self):
-        """
-        Интерфейс для запуска расчетов эталонных значений (PSD).
-        """
-        # st.subheader("Запуск расчетов эталонных значений (PSD)")
-        
-        # Кнопка для запуска расчетов
-        if st.button("Запустить расчеты"):
-            try:
-                # Вызываем метод run_calculations у экземпляра ReferenceCalculations
+                # Выполняем расчеты
                 self.reference_calculations.run_calculations()
                 st.sidebar.success("Расчеты успешно выполнены!")
 
                 # Автоматическая визуализация результатов
-                ref_visualization.visualize_psd_table()
-                ref_visualization.visualize_cumulative_curve()
+                self.reference_visualization.visualize_psd_table()
+                self.reference_visualization.visualize_cumulative_curve()
             except Exception as e:
-                st.error(f"Ошибка при выполнении расчетов: {e}")
+                st.sidebar.error(f"Ошибка при выполнении расчетов: {e}")
