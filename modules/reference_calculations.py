@@ -139,12 +139,34 @@ class ReferenceCalculations:
     
             st.sidebar.success("Таблица PSD успешно обновлена!")
             self.logs_manager.add_log("reference_calculations", "Таблица PSD обновлена.", "успех")
-            st.subheader("Результаты расчетов")
-            st.dataframe(df_sorted)
+            
+            # st.subheader("Результаты расчетов")       
+            # st.dataframe(df_sorted)
+            
         except Exception as e:
             st.sidebar.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
- 
+
+    
+    def visualize_psd_table(self):
+        """
+        Визуализация таблицы PSD.
+        """
+        try:
+            df = st.session_state.get("psd_table")
+            if df is None or df.empty:
+                st.sidebar.warning("Нет данных для построения графика.")
+                return
+    
+            fig = px.line(df, x="Размер фрагмента (x), мм", y="Эталонные P(x), %",
+                          title="Таблица распределения размеров частиц (PSD)",
+                          labels={"Размер фрагмента (x), мм": "Размер фрагмента (мм)", "Эталонные P(x), %": "Распределение (%)"})
+            fig.update_traces(mode='lines+markers')
+            st.plotly_chart(fig)
+        except Exception as e:
+            st.sidebar.error(f"Ошибка визуализации таблицы PSD: {e}")
+            self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации таблицы PSD: {e}", "ошибка")
+        
 
     def visualize_cumulative_curve(self):
         """
@@ -165,6 +187,7 @@ class ReferenceCalculations:
             st.sidebar.error(f"Ошибка визуализации кривой: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривой: {e}", "ошибка")
 
+    
     def render_ui(self):
         """
         Отображение UI.
