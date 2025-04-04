@@ -67,4 +67,20 @@ class RefValues:
             except Exception as e:
                 st.error(f"Ошибка при выполнении расчетов: {e}")
 
+    def render_calculations_ui(self):
+        """
+        Интерфейс для запуска расчетов эталонных значений (PSD).
+        """
+        # st.subheader("Запуск расчетов эталонных значений (PSD)")
+        
+        # Кнопка для запуска расчетов
+        if st.button("Запустить расчеты"):
+            try:
+                # Вызываем метод run_calculations у экземпляра ReferenceCalculations
+                self.reference_calculations.run_calculations()
+                st.success("Расчеты успешно выполнены!")
+            except Exception as e:
+                st.error(f"Ошибка при выполнении расчетов: {e}")
+
+
 
