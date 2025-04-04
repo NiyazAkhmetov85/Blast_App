@@ -150,12 +150,3 @@ class ReferenceCalculations:
         except Exception as e:
             st.sidebar.error(f"Ошибка визуализации кривой: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривой: {e}", "ошибка")
-
-
-    # def render_ui(self):
-    #     """
-    #     Отображение UI.
-    #     """
-    #     # Кнопка для запуска расчётов
-    #     if st.button("Запустить расчеты"):
-    #     self.run_calculations()
