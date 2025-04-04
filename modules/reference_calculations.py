@@ -151,15 +151,6 @@ class ReferenceCalculations:
             st.sidebar.error(f"Ошибка визуализации кривой: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка визуализации кривой: {e}", "ошибка")
 
-    # def render_ui(self):
-    #     """
-    #     Отображение UI.
-    #     """
-    #     if "P_x_data" in st.session_state and not st.session_state["P_x_data"].empty:
-    #         st.success("Расчёты уже выполнены.")
-    #     else:
-    #         if st.button("Запустить расчеты"):
-    #             self.run_calculations()
 
     def render_ui(self):
         """
