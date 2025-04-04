@@ -20,6 +20,17 @@ if "parameters_loaded" not in st.session_state:
     st.session_state["parameters_loaded"] = True
 
 
+def reload_parameters():
+    """
+    Перезагрузка параметров с очисткой дублирующихся сообщений.
+    """
+    if "status_messages" not in st.session_state:
+        st.session_state["status_messages"] = []
+
+    # ✅ Повторная загрузка параметров
+    data_initializer.reload_parameters()
+    st.sidebar.success(" Параметры успешно перезагружены!")
+    
 # def reload_parameters():
 #     """
 #     Перезагрузка параметров с очисткой дублирующихся сообщений.
