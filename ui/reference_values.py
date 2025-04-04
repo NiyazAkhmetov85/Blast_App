@@ -27,8 +27,8 @@ class RefValues:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
     
-        # # ✅ Отображаем эталонные показатели
-        # self.reference_parameters.render_refparameters_section()
+        # ✅ Отображаем эталонные показатели
+        self.reference_parameters.render_refparameters_section()
         # self.reference_calculations.render_ui()
         # if "P_x_data" in st.session_state and not st.session_state["P_x_data"].empty:
         #     self.reference_calculations.visualize_cumulative_curve()
