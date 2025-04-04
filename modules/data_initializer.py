@@ -21,6 +21,7 @@ class DataInitializer:
         if not st.session_state["parameters_loaded"]:
             self.load_default_parameters()
 
+    
     def load_default_parameters(self):
         """
         Загружает параметры из файла по умолчанию в session_state.
