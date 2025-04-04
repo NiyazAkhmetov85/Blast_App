@@ -20,7 +20,9 @@ class ResultsDisplay:
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Данные PSD отсутствуют", log_type="предупреждение")
                 return
                 
-            df = st.session_state["P_x_data"].copy()
+            # df = st.session_state["P_x_data"].copy()
+            # psd_table
+            df = st.session_state["psd_table"].copy()
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=False)
 
             # Проверка структуры данных
@@ -71,7 +73,8 @@ class ResultsDisplay:
                 self.logs_manager.add_log(module="results_display", event="Предупреждение: Данные для кумулятивной кривой отсутствуют", log_type="предупреждение")
                 return
 
-            df = st.session_state["P_x_data"].copy()
+            # df = st.session_state["P_x_data"].copy()
+            df = st.session_state["psd_table"].copy()
 
             # Проверка структуры данных
             required_columns = {"Размер фрагмента (x), мм", "Эталонные P(x), %", "Рассчитанные P(x), %"}
