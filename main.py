@@ -25,7 +25,6 @@ session_manager = SessionStateManager()
 logs_manager = LogsManager()
 data_initializer = DataInitializer(session_manager, logs_manager)
 
-
 # ✅ Заголовок приложения
 st.title("Blast Optimization App")
 
