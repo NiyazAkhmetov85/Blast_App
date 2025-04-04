@@ -166,22 +166,3 @@ class DataInput:
                     df.to_html(index=False, escape=False),
                     unsafe_allow_html=True
                 )
-
-    
-   
-
-# # Пример использования
-# if __name__ == "__main__":
-#     session_manager = SessionStateManager()
-#     logs_manager = LogsManager()
-#     data_input = DataInput(session_manager, logs_manager)
-#     st.sidebar.title("Меню")
-#     option = st.sidebar.radio("Выберите экран", ["Импорт блока", "Ввод параметров", "Визуализация", "Итоговый обзор"])
-#     if option == "Импорт блока":
-#         data_input.show_import_block()
-#     elif option == "Ввод параметров":
-#         data_input.show_input_form()
-#     elif option == "Визуализация":
-#         data_input.show_visualization()
-#     elif option == "Итоговый обзор":
-#         data_input.show_summary_screen()
