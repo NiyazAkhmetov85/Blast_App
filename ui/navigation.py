@@ -20,14 +20,13 @@ if "parameters_loaded" not in st.session_state:
     st.session_state["parameters_loaded"] = True
 
 
-def show_sidebar():
+def show_sidebar(data_initializer):
     """
-    Отображение боковой панели с кнопками и логами.
+    Отображение боковой панели с кнопками.
     """
     if st.sidebar.button(" Перезагрузить параметры"):
-        data_initializer.reload_parameters():
+        data_initializer.reload_parameters()
         st.sidebar.success(" Параметры успешно перезагружены!")
-        logs_manager.add_log(module="navigation", event="Параметры перезагружены", log_type="успех")
 
 
 def navigation():
