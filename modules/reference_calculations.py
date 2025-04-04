@@ -142,33 +142,7 @@ class ReferenceCalculations:
         except Exception as e:
             st.sidebar.error(f"Ошибка обновления PSD: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка обновления PSD: {e}", "ошибка")
-
-    # def calculate_x_50(self):
-    #     params = st.session_state.get("reference_parameters", {})
-    #     g_n = params.get("target_g_n")
-    #     A = params.get("target_A")
-    #     Q = params.get("target_Q")
-    #     s_ANFO = params.get("target_s_ANFO")
-    #     q = params.get("target_q")
-    
-    #     # Проверка исходных параметров
-    #     if None in (g_n, A, Q, s_ANFO, q):
-    #         st.sidebar.error("Ошибка: Недостаточно данных для расчета эталонного x_50.")
-    #         self.logs_manager.add_log("reference_calculations", "Отсутствуют параметры для расчета x_50.", "ошибка")
-    #         return
-    
-    #     try:
-    #         # Расчёт значения x_50
-    #         calculated_x_50 = (g_n * A * Q ** (1 / 6) * (115 / s_ANFO) ** (19 / 30)) / q ** 0.8
-    #         st.session_state["reference_parameters"]["target_x_50"] = calculated_x_50
-    
-    #         self.logs_manager.add_log("reference_calculations", f"Эталонный x_50 рассчитан: {calculated_x_50:.2f}", "успех")
-    #         st.sidebar.success(f"Эталонный x_50 успешно рассчитан: {calculated_x_50:.2f} мм")
-    
-    #     except Exception as e:
-    #         st.sidebar.error(f"Ошибка расчета x_50: {e}")
-    #         self.logs_manager.add_log("reference_calculations", f"Ошибка расчета x_50: {e}", "ошибка")
-  
+ 
 
     def visualize_cumulative_curve(self):
         """
