@@ -20,13 +20,33 @@ if "parameters_loaded" not in st.session_state:
     st.session_state["parameters_loaded"] = True
 
 
-def show_sidebar(data_initializer):
+def reload_parameters():
     """
-    Отображение боковой панели с кнопками.
+    Перезагрузка параметров с очисткой дублирующихся сообщений.
     """
-    if st.sidebar.button(" Перезагрузить параметры"):
-        data_initializer.reload_parameters()
-        st.sidebar.success(" Параметры успешно перезагружены!")
+    if "status_messages" not in st.session_state:
+        st.session_state["status_messages"] = []
+
+    # ✅ Повторная загрузка параметров
+    data_initializer.reload_parameters()
+    st.sidebar.success(" Параметры успешно перезагружены!")
+
+
+def show_sidebar():
+    """
+    Отображение боковой панели с кнопками и логами.
+    """
+    st.sidebar.button(" Перезагрузить параметры", on_click=reload_parameters)
+
+
+
+# def show_sidebar(data_initializer):
+#     """
+#     Отображение боковой панели с кнопками.
+#     """
+#     if st.sidebar.button(" Перезагрузить параметры"):
+#         data_initializer.reload_parameters()
+#         st.sidebar.success(" Параметры успешно перезагружены!")
 
 
 def navigation():
