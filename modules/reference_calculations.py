@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import plotly.express as px
+
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
 
@@ -13,6 +14,7 @@ class ReferenceCalculations:
         0.07, 0.25, 1, 2, 4, 8, 12, 16, 20, 25, 32, 40, 50, 60, 90, 125, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500
     ]
 
+    
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
@@ -28,6 +30,7 @@ class ReferenceCalculations:
         """
         return min(round(value / 100) * 100, 1000)  # Ограничиваем x_max 1000 мм
 
+    
     def generate_scale(self):
         """
         Генерация шкалы x_values по стандартным значениям.
@@ -51,13 +54,12 @@ class ReferenceCalculations:
             st.sidebar.error(f"Ошибка генерации шкалы: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка генерации шкалы: {e}", "ошибка")
 
+    
     def run_calculations(self):
         """
         Запуск всех расчетов и отображение результатов.
         """
         try:
-            # # Расчёт x_50 перед основной логикой расчета
-            # self.calculate_x_50() 
            
             # Генерация шкалы
             self.generate_scale()
