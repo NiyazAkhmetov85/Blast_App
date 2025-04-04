@@ -54,6 +54,7 @@ class DataInitializer:
             st.sidebar.error(f"Ошибка загрузки параметров: {e}")
             self.logs_manager.add_log("data_initializer", f"Ошибка загрузки: {e}", "ошибка")
 
+    
     def reload_parameters(self):
         """
         Позволяет пользователю загрузить параметры заново через кнопку.
