@@ -30,11 +30,5 @@ class RefValues:
         # ✅ Отображаем эталонные показатели
         self.reference_parameters.render_refparameters_section()
         self.reference_calculations.render_ui()
-
-        if "psd_table" in st.session_state and not st.session_state["psd_table"].empty:
-            self.reference_calculations.visualize_psd_table()
         if "P_x_data" in st.session_state and not st.session_state["P_x_data"].empty:
             self.reference_calculations.visualize_cumulative_curve()
-    
-        # self.reference_calculations.visualize_psd_table()
-        # self.reference_calculations.visualize_cumulative_curve()  
