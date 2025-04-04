@@ -23,7 +23,7 @@ class ResultsSummary:
 
         block_name = st.session_state.get("block_name", "Неизвестный блок")
         if not block_name or block_name == "Неизвестный блок":
-            st.warning("⚠️ Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
+            st.warning("Блок не импортирован. Импортируйте блок на вкладке 'Импорт данных блока'.")
             return
         else:
             st.success(f"Импортированный блок: **{block_name}**")
