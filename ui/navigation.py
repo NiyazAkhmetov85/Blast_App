@@ -39,16 +39,6 @@ def show_sidebar():
     st.sidebar.button(" Перезагрузить параметры", on_click=reload_parameters)
 
 
-
-# def show_sidebar(data_initializer):
-#     """
-#     Отображение боковой панели с кнопками.
-#     """
-#     if st.sidebar.button(" Перезагрузить параметры"):
-#         data_initializer.reload_parameters()
-#         st.sidebar.success(" Параметры успешно перезагружены!")
-
-
 def navigation():
     """
     Функция, управляющая навигацией приложения.
