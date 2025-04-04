@@ -7,6 +7,7 @@ from utils.logs_manager import LogsManager
 
 from modules.reference_parameters import ReferenceParameters
 from modules.reference_calculations import ReferenceCalculations
+from modules.reference_visualization import RefVisualization
 
 class RefValues:
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
@@ -14,6 +15,7 @@ class RefValues:
         self.logs_manager = logs_manager
         self.reference_parameters = ReferenceParameters(session_manager, logs_manager)
         self.reference_calculations = ReferenceCalculations(session_manager, logs_manager)
+        self.reference_visualization = RefVisualization(session_manager, logs_manager)
 
     def show_reference_values(self):
         """
@@ -78,9 +80,10 @@ class RefValues:
             try:
                 # Вызываем метод run_calculations у экземпляра ReferenceCalculations
                 self.reference_calculations.run_calculations()
-                st.success("Расчеты успешно выполнены!")
+                st.sidebar.success("Расчеты успешно выполнены!")
+
+                # Автоматическая визуализация результатов
+                ref_visualization.visualize_psd_table()
+                ref_visualization.visualize_cumulative_curve()
             except Exception as e:
                 st.error(f"Ошибка при выполнении расчетов: {e}")
-
-
-
