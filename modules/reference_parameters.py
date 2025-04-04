@@ -62,7 +62,7 @@ class ReferenceParameters:
                         user_params[param_name] = user_input
 
             # **Кнопка "Утвердить эталонные параметры"**
-        if st.button("✅ Утвердить эталонные параметры", key="approve_ref_parameters"):
+        if st.button("Утвердить эталонные параметры", key="approve_ref_parameters"):
             st.session_state["reference_parameters"] = user_params.copy()
             self.logs_manager.add_log(
                 module="ReferenceParameters",
