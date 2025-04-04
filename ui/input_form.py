@@ -15,7 +15,7 @@ class InputForm:
         # Инициализация пользовательских параметров
         if "parameters" not in st.session_state:
             st.session_state["parameters"] = {}
-            self.logs_manager.add_log("input_form", "⚠️ Параметры не загружены при инициализации", "warning")
+            self.logs_manager.add_log("input_form", "Параметры не загружены при инициализации", "warning")
 
 
     def render_parameters_section(self):
@@ -27,7 +27,7 @@ class InputForm:
             "Геометрические параметры блока",
             "Физико-механические свойства породы",
             "Параметры буровзрывных работ"
-            # "ЛСК"
+            # "ЛСК" На будущее, возможсность работы с локальной системой координат
         ]
     
         for category in categories_order:
@@ -84,7 +84,7 @@ class InputForm:
         with st.expander(group_name, expanded=False):
             for param_key, param in group_parameters.items():
                 if param_key not in st.session_state["parameters"]:
-                    st.warning(f"⚠️ Параметр '{param_key}' отсутствует.")
+                    st.sidebar.warning(f"⚠️ Параметр '{param_key}' отсутствует.")
                     continue
     
                 param_value = st.session_state["parameters"][param_key].get("default_value", None)
@@ -120,7 +120,7 @@ class InputForm:
                         disabled=not editable
                     )
                 else:
-                    st.error(f"❌ Неизвестный тип параметра: {param_type}")
+                    st.sidebar.error(f"❌ Неизвестный тип параметра: {param_type}")
     
                 # Обновляем st.session_state["parameters"]
                 if editable:
@@ -172,26 +172,3 @@ class InputForm:
     
             st.sidebar.success(f"✅ Параметры сохранены. Выбран тип сетки: {'Квадратная' if selected_grid_type == 'square' else 'Треугольная'}")
             st.sidebar.success(st.session_state.get("status_message", ""))
-
-
-
-    # def render_control_buttons(self):
-    #     """
-    #     Отображение кнопки управления параметрами с проверкой изменений.
-    #     """
-    #     st.subheader("Управление параметрами")
-    
-    #     if st.button("Утвердить параметры"):
-    #         # Сохранение выбора типа сетки
-    #         selected_grid_type = st.session_state["user_parameters"].get("grid_type", "square")
-    #         st.session_state["user_parameters"]["grid_type"] = selected_grid_type
-    
-    #         self.logs_manager.add_log(
-    #             module="input_form",
-    #             event=f"Параметры утверждены, тип сетки: {'Квадратная' if selected_grid_type == 'square' else 'Треугольная'}",
-    #             log_type="success"
-    #         )
-    
-    #         # Статусное сообщение
-    #         st.sidebar.success(f"✅ Параметры сохранены. Выбран тип сетки: {'Квадратная' if selected_grid_type == 'square' else 'Треугольная'}")
-    #         st.sidebar.success(st.session_state["status_message"])
