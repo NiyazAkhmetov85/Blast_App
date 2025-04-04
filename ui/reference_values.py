@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
+
 from modules.reference_parameters import ReferenceParameters
 from modules.reference_calculations import ReferenceCalculations
 
@@ -19,7 +21,7 @@ class RefValues:
         """
         st.header("Эталонные значения БВР")
     
-        # ✅ Отображаем имя текущего блока
+        # Отображаем имя текущего блока
         block_name = st.session_state.get("block_name", "Неизвестный блок")
 
         if not block_name or block_name == "Неизвестный блок":
@@ -27,8 +29,42 @@ class RefValues:
         else:
             st.info(f"Импортированный блок: **{block_name}**")
     
-        # ✅ Отображаем эталонные показатели
+        # Отображаем эталонные показатели
         self.reference_parameters.render_refparameters_section()
-        # self.reference_calculations.render_ui()
-        # if "P_x_data" in st.session_state and not st.session_state["P_x_data"].empty:
-        #     self.reference_calculations.visualize_cumulative_curve()
+
+        # Отображаем интерфейс для запуска расчетов
+        self.render_calculations_ui()
+
+    def render_calculations_ui(self):
+        """
+        Интерфейс для запуска расчетов эталонных значений (PSD).
+        """
+        st.subheader("Запуск расчетов эталонных значений (PSD)")
+    
+        # Кнопка для запуска расчетов
+        if st.button("Запустить расчеты"):
+            try:
+                self.reference_calculations.run_calculations()
+                st.sidebar.success("Расчеты успешно выполнены!")
+            except Exception as e:
+                st.sidebar.error(f"Ошибка при выполнении расчетов: {e}")
+
+
+
+    def render_calculations_ui(reference_calculations):
+        """
+        Интерфейс для запуска расчетов эталонных значений (PSD).
+        
+        :param reference_calculations: Экземпляр класса ReferenceCalculations.
+        """
+        st.title("Расчет эталонных значений (PSD)")
+    
+        # Кнопка для запуска расчетов
+        if st.button("Запустить расчеты"):
+            try:
+                reference_calculations.run_calculations()
+                st.success("Расчеты успешно выполнены!")
+            except Exception as e:
+                st.error(f"Ошибка при выполнении расчетов: {e}")
+
+
