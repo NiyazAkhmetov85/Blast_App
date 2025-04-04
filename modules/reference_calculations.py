@@ -156,19 +156,6 @@ class ReferenceCalculations:
         """
         Отображение UI.
         """
-        try:
-            # Проверяем, существует ли ключ "P_x_data" и является ли он DataFrame
-            if "P_x_data" in st.session_state:
-                p_x_data = st.session_state["P_x_data"]
-                if isinstance(p_x_data, pd.DataFrame) and not p_x_data.empty:
-                    st.success("Расчёты уже выполнены.")
-                else:
-                    st.warning("Данные для расчётов пусты или некорректны.")
-            else:
-                st.warning("Расчёты ещё не выполнены.")
-    
-            # Кнопка для запуска расчётов
-            if st.button("Запустить расчеты"):
-                self.run_calculations()
-        except Exception as e:
-            st.error(f"Ошибка в UI: {e}")
+        # Кнопка для запуска расчётов
+        if st.button("Запустить расчеты"):
+        self.run_calculations()
