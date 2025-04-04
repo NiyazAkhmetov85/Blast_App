@@ -29,5 +29,4 @@ class RefValues:
     
         # ✅ Отображаем эталонные показатели
         self.reference_parameters.render_refparameters_section()
-
         self.reference_calculations.render_ui()
