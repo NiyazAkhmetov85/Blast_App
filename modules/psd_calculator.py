@@ -46,13 +46,32 @@ class PSDCalculator:
             st.sidebar.error(f"Ошибка при расчете P(x) рассчитанные: {e}")
             self.logs_manager.add_log("psd_calculator", f"Ошибка при расчете P(x) рассчитанные: {e}", "ошибка")
 
+
+    def update_psd_table(self):
+        """
+        Обновляет таблицу PSD в session_state.
+        """
+        try:
+            df = st.session_state.get("P_x_calculated")
+            if not isinstance(df, pd.DataFrame) or df.empty:
+                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
+                return
+
+            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
+            st.session_state["psd_table_calculated"] = df_sorted
+            st.sidebar.success("Таблица PSD успешно обновлена!")
+            self.logs_manager.add_log("psd_calculator", "Таблица PSD обновлена.", "успех")
+
+        except Exception as e:
+            self.logs_manager.add_log("psd_calculator", f"Ошибка обновления PSD: {e}", "ошибка")
+
     def generate_psd_table(self):
         """
         Формирует итоговую таблицу PSD.
         """
         try:
             df_reference = st.session_state.get("P_x_data")
-            df_calculated = st.session_state.get("P_x_calculated")
+            df_calculated = st.session_state.get("psd_table_calculated")
     
             if df_reference is None or df_calculated is None:
                 raise ValueError("Отсутствуют необходимые данные в st.session_state.")
@@ -64,7 +83,7 @@ class PSDCalculator:
                 raise ValueError("Отсутствует столбец 'Размер фрагмента (x), мм' в одном из DataFrame.")
     
             df_psd = pd.merge(df_reference, df_calculated, on="Размер фрагмента (x), мм", how="outer").fillna(0)
-            st.session_state["psd_table"] = df_psd
+            st.session_state["psd_table_calculated"] = df_psd
             st.session_state["P_x_data"] = df_psd
 
             st.sidebar.success("✅ Итоговая PSD-таблица успешно сформирована.")
