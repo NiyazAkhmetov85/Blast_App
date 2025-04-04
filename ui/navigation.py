@@ -20,45 +20,17 @@ if "parameters_loaded" not in st.session_state:
     st.session_state["parameters_loaded"] = True
 
 
-# def reload_parameters():
-#     """
-#     Перезагрузка параметров с очисткой дублирующихся сообщений.
-#     """
-#     if "status_messages" not in st.session_state:
-#         st.session_state["status_messages"] = []
-
-    # # ✅ Повторная загрузка параметров
-    # data_initializer.reload_parameters()
-    # st.sidebar.success(" Параметры успешно перезагружены!")
-    
-# def reload_parameters():
-#     """
-#     Перезагрузка параметров с очисткой дублирующихся сообщений.
-#     """
-#     if "status_messages" not in st.session_state:
-#         st.session_state["status_messages"] = []
-
-#     # ✅ Повторная загрузка параметров
-#     data_initializer.load_default_parameters()
-#     st.sidebar.success("🔄 Параметры успешно перезагружены!")
-
-
 def show_sidebar():
     """
     Отображение боковой панели с кнопками и логами.
     """
     if st.sidebar.button(" Перезагрузить параметры"):
-        # Вызываем метод reload_parameters из DataInitializer
-        data_initializer.reload_parameters()
-        st.sidebar.success(" Параметры успешно перезагружены!")
-        logs_manager.add_log(module="navigation", event="Параметры перезагружены", log_type="успех")
-
-
-# def show_sidebar():
-#     """
-#     Отображение боковой панели с кнопками и логами.
-#     """
-#     # st.sidebar.button("🔄 Перезагрузить параметры", on_click=reload_parameters)
+        if data_initializer.reload_parameters():
+            st.sidebar.success(" Параметры успешно перезагружены!")
+            logs_manager.add_log(module="navigation", event="Параметры перезагружены", log_type="успех")
+        else:
+            st.sidebar.error("❌ Ошибка перезагрузки параметров!")
+            logs_manager.add_log(module="navigation", event="Ошибка перезагрузки параметров", log_type="ошибка")
 
 
 def navigation():
