@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
 
 from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
@@ -36,7 +35,13 @@ class PSDCalculator:
             x_50 = params.get("x_50", 200)
             b = params.get("b", 3.5)
 
-            p_x_calculated = [(x, (1 / (1 + (np.log(x_max / x) / np.log(x_max / x_50)) ** b)) * 100) for x in x_values if x <= x_max]
+            # Удаление старых данных перед записью новых
+            st.session_state.pop("P_x_calculated", None)
+
+            p_x_calculated = [
+                (x, (1 / (1 + (np.log(x_max / x) / np.log(x_max / x_50)) ** b)) * 100)
+                for x in x_values if x <= x_max
+            ]
 
             df = pd.DataFrame(p_x_calculated, columns=["Размер фрагмента (x), мм", "P(x) рассчитанные, %"])
             st.session_state["P_x_calculated"] = df
@@ -47,7 +52,6 @@ class PSDCalculator:
             st.sidebar.error(f"Ошибка при расчете P(x) рассчитанные: {e}")
             self.logs_manager.add_log("psd_calculator", f"Ошибка при расчете P(x) рассчитанные: {e}", "ошибка")
 
-
     def update_psd_table(self):
         """
         Обновляет таблицу PSD в session_state.
@@ -55,8 +59,13 @@ class PSDCalculator:
         try:
             df = st.session_state.get("P_x_calculated")
             if not isinstance(df, pd.DataFrame) or df.empty:
-                self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
+                self.logs_manager.add_log(
+                    "psd_calculator", "Ошибка: отсутствуют данные P_x_calculated для обновления PSD.", "ошибка"
+                )
                 return
+
+            # Удаление старых данных перед записью новых
+            st.session_state.pop("psd_table_calculated", None)
 
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
             st.session_state["psd_table_calculated"] = df_sorted
