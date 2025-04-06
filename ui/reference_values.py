@@ -47,10 +47,10 @@ class RefValues:
             try:
                 # Выполняем расчеты
                 self.reference_calculations.run_calculations()
-                st.sidebar.success("Расчеты успешно выполнены!")
+                st.sidebar.success("Расчеты эталонных значений успешно выполнены!")
 
                 # Автоматическая визуализация результатов
                 self.reference_visualization.visualize_psd_table()
                 self.reference_visualization.visualize_cumulative_curve()
             except Exception as e:
-                st.sidebar.error(f"Ошибка при выполнении расчетов: {e}")
+                st.sidebar.error(f"Ошибка при выполнении расчетов эталонных значений: {e}")
