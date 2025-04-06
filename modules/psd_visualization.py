@@ -61,8 +61,8 @@ class PSDVisualization:
         """
         try:
             # Извлекаем данные для кумулятивной кривой из session_state
-            df = st.session_state.get("P_x_data")
-          st.session_state.get("P_x_data")
+            df = st.session_state.get("P_x_calculated")
+          st.session_state.get("P_x_calculated")
 
             # Проверяем, существует ли DataFrame и не является ли он пустым
             if not isinstance(df, pd.DataFrame) or df.empty:
