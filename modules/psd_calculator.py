@@ -18,6 +18,7 @@ class PSDCalculator:
         Запускает расчёты P(x) рассчитанные и обновляет таблицу PSD.
         """
         self.calculate_p_x_calculated()
+        self.update_psd_table()
         # self.generate_psd_table()
 
     def calculate_p_x_calculated(self):
