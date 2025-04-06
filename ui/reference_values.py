@@ -50,7 +50,8 @@ class RefValues:
                 st.sidebar.success("Расчеты эталонных значений успешно выполнены!")
 
                 # Автоматическая визуализация результатов
-                self.reference_visualization.visualize_psd_table()
-                self.reference_visualization.visualize_cumulative_curve()
+                self.reference_visualization.visualize_ref_psd_table()
+                self.reference_visualization.visualize_ref_cumulative_curve()
+
             except Exception as e:
                 st.sidebar.error(f"Ошибка при выполнении расчетов эталонных значений: {e}")
