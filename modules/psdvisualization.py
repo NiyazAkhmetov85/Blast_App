@@ -1,76 +1,100 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+import plotly.express as px
 
-from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
+from utils.logs_manager import LogsManager
 
-class PSDCalculator:
+class PSDVisualization:
     """
-    Класс для расчета P(x) (рассчитанные) и формирования PSD-таблицы.
+    Класс для визуализации таблицы PSD (Particle Size Distribution) и
+    кумулятивной кривой распределения рассчитанных значений.
     """
+
     def __init__(self, session_manager: SessionStateManager, logs_manager: LogsManager):
         self.session_manager = session_manager
         self.logs_manager = logs_manager
 
-    def run_calculations(self):
+    def visualize_psd_table(self):
         """
-        Запускает расчёты P(x) рассчитанные и обновляет таблицу PSD.
-        """
-        self.calculate_p_x_calculated()
-        self.update_psd_table()
-
-    def calculate_p_x_calculated(self):
-        """
-        Рассчитывает P(x) рассчитанные на основе параметров БВР.
+        Визуализация таблицы PSD (Particle Size Distribution) с рассчитанными значениями.
         """
         try:
-            x_values = st.session_state.get("x_values", [])
-            if not x_values:
-                st.sidebar.error("Ошибка: x_values не найдены.")
-                return
+            # Извлекаем таблицу PSD из session_state
+            psd_table = st.session_state.get("psd_table_calculated")
 
-            params = st.session_state.get("calculation_results", {})
-            x_max = params.get("x_max", 1000)
-            x_50 = params.get("x_50", 200)
-            b = params.get("b", 3.5)
-
-            # Удаление старых данных перед записью новых
-            st.session_state.pop("P_x_calculated", None)
-
-            p_x_calculated = [
-                (x, (1 / (1 + (np.log(x_max / x) / np.log(x_max / x_50)) ** b)) * 100)
-                for x in x_values if x <= x_max
-            ]
-
-            df = pd.DataFrame(p_x_calculated, columns=["Размер фрагмента (x), мм", "P(x) рассчитанные, %"])
-            st.session_state["P_x_calculated"] = df
-            st.sidebar.success("P(x) рассчитанные успешно вычислены.")
-            self.logs_manager.add_log("psd_calculator", "P(x) рассчитанные успешно вычислены.", "успех")
-
-        except Exception as e:
-            st.sidebar.error(f"Ошибка при расчете P(x) рассчитанные: {e}")
-            self.logs_manager.add_log("psd_calculator", f"Ошибка при расчете P(x) рассчитанные: {e}", "ошибка")
-
-    def update_psd_table(self):
-        """
-        Обновляет таблицу PSD в session_state.
-        """
-        try:
-            df = st.session_state.get("P_x_calculated")
-            if not isinstance(df, pd.DataFrame) or df.empty:
+            # Проверяем, существует ли таблица и не является ли она пустой
+            if not isinstance(psd_table, pd.DataFrame) or psd_table.empty:
+                st.sidebar.warning("Нет данных для визуализации PSD.")
                 self.logs_manager.add_log(
-                    "psd_calculator", "Ошибка: отсутствуют данные P_x_calculated для обновления PSD.", "ошибка"
+                    "psd_visualization",
+                    "Попытка визуализации PSD с отсутствующими или пустыми данными.",
+                    "предупреждение"
                 )
                 return
 
-            # Удаление старых данных перед записью новых
-            st.session_state.pop("psd_table_calculated", None)
+            # Отображаем таблицу PSD с помощью Streamlit
+            st.subheader("Таблица распределения размеров частиц (PSD - Рассчитанные значения)")
+            st.dataframe(psd_table, use_container_width=True)
 
-            df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
-            st.session_state["psd_table_calculated"] = df_sorted
-            st.sidebar.success("Таблица PSD успешно обновлена!")
-            self.logs_manager.add_log("psd_calculator", "Таблица PSD обновлена.", "успех")
+            # Лог успешного отображения таблицы
+            self.logs_manager.add_log(
+                "psd_visualization",
+                "Таблица PSD успешно визуализирована.",
+                "успех"
+            )
 
         except Exception as e:
-            self.logs_manager.add_log("psd_calculator", f"Ошибка обновления PSD: {e}", "ошибка")
+            st.sidebar.error(f"Ошибка визуализации таблицы PSD: {e}")
+            self.logs_manager.add_log(
+                "psd_visualization",
+                f"Ошибка визуализации таблицы PSD: {e}",
+                "ошибка"
+            )
+
+    def visualize_cumulative_curve(self):
+        """
+        Визуализация кумулятивной кривой распределения рассчитанных значений P(x).
+        """
+        try:
+            # Извлекаем данные для кумулятивной кривой из session_state
+            df = st.session_state.get("P_x_calculated")
+
+            # Проверяем, существует ли DataFrame и не является ли он пустым
+            if not isinstance(df, pd.DataFrame) or df.empty:
+                st.sidebar.warning("Нет данных для построения графика.")
+                self.logs_manager.add_log(
+                    "psd_visualization",
+                    "Попытка построения кумулятивной кривой с отсутствующими или пустыми данными.",
+                    "предупреждение"
+                )
+                return
+
+            # Построение графика с использованием Plotly
+            fig = px.line(
+                df,
+                x="Размер фрагмента (x), мм",
+                y="P(x) рассчитанные, %",
+                title="Кумулятивная кривая распределения (Рассчитанные значения)",
+                labels={
+                    "Размер фрагмента (x), мм": "Размер фрагмента (мм)",
+                    "P(x) рассчитанные, %": "Кумулятивное распределение (%)"
+                }
+            )
+            fig.update_traces(mode='lines+markers')
+            st.plotly_chart(fig)
+
+            # Лог успешного построения графика
+            self.logs_manager.add_log(
+                "psd_visualization",
+                "Кумулятивная кривая успешно визуализирована.",
+                "успех"
+            )
+
+        except Exception as e:
+            st.sidebar.error(f"Ошибка визуализации кумулятивной кривой: {e}")
+            self.logs_manager.add_log(
+                "psd_visualization",
+                f"Ошибка визуализации кумулятивной кривой: {e}",
+                "ошибка"
+            )
