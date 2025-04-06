@@ -15,7 +15,7 @@ class PSDVisualization:
         self.session_manager = session_manager
         self.logs_manager = logs_manager
 
-    def visualize_psd_table(self):
+    def visualize_calculated_psd_table(self):
         """
         Визуализация таблицы PSD (Particle Size Distribution) с рассчитанными значениями.
         """
@@ -52,7 +52,7 @@ class PSDVisualization:
                 "ошибка"
             )
 
-    def visualize_cumulative_curve(self):
+    def visualize_calculated_cumulative_curve(self):
         """
         Визуализация кумулятивной кривой распределения рассчитанных значений P(x).
         """
