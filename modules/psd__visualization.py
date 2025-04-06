@@ -23,14 +23,14 @@ class PSDVisualization:
         """
         try:
             # Извлекаем таблицу PSD из session_state
-            # psd_table = st.session_state.get("psd_table")
+            psd_table = st.session_state.get("psd_table_calculated")
             P_x_calculated = st.session_state.get("P_x_calculated")
 
             # Проверяем, существует ли таблица и не является ли она пустой
             if not isinstance(psd_table, pd.DataFrame) or psd_table.empty:
                 st.sidebar.warning("Нет данных для визуализации PSD.")
                 self.logs_manager.add_log(
-                    "ref_visualization",
+                    "psdvisualization",
                     "Попытка визуализации PSD с отсутствующими или пустыми данными.",
                     "предупреждение"
                 )
@@ -42,7 +42,7 @@ class PSDVisualization:
 
             # Лог успешного отображения таблицы
             self.logs_manager.add_log(
-                "ref_visualization",
+                "psdvisualization",
                 "Таблица PSD успешно визуализирована.",
                 "успех"
             )
@@ -50,7 +50,7 @@ class PSDVisualization:
         except Exception as e:
             st.sidebar.error(f"Ошибка визуализации таблицы PSD: {e}")
             self.logs_manager.add_log(
-                "ref_visualization",
+                "psdvisualization",
                 f"Ошибка визуализации таблицы PSD: {e}",
                 "ошибка"
             )
@@ -68,7 +68,7 @@ class PSDVisualization:
             if not isinstance(df, pd.DataFrame) or df.empty:
                 st.sidebar.warning("Нет данных для построения графика.")
                 self.logs_manager.add_log(
-                    "ref_visualization",
+                    "psdvisualization",
                     "Попытка построения кумулятивной кривой с отсутствующими или пустыми данными.",
                     "предупреждение"
                 )
@@ -90,7 +90,7 @@ class PSDVisualization:
 
             # Лог успешного построения графика
             self.logs_manager.add_log(
-                "ref_visualization",
+                "psdvisualization",
                 "Кумулятивная кривая успешно визуализирована.",
                 "успех"
             )
@@ -98,7 +98,7 @@ class PSDVisualization:
         except Exception as e:
             st.sidebar.error(f"Ошибка визуализации кумулятивной кривой: {e}")
             self.logs_manager.add_log(
-                "ref_visualization",
+                "psdvisualization",
                 f"Ошибка визуализации кумулятивной кривой: {e}",
                 "ошибка"
             )
