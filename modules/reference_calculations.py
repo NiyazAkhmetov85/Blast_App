@@ -34,7 +34,9 @@ class ReferenceCalculations:
         Генерация шкалы x_values по стандартным значениям.
         """
         try:
+            # Удаление текущего значения ключа перед записью нового
             st.session_state.pop("x_values", None)
+            
             params = st.session_state.get("reference_parameters", {})
             if not params:
                 st.sidebar.error("Ошибка: параметры не загружены.")
@@ -44,7 +46,8 @@ class ReferenceCalculations:
             max_x = params.get("target_x_max", 1000)  # Теперь max_x всегда число
             max_x = self.round_to_nearest_100(max_x)
             x_values = [x for x in self.STANDARD_X_VALUES if x <= max_x]
-            st.session_state["x_values"] = x_values
+            
+            st.session_state["x_values"] = x_values  # Записываем новое значение
 
             self.logs_manager.add_log("reference_calculations", f"Шкала успешно сгенерирована до {max_x} мм.", "успех")
         except Exception as e:
@@ -96,7 +99,10 @@ class ReferenceCalculations:
                 self.logs_manager.add_log("reference_calculations", "Пустой расчет P(x) после фильтрации.", "ошибка")
                 return
 
-            # Создаем DataFrame
+            # Удаляем текущее значение P_x_data перед записью нового
+            st.session_state.pop("P_x_data", None)
+
+            # Создаем DataFrame и записываем
             df = pd.DataFrame(p_x_values, columns=["Размер фрагмента (x), мм", "Эталонные P(x), %"])
             df = df.sort_values(by="Размер фрагмента (x), мм", ascending=True)
 
@@ -107,7 +113,6 @@ class ReferenceCalculations:
         except Exception as e:
             st.sidebar.error(f"Ошибка выполнения расчетов: {e}")
             self.logs_manager.add_log("reference_calculations", f"Ошибка выполнения расчетов: {e}", "ошибка")
- 
 
     def update_psd_table(self):
         """
@@ -118,6 +123,9 @@ class ReferenceCalculations:
             if not isinstance(df, pd.DataFrame) or df.empty:
                 self.logs_manager.add_log("reference_calculations", "Ошибка: отсутствуют данные P_x_data для обновления PSD.", "ошибка")
                 return
+
+            # Удаляем текущую таблицу перед записью обновленной
+            st.session_state.pop("psd_table", None)
 
             df_sorted = df.sort_values(by="Размер фрагмента (x), мм", ascending=True).reset_index(drop=True)
             st.session_state["psd_table"] = df_sorted
