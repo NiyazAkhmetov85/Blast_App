@@ -37,9 +37,8 @@ class ResultsSummary:
         # 🔘 Кнопка запуска расчётов PSD
         if st.button("Рассчитать Таблицу PSD и кумулятивную кривую"):
             self.psd_calculator.run_calculations()
-            
-            self.psd_visualization.visualize_psd_table()
-            self.psd_visualization.visualize_cumulative_curve()           
+            self.psdvisualization.visualize_psd()
+            self.psdvisualization.visualize_cumulative()           
             
             # self.results_display.display_psd_table()
             # self.results_display.display_cumulative_curve()
