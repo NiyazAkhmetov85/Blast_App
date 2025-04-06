@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 from utils.logs_manager import LogsManager
 from utils.session_state_manager import SessionStateManager
