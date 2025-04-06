@@ -3,7 +3,7 @@ import streamlit as st
 from modules.calculations import Calculations
 from modules.psd_calculator import PSDCalculator
 from modules.results_display import ResultsDisplay
-from modules.psd_visualization import PSDVisualization
+from modules.psdvisualization import PSDVisualization
 
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
@@ -18,7 +18,7 @@ class ResultsSummary:
         self.calculator = Calculations(session_manager, logs_manager)
         self.psd_calculator = PSDCalculator(session_manager, logs_manager)
         self.results_display = ResultsDisplay(session_manager, logs_manager)
-        self.psd_visualization = PSDVisualization(session_manager, logs_manager)
+        self.psdvisualization = PSDVisualization(session_manager, logs_manager)
 
     def show_results_summary(self):
         st.title("Итоговые расчёты параметров БВР")
