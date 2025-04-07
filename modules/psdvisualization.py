@@ -98,3 +98,45 @@ class PSDVisualization:
                 f"Ошибка визуализации кумулятивной кривой: {e}",
                 "ошибка"
             )
+
+
+    def visualize_dual_cumulative_curves(self):
+        """
+        Визуализация эталонной и рассчитанной кумулятивных кривых распределения.
+        """
+        try:
+            df_reference = st.session_state.get("P_x_data")
+            df_calculated = st.session_state.get("P_x_calculated")
+            
+            if df_reference is None or df_reference.empty:
+                st.sidebar.warning("Нет данных для построения эталонной кривой.")
+                return
+            
+            if df_calculated is None or df_calculated.empty:
+                st.sidebar.warning("Нет данных для построения рассчитанной кривой.")
+                return
+    
+            fig = go.Figure()
+    
+            # Эталонная кривая (красного цвета)
+            fig.add_trace(go.Scatter(x=df_reference["Размер фрагмента (x), мм"], 
+                                     y=df_reference["Эталонные P(x), %"], 
+                                     mode='lines+markers', 
+                                     name='Эталонная кривая', 
+                                     line=dict(color='red')))
+    
+            # Рассчитанная кривая (синего цвета)
+            fig.add_trace(go.Scatter(x=df_calculated["Размер фрагмента (x), мм"], 
+                                     y=df_calculated["Рассчитанные P(x), %"], 
+                                     mode='lines+markers', 
+                                     name='Рассчитанная кривая', 
+                                     line=dict(color='blue')))
+    
+            fig.update_layout(title="Сравнение эталонной и рассчитанной кумулятивных кривых распределения",
+                              xaxis_title="Размер фрагмента (мм)",
+                              yaxis_title="Кумулятивное распределение (%)")
+    
+            st.plotly_chart(fig)
+        except Exception as e:
+            st.sidebar.error(f"Ошибка визуализации кривых: {e}")
+            self.logs_manager.add_log("psd_visualization", f"Ошибка визуализации кривых: {e}", "ошибка")
