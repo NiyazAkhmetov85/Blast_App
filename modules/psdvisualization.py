@@ -116,26 +116,31 @@ class PSDVisualization:
             if df_calculated is None or df_calculated.empty:
                 st.sidebar.warning("Нет данных для построения рассчитанной кривой.")
                 return
-    
+
             fig = go.Figure()
-    
+
             # Эталонная кривая (красного цвета)
             fig.add_trace(go.Scatter(x=df_reference["Размер фрагмента (x), мм"], 
                                      y=df_reference["Эталонные P(x), %"], 
                                      mode='lines+markers', 
                                      name='Эталонная кривая', 
                                      line=dict(color='red')))
-    
+
             # Рассчитанная кривая (синего цвета)
             fig.add_trace(go.Scatter(x=df_calculated["Размер фрагмента (x), мм"], 
-                                     y=df_calculated["Рассчитанные P(x), %"], 
+                                     y=df_calculated["P(x) рассчитанные, %"], 
                                      mode='lines+markers', 
                                      name='Рассчитанная кривая', 
                                      line=dict(color='blue')))
-    
+
             fig.update_layout(title="Сравнение эталонной и рассчитанной кумулятивных кривых распределения",
                               xaxis_title="Размер фрагмента (мм)",
                               yaxis_title="Кумулятивное распределение (%)")
+
+            st.plotly_chart(fig)
+        except Exception as e:
+            st.sidebar.error(f"Ошибка визуализации кривых: {e}")
+            self.logs_manager.add_log("psd_visualization", f"Ошибка визуализации кривых: {e}", "ошибка")
     
             st.plotly_chart(fig)
         except Exception as e:
