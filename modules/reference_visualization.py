@@ -81,7 +81,7 @@ class RefVisualization:
                     "Эталонные P(x), %": "Кумулятивное распределение (%)"
                 }
             )
-            fig.update_traces(mode='lines+markers')
+            fig.update_traces(mode='lines+markers', line=dict(color='red'))
             st.plotly_chart(fig)
 
             # Лог успешного построения графика
