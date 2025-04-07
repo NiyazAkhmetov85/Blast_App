@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 from utils.session_state_manager import SessionStateManager
 from utils.logs_manager import LogsManager
