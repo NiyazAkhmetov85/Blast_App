@@ -39,7 +39,8 @@ class ResultsSummary:
         if st.button("Рассчитать Таблицу PSD и кумулятивную кривую"):
             self.psd_calculator.run_calculations()            
             self.psdvisualization.visualize_calculated_psd_table()
-            self.psdvisualization.visualize_calculated_cumulative_curve()   
+            self.psdvisualization.visualize_calculated_cumulative_curve()  
+            self.psdvisualization.visualize_dual_cumulative_curves()
 
             # if "P_x_data" in st.session_state:
             #     st.write(st.session_state["P_x_data"].head())
