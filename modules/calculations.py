@@ -257,29 +257,47 @@ class Calculations:
         Q = self.params.get("Q")
         s_ANFO = self.results.get("s_ANFO")
         q = self.results.get("q")
+        n = self.results.get("n")
     
-        if None in (A, Q, s_ANFO, q):
+        # Проверка наличия необходимых параметров
+        if None in (A, Q, s_ANFO, q, n):
             st.sidebar.warning("❌ Ошибка: Отсутствуют входные параметры для расчета x_50.")
             self.logs_manager.add_log("calculations", "Ошибка: отсутствуют входные параметры для x_50.", "ошибка")
             return
     
-        if q <= 0 or s_ANFO <= 0:
-            st.sidebar.error("❌ Ошибка: q и s_ANFO должны быть больше 0.")
-            self.logs_manager.add_log("calculations", "Ошибка: q или s_ANFO <= 0.", "ошибка")
+        # Проверка корректности значений параметров
+        if q <= 0 or s_ANFO <= 0 or n <= 0:
+            st.sidebar.error("❌ Ошибка: параметры q, s_ANFO и n должны быть больше 0.")
+            self.logs_manager.add_log("calculations", "Ошибка: q, s_ANFO или n <= 0.", "ошибка")
             return
     
         try:
-            self.results["x_50"] = A * Q**(1/6) * (115 / s_ANFO)**0.633 / q**0.8
+            # Поправочный коэффициент по Swebrec-функции
+            g_n = (math.log(2)**(1/n)) / gamma(1 + 1/n)
+    
+            # Расчёт x_50 с поправочным коэффициентом
+            self.results["x_50"] = A * Q**(1/6) * (115 / s_ANFO)**0.633 / q**0.8 * g_n
+    
         except ZeroDivisionError:
             st.sidebar.error("❌ Ошибка: Деление на 0 при расчете x_50.")
             self.logs_manager.add_log("calculations", "Ошибка: Деление на 0 при расчете x_50.", "ошибка")
             return
+        except Exception as e:
+            st.sidebar.error(f"❌ Ошибка при расчете x_50: {e}")
+            self.logs_manager.add_log("calculations", f"Ошибка при расчете x_50: {e}", "ошибка")
+            return
     
+        # Сохраняем результаты расчета
         st.session_state["calculation_results"]["x_50"] = self.results["x_50"]
     
-        self.logs_manager.add_log("calculations", f"✅ Успешный расчет x_50: {self.results['x_50']:.4f}", "успех")
-        st.sidebar.success(f"✅ Медианный размер фрагмента (x_50) успешно рассчитан: {self.results['x_50']:.4f}")
-
+        # Логирование и сообщение об успешном расчете
+        self.logs_manager.add_log(
+            "calculations",
+            f"✅ Успешный расчет x_50 с поправкой Swebrec: {self.results['x_50']:.4f}",
+            "успех"
+        )
+        st.sidebar.success(f"✅ x_50 успешно рассчитан (с поправкой Swebrec): {self.results['x_50']:.4f}")
+    
     
     @error_handler
     def calculate_b(self):
@@ -410,7 +428,7 @@ class Calculations:
                 self.calculate_q,
                 self.calculate_x_max,
                 self.calculate_n_iterative,  # Итерационный расчёт n и x_50
-                # self.calculate_g_n,           # Перерасчёт g_n после итераций
+                self.calculate_g_n,           # Перерасчёт g_n после итераций
                 self.calculate_b,
             ]
     
